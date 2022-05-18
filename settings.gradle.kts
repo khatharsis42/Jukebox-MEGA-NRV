@@ -1,0 +1,1 @@
+rootProject.name = "cj.jukebox.ktor-sample"
