@@ -1,0 +1,1 @@
+{"APP_NAME":"Jukebox","DEBUG":true,"LISTEN_ADDRESS":"0.0.0.0","LISTEN_PORT":8080,"YT_KEYS":[],"AMIXER_CHANNEL":"Master","DATABASE_PATH":"config/jukebox.sqlite3","TMP_PATH":"src/backend/tmp/"}
