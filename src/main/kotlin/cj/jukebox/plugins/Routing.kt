@@ -7,22 +7,22 @@ import io.ktor.server.response.*
 import io.ktor.server.request.*
 import io.ktor.server.util.*
 
-fun Application.configureRouting() {
+fun Application.routing() {
     routing {
         get("/") {
-            this.call.respondRedirect("app")
+            call.respondRedirect("app")
         }
 
         get("/app") {
-            this.call.respondText("app")
+            call.respondText("app")
         }
 
         get("/help") {
-            this.call.respondText("help")
+            call.respondText("help")
         }
 
         get("/status") {
-            this.call.respondText("status")
+            call.respondText("status")
         }
     }
 }

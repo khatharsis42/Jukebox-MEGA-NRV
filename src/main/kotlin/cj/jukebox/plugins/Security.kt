@@ -7,7 +7,7 @@ import io.ktor.server.response.*
 import io.ktor.server.request.*
 import io.ktor.server.routing.*
 
-fun Application.configureSecurity() {
+fun Application.security() {
     
     authentication {
     		basic(name = "myauth1") {

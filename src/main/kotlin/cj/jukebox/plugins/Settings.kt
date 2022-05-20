@@ -8,11 +8,11 @@ fun Application.settings() {
     routing {
         route("/settings") {
             get {
-                this.call.respondText("settings")
+                call.respondText("settings")
             }
             post {
                 println("post settings")
-                this.call.respondRedirect("settings")
+                call.respondRedirect("settings")
             }
         }
     }
