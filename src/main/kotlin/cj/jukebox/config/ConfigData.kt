@@ -19,6 +19,9 @@ data class ConfigData(
 
     @EncodeDefault val DATABASE_PATH: String = "config/jukebox.sqlite3",
     @EncodeDefault val TMP_PATH: String = "src/backend/tmp/",
+
+    @EncodeDefault val SECRET_ENCRYPT_KEY: String = "6b6287991d47e783e3a261cca1a0a1b9",
+    @EncodeDefault val SECRET_SIGN_KEY: String = "9cb8d9913aebc815cb58562aa479",
 ) {
     init {
         require(this.APP_NAME.isNotEmpty()) { "App name can't be empty" }
