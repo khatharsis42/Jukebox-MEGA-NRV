@@ -1,0 +1,374 @@
+@font-face {
+    font-family: "ZeldaBOTW";
+    src: url("resources/zelda/zeldaBOTW.otf");
+}
+
+@font-face {
+    font-family: "Zelda";
+    src: url("resources/zelda/zelda.otf");
+}
+
+@font-face {
+    font-family: "Pixel";
+    src: url("resources/zelda/pixel.ttf");
+}
+
+#playlist-playing, #playlist-queue {
+    list-style-type: none;
+    padding: 0;
+	text-align: center;
+	color: grey;
+	letter-spacing: 10px;
+    margin: 13px 10px 10px;
+}
+
+body {
+    background: url(https://images.alphacoders.com/789/thumb-1920-789452.jpg) no-repeat fixed center;
+    background-size: cover;
+    font-family: "Pixel";
+    font-weight: bold;
+}
+
+@media only screen and (orientation: portrait){
+    body{
+        background: url(https://i.pinimg.com/originals/30/4f/a1/304fa12fced766b70d6932cb59e49431.jpg) no-repeat center fixed;
+        background-size: cover;
+    }
+}
+
+h1, h2, h3, tr, td, p, li{
+    color:rgb(0,0,0);
+}
+
+.container-fluid {
+    background-color: rgba(0, 0, 0, 0.3);
+    font-variant: small-caps;
+}
+
+.display-3, .display-4 {
+    text-shadow: -2px -2px 0 #000, -1px -1px 0 #000, 0px 0px 0 #000, 1px 1px 0 #000, 2px 2px 0 #000, -2px -2px 0 #000, -1px -1px 0 #000, 0px 0px 0 #000, 1px 1px 0 #000, 2px 2px 0 #000, -1px -1px 0 #000, 0px 0px 0 #000, 1px 1px 0 #000, 2px 2px 0 #000, 3px 3px 0 #000, 0px 0px 0 #000, 1px 1px 0 #000, 2px 2px 0 #000, 3px 3px 0 #000, 4px 4px 0 #000, 1px 1px 0 #000, 2px 2px 0 #000, 3px 3px 0 #000, 4px 4px 0 #000, 5px 5px 0 #000, 2px 2px 0 #000, 3px 3px 0 #000, 4px 4px 0 #000, 5px 5px 0 #000, 6px 6px 0 #000;
+    color: #c32130;
+    font-weight: normal;
+}
+
+.display-3 {
+    font-family: "ZeldaBOTW", serif;
+    visibility: hidden;
+    font-size: 0;
+    color: #C1A564
+}
+
+.display-3:after {
+    content: "The Legend Of The Jukebox";
+    visibility: visible;
+    font-size: 5rem;
+    color: #C1A564
+}
+
+.display-4 {
+    font-family: "Zelda", serif;
+    text-align: center;
+    float: none !important;
+}
+
+.nav-link {
+    font-family: "Zelda", serif;
+    font-size: 1.25rem;
+    padding: .5em .5em;
+}
+
+iframe#YT {
+    width: 100%;
+    height : auto;
+    aspect-ratio : 16 / 9;
+    /* Pour avoir un truc youtube centré un peu quand même */
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+a {
+    color: white;
+    text-shadow: -1px -1px 0 #000, -1px 0px 0 #000, -1px 1px 0 #000, 0px -1px 0 #000, 0px 0px 0 #000, 0px 1px 0 #000, 1px -1px 0 #000, 1px 0px 0 #000, 1px 1px 0 #000;
+}
+
+.float-right.lead.py-4>a {
+    text-shadow: -1px -1px 0 #000, -1px 0px 0 #000, -1px 1px 0 #000, -1px 2px 0 #000, 0px -1px 0 #000, 0px 0px 0 #000, 0px 1px 0 #000, 0px 2px 0 #000, 1px -1px 0 #000, 1px 0px 0 #000, 1px 1px 0 #000, 1px 2px 0 #000, 2px -1px 0 #000, 2px 0px 0 #000, 2px 1px 0 #000, 2px 2px 0 #000;
+    margin-right: 5px;
+}
+
+.float-right.lead.py-4 {
+    margin-right: 5px;
+    float: none !important;
+    text-align: center;
+}
+
+a:hover {
+    color: lightblue;
+}
+
+a:active {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+input[type="search"] {
+    text-align: left;
+    direction: ltr;
+    border: solid 1px;
+    border-color: white;
+    box-shadow: 0 0 10px 2px #2596be;
+    background-color: #1887b5;
+    color: #dcf5f7;
+    border-radius: 25px;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 20px 8px #2596be;
+    outline: none;
+    background-color: #1887b5;
+    color: #dcf5f7;
+}
+
+.form-control::placeholder {
+    color: #4bb1db;
+}
+
+label {
+    color:black;
+    margin-bottom:0;
+}
+
+select {
+    margin : 1em 0 1em 0;
+}
+.form-group:focus {
+    border-color: red;
+    box-shadow: 0 0 10px 3px #2596be;
+}
+
+iframe, .list-group, .container {
+    box-shadow: 1px 1px 0 0 #000, 2px 2px 0 0 #000, 3px 3px 0 0 #000, 4px 4px 0 0 #000, 5px 5px 0 0 #000, 6px 6px 0 0 #000, 7px 7px 0 0 #000, 8px 8px 0 0 #000, 9px 9px 0 0 #000, 10px 10px 0 0 #000;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 15px;
+}
+
+.container {
+    background-color: none;
+    box-shadow:0 0 0 0;
+    max-width:100%;
+}
+
+.statistics .statcol thead {
+    background-color: rgba(255, 0, 0, 0.4);
+    border-bottom: 1px solid grey;
+}
+
+.statistics .statcol tbody tr:nth-child(even) {
+    background-color: rgba(0, 255, 0, 0.4);
+}
+
+.statistics .statcol tbody tr:nth-child(odd) {
+    background-color: rgba(244, 161, 44, 0.4);
+}
+
+table {
+    margin:auto;
+}
+
+.list-group {
+    margin-right: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.list-group-item.track {
+    background-color: transparent;
+}
+
+.yt-btn {
+    margin:auto;
+}
+
+#jump {
+    font-size:.9em;
+}
+
+.albumart {
+    border-radius: 0.5em;
+    border-bottom-left-radius: 70px;
+    border-top-left-radius: 70px;
+    margin-top: -7px;
+    margin-left: -7px;
+    box-shadow: 10px 10px 0 0 black;
+    object-fit: cover;
+    max-width: 280px;
+    max-height: 140px;
+    width: 100%;
+    height: auto;
+}
+#pause, #rewind, #advance {
+    width:100%;
+    font-family:"Segoe UI";
+    background-color:#1887b5;
+    color:#dcf5f7;
+    border-color:white;
+}
+
+
+
+.track-duration, .track-user, .track-source, .track-url, .track-album, .track-source, .track-title, .track-artist {
+    color: white;
+    display: block;
+    font-size: 1rem;
+}
+
+.track-title, .track-artist {
+    display: block;
+}
+
+.track-user, .track-duration {
+    display: inline-block;
+}
+
+#search_results .track-user {
+    visibility: hidden;
+}
+
+.icon {
+    background: transparent none no-repeat center;
+    border: none;
+    background-size: auto 100%;
+    padding-left: 20px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    margin: .3em auto;
+    display: block;
+}
+
+.icon.btn-more, .icon.btn-back {
+    background-image: url('resources/zelda/navy.png');
+}
+
+.icon.btn-up {
+    background-image: url('resources/zelda/greenRupee.png');
+}
+
+.icon.btn-down {
+    background-image: url('resources/zelda/redRupee.png');
+}
+
+.icon.btn-remove {
+    background-image: url("resources/zelda/bomb.png")
+}
+
+.icon.btn-add {
+    background-image: url("resources/zelda/triforce.png")
+}
+
+.icon.btn-refresh {
+    background-image: url('resources/zelda/yellowRupee.png');
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    /*nécessaire pour Chrome */
+    padding: 0;
+    /* nécessaire pour IE */
+    font: inherit;
+    /* même rendu suivant font document */
+    outline: none;
+    color: #069;
+    /* sert pour couleur de référence, via currentColor, pour le curseur */
+    box-sizing: border-box;
+    /* même modèle de boîte pour tous */
+    transition: opacity .2s;
+    cursor: pointer;
+    height: 20px;
+    border-radius: 0;
+    background-color: transparent;
+    border-color: transparent;
+}
+
+input[type=range]:focus, input[type=range]::-webkit-slider-runnable-track {
+    border-radius: 0;
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+input[type='range'] {
+    background-color: none;
+}
+
+input[type='range'],
+input[type='range']::-webkit-slider-runnable-track,
+input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+}
+
+input[type='range']::-webkit-slider-runnable-track {
+    height: 3px;
+    background: linear-gradient(to right, #293043, #293043), #D7D7D7;
+    background-size: var(--background-size, 0%) 100%;
+    background-repeat: no-repeat;
+    border-radius: 5px;
+    background-color: blue;
+}
+
+input[type='range']::-webkit-slider-thumb {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    background: blue;
+    border: solid blue 1px;
+    border-radius: 50%;
+    margin-top: -6px;
+    background-color: none;
+}
+
+input[type="range"]::-moz-range-progress {
+    height: 10px;
+    border-radius: 5px;
+    background-color: #1887b5;
+}
+
+input[type="range"]::-moz-range-track {
+    background-color: #D7D7D7;
+    border-radius: 5px;
+    background-color: none;
+    height: 10px;
+    width: 100%
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    border: none;
+    background: none;
+}
+
+.container-fluid::after {
+    content: "Theme by Khâtharsis (Nya)";
+    text-align: center;
+    width: 50%;
+    position: relative;
+    left: 50%;
+    margin-left: -25%;
+    display: block;
+    animation: spin;
+    animation-duration: 4s;
+    animation-delay: 60s;
+    animation-iteration-count: 1;
+    color: white;
+    font-size: larger;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+@keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}

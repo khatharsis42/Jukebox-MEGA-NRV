@@ -1,0 +1,246 @@
+body
+{
+    background-color: red;
+    background-image: url("https://upload.wikimedia.org/wikipedia/commons/a/a9/Flag_of_the_Soviet_Union.svg");
+    color: orange;
+}
+
+a
+{
+    color: yellow;
+}
+
+h1
+{
+    text-shadow: -1px 1px 0 red,
+				  1px 1px 0 red,
+				 1px -1px 0 red,
+				-1px -1px 0 red;
+}
+
+h1:after
+{
+    content:" ☭";
+}
+
+h1:before
+{
+    content:" ☭";
+}
+
+h1
+{
+    color: yellow;
+}
+
+.h3
+{
+    color: yellow;
+}
+
+.nav
+{
+    text-shadow: -1px 1px 0 red,
+				  1px 1px 0 red,
+				 1px -1px 0 red,
+				-1px -1px 0 red;
+    border: 5px double yellow;
+    background: red;
+    /*
+    -webkit-text-stroke: 1px black;
+    -webkit-text-fill-color: yellow;*/
+}
+
+.container
+{
+    border: 3px double yellow;
+    background: red;
+}
+
+.statistics .statcol thead {
+    background-color: #e00b00;
+    border-bottom: 1px solid yellow;
+}
+
+.statistics .statcol tr:nth-child(even) {
+    background-color: #e00b00;
+}
+
+.icon {
+    height: 20px;
+    display: block;
+    margin: 6px;
+	cursor: pointer
+}
+
+.btn-remove, .btn-add, .btn-back, .btn-more, .btn-up, .btn-down, .btn-refresh {
+    position: relative;
+    top: 2px;
+}
+
+#search_results .btn-remove, #search_results .track-user, #suggestions .btn-remove{
+    display: none;
+}
+
+code
+{
+    color: yellow;
+    font-style: monospace;
+}
+#volume-slider
+{
+    -webkit-appearance: none;
+    background-color: yellow;
+    /*outline: 1px solid red;*/
+    /*opacity: 100;*/
+}
+
+#volume-slider::-webkit-slider-thumb
+{
+    -webkit-appearance: none;
+    background: red;
+}
+#volume-slider::-moz-range-thumb
+{
+    background: red;
+    border: none;
+    border-radius: 2px;
+}
+
+#inputUser,#inputPassword
+{
+    background-color: yellow;
+    color: red;
+    border: 1px solid grey;
+}
+
+#query
+{
+    background-color: yellow;
+    color: red;
+    border: 4px double red;
+}
+
+#query::placeholder
+{
+    color: grey;
+}
+
+.btn-primary
+{
+    background-color: yellow;
+    color: red;
+    border: 1px solid grey;
+}
+
+#search_results li {
+	cursor: pointer;
+}
+
+.albumart {
+    display: block;
+    object-fit: cover;
+    max-width: 280px;
+    max-height: 140px;
+    width: 100%;
+    height: auto;
+}
+
+.list {
+    background-color: red;
+}
+
+.list-group-item
+{
+    background-color: red;
+    color: orange;
+    border: 1px solid yellow;
+    border-radius: 0;
+}
+
+.track-title {
+	display: block;
+    font-size: x-large;
+}
+.track-artist {
+	display: block;
+}
+
+.track-album {
+    display: block;
+}
+
+.track-url {
+    display: block;
+}
+
+.track-source {
+    display: block;
+}
+
+.btn-remove {
+	cursor:pointer
+}
+.centered {
+	margin: auto
+}
+
+iframe#YT {
+    width: 100%;
+    height : auto;
+    aspect-ratio : 16 / 9;
+}
+
+
+#playlist-playing, #playlist-queue {
+    list-style-type: none;
+    margin: 10px;
+    padding: 0;
+	text-align: center;
+	color: orange;
+	letter-spacing: 10px;
+	margin-top: 13px;
+}
+
+.track-title
+{
+    color: yellow;
+    font-weight: bold;
+}
+
+.track-artist
+{
+    color: yellow;
+    font-style: italic;
+}
+
+.track-user
+{
+    color: orange;
+}
+
+
+.track-source
+{
+    font-family: monospace;
+}
+
+.track-duration
+{
+
+}
+
+
+.icon{ /*Les icones de selection de chansons*/
+    background-image: none;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    background-size: 20px;
+    padding-left: 20px;
+    width: 20px;
+    height: 20px;
+	cursor: pointer;
+    margin: 6px;
+    display: block;
+}
