@@ -1,0 +1,4 @@
+package templates
+
+class Auth {
+}
