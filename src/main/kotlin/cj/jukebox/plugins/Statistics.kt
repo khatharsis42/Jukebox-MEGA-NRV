@@ -22,10 +22,17 @@ fun Application.statistics() {
                 call.respondText("stat track $track")
             }
         }
+        route("/history") {
+            get("/{count}") {
+                val count = this.call.parameters.getOrFail("count").toInt()
+                this.call.respondText("history $count")
+            }
 
-        get("/history/{count}") {
-            val count = this.call.parameters.getOrFail("count").toInt()
-            this.call.respondText("history $count")
+            get("") {
+                call.respondRedirect("history/50")
+            }
         }
+
+
     }
 }

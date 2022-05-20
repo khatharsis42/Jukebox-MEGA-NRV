@@ -8,7 +8,6 @@ import cj.jukebox.plugins.*
 val config = Config("src/main/resources/config.json")
 
 fun main() {
-
     embeddedServer(
         Netty,
         port = config.data.LISTEN_PORT,
