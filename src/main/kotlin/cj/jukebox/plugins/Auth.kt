@@ -11,6 +11,8 @@ import io.ktor.server.sessions.*
 import io.ktor.util.*
 
 import kotlinx.html.*
+import templates.Auth
+import templates.Logout
 
 data class UserSession(val name: String) : Principal
 
@@ -55,23 +57,7 @@ fun Application.auth() {
     routing {
         route("/auth") {
             get {
-                call.respondHtml {
-                    body {
-                        form(action = "/auth", encType = FormEncType.applicationXWwwFormUrlEncoded, method = FormMethod.post) {
-                            p {
-                                +"Username:"
-                                textInput(name = "username")
-                            }
-                            p {
-                                +"Password:"
-                                passwordInput(name = "password")
-                            }
-                            p {
-                                submitInput() { value = "Login" }
-                            }
-                        }
-                    }
-                }
+                call.respondHtmlTemplate(Auth()) {}
             }
 
             authenticate("auth-form") {
@@ -84,6 +70,9 @@ fun Application.auth() {
         }
 
         get("/logout") {
+            call.respondHtmlTemplate(Logout("Test")) {}
+        }
+        post("/logout") {
             call.sessions.clear<UserSession>()
             call.respondRedirect("auth")
         }

@@ -1,14 +1,12 @@
 package cj.jukebox.plugins
 
+import cj.jukebox.templates.Help
 import io.ktor.server.routing.*
-import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.html.*
 import io.ktor.server.http.content.*
 import io.ktor.server.response.*
-import io.ktor.server.request.*
-import io.ktor.server.util.*
-import templates.Acceuil
+import templates.Accueil
 import java.io.File
 
 fun Application.routing() {
@@ -18,11 +16,11 @@ fun Application.routing() {
         }
 
         get("/app") {
-            call.respondHtmlTemplate(Acceuil("Test")) {}
+            call.respondHtmlTemplate(Accueil("Test")) {}
         }
 
         get("/help") {
-            call.respondText("help")
+            call.respondHtmlTemplate(Help("Test")) {}
         }
 
         get("/status") {
