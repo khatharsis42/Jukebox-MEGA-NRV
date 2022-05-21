@@ -50,7 +50,7 @@ class Auth : Template<HTML>{
                         classes = "btn btn-lg btn-primary btn-block".split(" ").toSet()
                         name="action"
                         type=ButtonType.submit
-                        value="new"
+                        value="signup"
                         text("S'enregistrer")
                     }
                 }
