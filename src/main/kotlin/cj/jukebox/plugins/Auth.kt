@@ -5,6 +5,7 @@ import cj.jukebox.config
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.html.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
@@ -59,13 +60,24 @@ fun Application.auth() {
             get {
                 call.respondHtmlTemplate(Auth()) {}
             }
+            post {
+                val parameters = call.receiveParameters()
+                val action = parameters["action"].toString()
+
+                when (action) {
+                    "login" -> call.respondText { "Yer trying to connect" }
+                    "signup" -> call.respondText { "Yer trying to signup" }
+                    else -> call.respondRedirect("/auth")
+                    // Flash something there
+                }
+
+//                val userName = call.principal<UserIdPrincipal>()?.name.toString()
+//                call.sessions.set(UserSession(name = userName))
+//                call.respondText("${call.sessions.get<UserSession>()?.name}")
+            }
 
             authenticate("auth-form") {
-                post {
-                    val userName = call.principal<UserIdPrincipal>()?.name.toString()
-                    call.sessions.set(UserSession(name = userName))
-                    call.respondText("${call.sessions.get<UserSession>()?.name}")
-                }
+
             }
         }
 
