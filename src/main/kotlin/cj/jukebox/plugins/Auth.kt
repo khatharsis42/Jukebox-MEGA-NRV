@@ -8,7 +8,6 @@ import cj.jukebox.database.Users
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.html.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
@@ -21,6 +20,58 @@ import templates.*
 data class UserSession(val name: String, val theme: String?) : Principal
 
 fun Application.auth() {
+    authentication {
+        form("auth-login") {
+            userParamName = "user"
+            passwordParamName = "pass"
+
+            validate { credentials ->
+                val res = database.dbQuery {
+                    User
+                        .find { (Users.name eq credentials.name) and (Users.pass eq credentials.password) }
+                        .limit(1).toList()
+                }
+                if (res.isNotEmpty()) {
+                    val user = res.first()
+                    sessions.set(UserSession(name = user.name, theme = user.theme))
+                    UserIdPrincipal(credentials.name)
+                } else {
+                    null
+                }
+            }
+            challenge("auth")
+        }
+
+        form("auth-signup") {
+            userParamName = "user"
+            passwordParamName = "pass"
+
+            validate { credentials ->
+                val res = database.dbQuery {
+                    User.find { Users.name eq credentials.name }.limit(1).toList()
+                }
+                if (res.isEmpty()) {
+                    database.dbQuery {
+                        User.new {
+                            name = credentials.name
+                            pass = credentials.password
+                        }
+                    }
+                    sessions.set(UserSession(name = credentials.name, theme = null))
+                    UserIdPrincipal(credentials.name)
+                } else {
+                    null
+                }
+            }
+            challenge("auth")
+        }
+
+        session<UserSession>("auth-session") {
+            validate { sessions.get<UserSession>() }
+            challenge("auth")
+        }
+    }
+
     install(Sessions) {
         cookie<UserSession>("user-session") {
             val secretEncryptKey = hex(config.data.SECRET_ENCRYPT_KEY)
@@ -31,67 +82,26 @@ fun Application.auth() {
         }
     }
 
-    authentication {
-        session<UserSession>("auth-session") {
-            validate { sessions.get<UserSession>() }
-            challenge("auth")
-        }
-    }
-
     routing {
         route("/auth") {
             get {
-                if (call.authentication.principal<UserSession>() != null) {
+                if (call.sessions.get<UserSession>() != null) {
                     call.respondRedirect("app")
                 } else {
                     call.respondHtmlTemplate(Auth()) {}
                 }
             }
+        }
 
-            post {
-                val parameters = call.receiveParameters()
+        authenticate("auth-login") {
+            post("/login") {
+                call.respondRedirect("app")
+            }
+        }
 
-                val userName = parameters["user"].toString()
-                val password = parameters["pass"].toString()
-
-                when(parameters["action"].toString()) {
-                    "login" -> {
-                        val res = database.dbQuery {
-                            User
-                                .find { (Users.name eq userName) and (Users.pass eq password) }
-                                .limit(1).toList()
-                        }
-                        if (res.isNotEmpty()) {
-                            val user = res.first()
-                            call.sessions.set(UserSession(name = user.name, theme = user.theme))
-                            UserIdPrincipal(userName)
-                            call.respondRedirect("app")
-                        } else {
-                            call.respondRedirect("auth")
-                        }
-                    }
-
-                    "signup" -> {
-                        val res = database.dbQuery {
-                            User.find { Users.name eq userName }.limit(1).toList()
-                        }
-                        if (res.isEmpty()) {
-                            database.dbQuery {
-                                User.new {
-                                    name = userName
-                                    pass = password
-                                }
-                            }
-                            call.sessions.set(UserSession(name = userName, theme = null))
-                            UserIdPrincipal(userName)
-                            call.respondRedirect("app")
-                        } else {
-                            call.respondRedirect("auth")
-                        }
-                    }
-
-                    else -> call.respondRedirect("auth")
-                }
+        authenticate("auth-signup") {
+            post("/signup") {
+                call.respondRedirect("app")
             }
         }
 
