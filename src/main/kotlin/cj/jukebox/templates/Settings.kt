@@ -6,6 +6,11 @@ import io.ktor.server.html.*
 import kotlinx.html.*
 import java.io.File
 
+/**
+ * Page de paramètres, permet de choisir son CSS.
+ * @param[user] L'utilisateur de la session.
+ * @author khatharsis
+ */
 class Settings(user: User) : MainTemplate(
     user,
     content = object: Template<FlowContent> {

@@ -8,6 +8,9 @@ import kotlinx.html.*
 /**
  * Une classe permettant de représenter rapidement le tableau fourni.
  * La première ligne de cet Array doit être le nom des colonnes.
+ * @param[name] Le nom que l'on veut donner à ce tableau.
+ * @param[content] Tableau que l'on veut transformer en tableau HTML. Sa première ligne doit contenir les titres.
+ * @author khatharsis
  */
 private class StatsColumn(val name: String, content: Array<Array<String>>) :
     Template<FlowContent> {
@@ -33,6 +36,11 @@ private class StatsColumn(val name: String, content: Array<Array<String>>) :
     }
 }
 
+/**
+ * Statistiques globales du jukebox.
+ * @param[user] L'utilisateur de la session.
+ * @author khatharsis
+ */
 class GlobalStatistics(user: User) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
@@ -64,6 +72,12 @@ class GlobalStatistics(user: User) : MainTemplate(
     }
 )
 
+/**
+ * Statistiques d'un seul utilisateur.
+ * @param[user] L'utilisateur de la session.
+ * @param[lookedUpUser] L'utilisateur dont on veut voir les stats.
+ * @author khatharsis
+ */
 class UserStatistics(user: User, lookedUpUser: User) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
@@ -87,6 +101,12 @@ class UserStatistics(user: User, lookedUpUser: User) : MainTemplate(
     }
 )
 
+/**
+ * Pages de statistiques pour une musique.
+ * @param[user] L'utilisateur de la session.
+ * @param[track] La musique dont on veut voir les stats.
+ * @author khatharsis
+ */
 class TrackStatistics(user: User, track: Track) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
@@ -120,6 +140,12 @@ class TrackStatistics(user: User, track: Track) : MainTemplate(
     }
 )
 
+/**
+ * Historique des musiques passées sur le jukebox.
+ * @param[user] L'utilisateur de la session.
+ * @param[n] Nombre de musiques que l'on souhaite voir. (On devrait vraiment plutôt faire des pages).
+ * @author khatharsis
+ */
 class History(user: User, n: Int = 50) : MainTemplate(
     user,
     content = object : Template<FlowContent> {

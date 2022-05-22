@@ -10,6 +10,11 @@ import kotlinx.html.a
 import kotlinx.html.div
 import kotlinx.html.p
 
+/**
+ * La page d'aide, qui affiche des informations.
+ * @param[user] L'utilisateur de la session.
+ * @author khatharsis
+ */
 class Help(user: User) : MainTemplate(
     user,
     content = object : Template<FlowContent> {

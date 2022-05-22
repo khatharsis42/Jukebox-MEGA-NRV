@@ -5,6 +5,11 @@ import cj.jukebox.database.User
 import io.ktor.server.html.*
 import kotlinx.html.*
 
+/**
+ * La page pour se déconnecter de la session.
+ * @param[user] L'utilisateur de la session.
+ * @author khatharsis
+ */
 class Logout(val user: User) : Template<HTML> {
     private val header = TemplatePlaceholder<Header>()
     override fun HTML.apply() {

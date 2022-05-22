@@ -12,6 +12,7 @@ import kotlinx.html.*
  * @param[user] L'utilisateur de la session.
  * @param[content] Le contenu principal de cet page.
  * @param[music] Valeur existant uniquement pour la page d'acceuil, permet d'avoir un endroit reservé pour les musiques.
+ * @author khatharsis
  */
 open class MainTemplate(
     private val user: User,

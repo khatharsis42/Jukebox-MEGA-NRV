@@ -9,6 +9,7 @@ import kotlinx.html.*
  * La page d'accueil, accessible via le /app.
  *
  * @param[user] L'utilisateur de la session.
+ * @author khatharsis
  */
 class Accueil(user: User) : MainTemplate(
     user,
