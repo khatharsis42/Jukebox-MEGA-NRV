@@ -8,6 +8,7 @@ import io.ktor.server.html.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Application.settings() {
     routing {
@@ -21,7 +22,7 @@ fun Application.settings() {
                     val style = parameters["style"]
 
                     val session = call.getUserSession()!!
-                    session.user.theme = style
+                    transaction { session.user.theme = style }
 
                     call.respondRedirect("settings")
                 }
