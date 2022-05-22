@@ -7,12 +7,12 @@ import org.jetbrains.exposed.dao.id.IntIdTable
 
 const val urlReg = """https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"""
 
-object Songs : IntIdTable() {
+object Tracks : IntIdTable() {
     val url = varchar("url", 200)
         .check { it.match(urlReg) }
 
     val source_ = varchar("source", 20)
-    val song = varchar("track", 50).nullable()
+    val track = varchar("track", 50).nullable()
     val artist = varchar("artist", 50).nullable()
     val album = varchar("album", 50).nullable()
     val albumArtUrl = varchar("albumArtUrl", 200).nullable()
@@ -24,16 +24,16 @@ object Songs : IntIdTable() {
         .default(false)
 }
 
-class Song(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<Song>(Songs)
+class Track(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<Track>(Tracks)
 
-    var url by Songs.url
-    var source by Songs.source_
-    var song by Songs.song
-    var artist by Songs.artist
-    var album by Songs.album
-    var albumArtUrl by Songs.albumArtUrl
-    var duration by Songs.duration
-    var blacklisted by Songs.blacklisted
-    var obsolete by Songs.obsolete
+    var url by Tracks.url
+    var source by Tracks.source_
+    var track by Tracks.track
+    var artist by Tracks.artist
+    var album by Tracks.album
+    var albumArtUrl by Tracks.albumArtUrl
+    var duration by Tracks.duration
+    var blacklisted by Tracks.blacklisted
+    var obsolete by Tracks.obsolete
 }

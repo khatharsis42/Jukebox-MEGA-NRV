@@ -7,7 +7,7 @@ import org.jetbrains.exposed.dao.id.IntIdTable
 import java.time.Instant
 
 object Logs : IntIdTable() {
-    val songId = reference("trackId", Songs).nullable()
+    val trackId = reference("trackId", Tracks).nullable()
     val userId = reference("userId", Users).nullable()
 
     val time = integer("time")
@@ -17,7 +17,7 @@ object Logs : IntIdTable() {
 class Log(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<Log>(Logs)
 
-    var songId by Song optionalReferencedOn Logs.songId
+    var trackId by Track optionalReferencedOn Logs.trackId
     var userId  by User optionalReferencedOn Logs.userId
     var time    by Logs.time
 }
