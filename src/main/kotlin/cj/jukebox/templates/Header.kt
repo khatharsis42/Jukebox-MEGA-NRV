@@ -4,7 +4,12 @@ import cj.jukebox.config
 import io.ktor.server.html.*
 import kotlinx.html.*
 
-class Header : Template<HTML> {
+/**
+ * Un template HTML pour le Header.
+ * @param styleSheet Le nom d'une des stylesheet disponible, le défaut étant "default.css".
+ * @author khatharsis
+ */
+class Header(private val styleSheet: String = "default.css") : Template<HTML> {
     override fun HTML.apply() {
         head {
             meta {
@@ -12,6 +17,7 @@ class Header : Template<HTML> {
                 content = "width=device-width, initial-scale=1, shrink-to-fit=no"
                 name = "viewport"
                 link("/assets/styles/custom/default.css", rel = "stylesheet", type="text/css")
+                link("/assets/styles/custom/$styleSheet", rel = "stylesheet", type="text/css")
                 link("/assets/favicon.ico", rel = "shortcut icon")
                 link("/assets/styles/bootstrap.min.css", rel = "stylesheet")
                 link(
