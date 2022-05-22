@@ -1,10 +1,6 @@
-package templates
+package cj.jukebox.templates
 
-import cj.jukebox.config
-import cj.jukebox.templates.Header
 import io.ktor.server.html.*
-import kotlinx.css.header
-import kotlinx.css.script
 import kotlinx.html.*
 
 /**

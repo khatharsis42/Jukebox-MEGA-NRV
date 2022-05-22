@@ -6,25 +6,28 @@ import io.ktor.server.application.*
 import io.ktor.server.html.*
 import io.ktor.server.http.content.*
 import io.ktor.server.response.*
-import templates.Accueil
+import cj.jukebox.templates.Accueil
+import io.ktor.server.auth.*
 import java.io.File
 
 fun Application.routing() {
     routing {
-        get("/") {
-            call.respondRedirect("app")
-        }
+        authenticate("auth-session") {
+            get("/") {
+                call.respondRedirect("app")
+            }
 
-        get("/app") {
-            call.respondHtmlTemplate(Accueil("Test")) {}
-        }
+            get("/app") {
+                call.respondHtmlTemplate(Accueil("Test")) {}
+            }
 
-        get("/help") {
-            call.respondHtmlTemplate(Help("Test")) {}
-        }
+            get("/help") {
+                call.respondHtmlTemplate(Help("Test")) {}
+            }
 
-        get("/status") {
-            call.respondText("status")
+            get("/status") {
+                call.respondText("status")
+            }
         }
 
         static("/assets") {

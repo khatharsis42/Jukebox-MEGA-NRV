@@ -1,10 +1,9 @@
-package templates
+package cj.jukebox.templates
 
-import cj.jukebox.templates.Header
 import io.ktor.server.html.*
 import kotlinx.html.*
 
-class Logout(val user:String) : Template<HTML> {
+class Logout(val user: String) : Template<HTML> {
     private val header = TemplatePlaceholder<Header>()
     override fun HTML.apply() {
         insert(Header(), header)

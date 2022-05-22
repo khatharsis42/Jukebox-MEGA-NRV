@@ -11,7 +11,7 @@ class Header : Template<HTML> {
                 charset = "utf-8"
                 content = "width=device-width, initial-scale=1, shrink-to-fit=no"
                 name = "viewport"
-                link("/assets/styles/custom/default.css", rel = "stylesheet", type="text/css")
+                link("/assets/styles/custom/default.css", rel = "stylesheet", type = "text/css")
                 link("/assets/favicon.ico", rel = "shortcut icon")
                 link("/assets/styles/bootstrap.min.css", rel = "stylesheet")
                 link(

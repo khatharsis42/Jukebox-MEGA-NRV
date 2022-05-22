@@ -20,6 +20,5 @@ fun main() {
         routing()
         statistics()
         settings()
-        serialization()
     }.start(wait = true)
 }

@@ -2,8 +2,9 @@ package cj.jukebox.plugins
 
 import cj.jukebox.config
 import cj.jukebox.database
-import cj.jukebox.database.User
-import cj.jukebox.database.Users
+import cj.jukebox.database.*
+import cj.jukebox.templates.*
+import cj.jukebox.utils.*
 
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -14,10 +15,6 @@ import io.ktor.server.sessions.*
 import io.ktor.util.*
 
 import org.jetbrains.exposed.sql.and
-
-import templates.*
-
-data class UserSession(val name: String, val theme: String?) : Principal
 
 fun Application.auth() {
     authentication {
@@ -33,13 +30,13 @@ fun Application.auth() {
                 }
                 if (res.isNotEmpty()) {
                     val user = res.first()
-                    sessions.set(UserSession(name = user.name, theme = user.theme))
+                    sessions.setUserSession(user)
                     UserIdPrincipal(credentials.name)
                 } else {
                     null
                 }
             }
-            challenge("auth")
+            challenge("auth?failed=true")
         }
 
         form("auth-signup") {
@@ -51,19 +48,19 @@ fun Application.auth() {
                     User.find { Users.name eq credentials.name }.limit(1).toList()
                 }
                 if (res.isEmpty()) {
-                    database.dbQuery {
+                    val user = database.dbQuery {
                         User.new {
                             name = credentials.name
                             pass = credentials.password
                         }
                     }
-                    sessions.set(UserSession(name = credentials.name, theme = null))
+                    sessions.setUserSession(user)
                     UserIdPrincipal(credentials.name)
                 } else {
                     null
                 }
             }
-            challenge("auth")
+            challenge("auth?failed=true")
         }
 
         session<UserSession>("auth-session") {
@@ -85,10 +82,11 @@ fun Application.auth() {
     routing {
         route("/auth") {
             get {
-                if (call.sessions.get<UserSession>() != null) {
+                if (call.getUserSession() != null) {
                     call.respondRedirect("app")
                 } else {
-                    call.respondHtmlTemplate(Auth()) {}
+                    val correct = call.request.queryParameters["failed"] != "true"
+                    call.respondHtmlTemplate(Auth(correct)) {}
                 }
             }
         }
@@ -108,11 +106,11 @@ fun Application.auth() {
         authenticate("auth-session") {
             route("/logout") {
                 get {
-                    val userName = call.sessions.get<UserSession>()!!.name
+                    val userName = call.getUserSession()!!.user.name
                     call.respondHtmlTemplate(Logout(userName)) {}
                 }
                 post {
-                    call.sessions.clear<UserSession>()
+                    call.clearUserSession()
                     call.respondRedirect("auth")
                 }
             }
