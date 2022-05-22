@@ -97,7 +97,7 @@ class TrackStatistics(user: String, track: Song) : MainTemplate(
             div("container") {
                 div {
                     style="text-align:center"
-                    h1 { text("Statistiques de ${track.track}") }
+                    h1 { text("Statistiques de ${track.song}") }
                     when {
                         track.obsolete -> h2 { style="color:red"; text("Track obsolete")}
                         track.blacklisted -> h2 { style="color:red"; text("Track blacklisted")}
