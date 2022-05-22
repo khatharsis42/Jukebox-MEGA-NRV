@@ -1,23 +1,74 @@
 package cj.jukebox.plugins
 
 import cj.jukebox.config
+import cj.jukebox.database
+import cj.jukebox.database.*
+import cj.jukebox.templates.*
+import cj.jukebox.utils.*
 
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.html.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import io.ktor.util.*
 
-import kotlinx.html.*
-import templates.Auth
-import templates.Logout
-
-data class UserSession(val name: String) : Principal
+import org.jetbrains.exposed.sql.and
 
 fun Application.auth() {
+    authentication {
+        form("auth-login") {
+            userParamName = "user"
+            passwordParamName = "pass"
+
+            validate { credentials ->
+                val res = database.dbQuery {
+                    User
+                        .find { (Users.name eq credentials.name) and (Users.pass eq credentials.password) }
+                        .limit(1).toList()
+                }
+                if (res.isNotEmpty()) {
+                    val user = res.first()
+                    sessions.setUserSession(user)
+                    UserIdPrincipal(credentials.name)
+                } else {
+                    null
+                }
+            }
+            challenge("auth?failed=true")
+        }
+
+        form("auth-signup") {
+            userParamName = "user"
+            passwordParamName = "pass"
+
+            validate { credentials ->
+                val res = database.dbQuery {
+                    User.find { Users.name eq credentials.name }.limit(1).toList()
+                }
+                if (res.isEmpty()) {
+                    val user = database.dbQuery {
+                        User.new {
+                            name = credentials.name
+                            pass = credentials.password
+                        }
+                    }
+                    sessions.setUserSession(user)
+                    UserIdPrincipal(credentials.name)
+                } else {
+                    null
+                }
+            }
+            challenge("auth?failed=true")
+        }
+
+        session<UserSession>("auth-session") {
+            validate { sessions.get<UserSession>() }
+            challenge("auth")
+        }
+    }
+
     install(Sessions) {
         cookie<UserSession>("user-session") {
             val secretEncryptKey = hex(config.data.SECRET_ENCRYPT_KEY)
@@ -28,73 +79,41 @@ fun Application.auth() {
         }
     }
 
-    authentication {
-        form("auth-form") {
-            userParamName = "username"
-            passwordParamName = "password"
-            validate { credentials ->
-                if (credentials.name == "jetbrains" && credentials.password == "foobar") {
-                    UserIdPrincipal(credentials.name)
-                } else {
-                    null
-                }
-            }
-        }
-
-        session<UserSession>("auth-session") {
-            validate { session ->
-                if(session.name.startsWith("jet")) {
-                    session
-                } else {
-                    null
-                }
-            }
-            challenge {
-                call.respondRedirect("/auth")
-            }
-        }
-    }
-
     routing {
         route("/auth") {
             get {
-                call.respondHtmlTemplate(Auth()) {}
-            }
-//            post {
-//                val parameters = call.receiveParameters()
-//                val action = parameters["action"].toString()
-//
-//                when (action) {
-//                    "login" -> call.respondText { "Yer trying to connect" }
-//                    "signup" -> call.respondText { "Yer trying to signup" }
-//                    else -> call.respondRedirect("/auth")
-//                    // Flash something there
-//                }
-//
-////                val userName = call.principal<UserIdPrincipal>()?.name.toString()
-////                call.sessions.set(UserSession(name = userName))
-////                call.respondText("${call.sessions.get<UserSession>()?.name}")
-//            }
-
-            authenticate("auth-form") {
-
+                if (call.getUserSession() != null) {
+                    call.respondRedirect("app")
+                } else {
+                    val correct = call.request.queryParameters["failed"] != "true"
+                    call.respondHtmlTemplate(Auth(correct)) {}
+                }
             }
         }
-        post("login") {
-            call.respondText { "Yer trying to connect" }
-            println(call.receiveParameters())
-        }
-        post("signup") {
-            call.respondText { "Yer trying to signup" }
-            println(call.receiveParameters())
+
+        authenticate("auth-login") {
+            post("/login") {
+                call.respondRedirect("app")
+            }
         }
 
-        get("/logout") {
-            call.respondHtmlTemplate(Logout("Test")) {}
+        authenticate("auth-signup") {
+            post("/signup") {
+                call.respondRedirect("app")
+            }
         }
-        post("/logout") {
-            call.sessions.clear<UserSession>()
-            call.respondRedirect("auth")
+
+        authenticate("auth-session") {
+            route("/logout") {
+                get {
+                    val user = call.getUserSession()!!.user
+                    call.respondHtmlTemplate(Logout(user)) {}
+                }
+                post {
+                    call.clearUserSession()
+                    call.respondRedirect("auth")
+                }
+            }
         }
     }
 }

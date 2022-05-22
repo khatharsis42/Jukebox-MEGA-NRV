@@ -1,15 +1,17 @@
-package templates
+package cj.jukebox.templates
+
+import cj.jukebox.database.User
 
 import io.ktor.server.html.*
 import kotlinx.html.*
 
-class Accueil(user: String) : MainTemplate(
+class Accueil(user: User) : MainTemplate(
     user,
     music = object : Template<FlowContent> {
         override fun FlowContent.apply() {
             div("form-group") {
                 input(InputType.search) {
-                    placeholder="Recherchez un morceau ou collez une URL"
+                    placeholder = "Recherchez un morceau ou collez une URL"
                     autoComplete = false
                     autoFocus = true
                     classes = setOf("form-control", "form-control-lg")

@@ -18,6 +18,7 @@ class Header(private val styleSheet: String = "default.css") : Template<HTML> {
                 name = "viewport"
                 link("/assets/styles/custom/default.css", rel = "stylesheet", type="text/css")
                 link("/assets/styles/custom/$styleSheet", rel = "stylesheet", type="text/css")
+                link("/assets/styles/custom/default.css", rel = "stylesheet", type = "text/css")
                 link("/assets/favicon.ico", rel = "shortcut icon")
                 link("/assets/styles/bootstrap.min.css", rel = "stylesheet")
                 link(

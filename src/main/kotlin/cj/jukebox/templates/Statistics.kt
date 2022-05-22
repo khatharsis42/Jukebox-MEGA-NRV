@@ -3,9 +3,7 @@ package cj.jukebox.templates
 import cj.jukebox.database.Song
 import cj.jukebox.database.User
 import io.ktor.server.html.*
-import kotlinx.css.*
 import kotlinx.html.*
-import templates.MainTemplate
 
 /**
  * Une classe permettant de représenter rapidement le tableau fourni.
@@ -35,7 +33,7 @@ private class StatsColumn(val name: String, content: Array<Array<String>>) :
     }
 }
 
-class GlobalStatistics(user: String) : MainTemplate(
+class GlobalStatistics(user: User) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         private val statsColumn = TemplatePlaceholder<StatsColumn>()
@@ -44,7 +42,7 @@ class GlobalStatistics(user: String) : MainTemplate(
                 div("statistics") {
                     div("col-xl-6 statcol") {
                         h2 {
-                            style="text-align:center"
+                            style = "text-align:center"
                             text("Users with most play counts:")
                         }
                         insert(StatsColumn("All Time", giveTestArray()), statsColumn)
@@ -53,8 +51,8 @@ class GlobalStatistics(user: String) : MainTemplate(
                     }
                     div("col-xl-6 statcol") {
                         h2 {
-                            style="text-align:center"
-                            text("Tracks with most play counts:")
+                            style = "text-align:center"
+                            text("Songs with most play counts:")
                         }
                         insert(StatsColumn("All Time", giveTestArray()), statsColumn)
                         insert(StatsColumn("Last seven days", giveTestArray()), statsColumn)
@@ -66,7 +64,7 @@ class GlobalStatistics(user: String) : MainTemplate(
     }
 )
 
-class UserStatistics(user: String, userStats: User) : MainTemplate(
+class UserStatistics(user: User, lookedUpUser: User) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         private val statsColumn = TemplatePlaceholder<StatsColumn>()
@@ -74,7 +72,7 @@ class UserStatistics(user: String, userStats: User) : MainTemplate(
             div("container") {
                 div {
                     style = "text-align:center"
-                    h1 {text("Statistiques de ${userStats.name}")}
+                    h1 { text("Statistiques de ${lookedUpUser.name}") }
                 }
                 div("statistics") {
                     div("col-xl-6 statcol") {
@@ -89,22 +87,26 @@ class UserStatistics(user: String, userStats: User) : MainTemplate(
     }
 )
 
-class TrackStatistics(user: String, track: Song) : MainTemplate(
+class SongStatistics(user: User, song: Song) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         private val statsColumn = TemplatePlaceholder<StatsColumn>()
         override fun FlowContent.apply() {
             div("container") {
                 div {
-                    style="text-align:center"
-                    h1 { text("Statistiques de ${track.track}") }
+                    style = "text-align:center"
+                    h1 { text("Statistiques de ${song.song}") }
                     when {
-                        track.obsolete -> h2 { style="color:red"; text("Track obsolete")}
-                        track.blacklisted -> h2 { style="color:red"; text("Track blacklisted")}
+                        song.obsolete -> h2 { style = "color:red"; text("Obsolete song") }
+                        song.blacklisted -> h2 { style = "color:red"; text("Blacklisted song") }
                         else -> form {
-                            action="/add/${track.id}"
+                            action = "/add/${song.id}"
                             method = FormMethod.post
-                            input {type=InputType.submit; name="Add"; value="Ajouter à la file d'attente."}
+                            input {
+                                type = InputType.submit
+                                name = "Add"
+                                value = "Ajouter à la file d'attente."
+                            }
                         }
                     }
                 }
@@ -118,20 +120,20 @@ class TrackStatistics(user: String, track: Song) : MainTemplate(
     }
 )
 
-class History(user:String, n: Int = 50) : MainTemplate(
+class History(user: User, n: Int = 50) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         private val statsColumn = TemplatePlaceholder<StatsColumn>()
         override fun FlowContent.apply() {
             div("container") {
                 div {
-                    style="text-align:center;"
-                    h1 {text("Historique des $n dernières musiques.")}
+                    style = "text-align:center;"
+                    h1 { text("Historique des $n dernières musiques.") }
                 }
                 div("statistics") {
-                    style="padding:30px;"
+                    style = "padding:30px;"
                     div("col statcol") {
-                        style="margin: auto;"
+                        style = "margin: auto;"
                         insert(StatsColumn("", giveTestArray()), statsColumn)
                     }
                 }

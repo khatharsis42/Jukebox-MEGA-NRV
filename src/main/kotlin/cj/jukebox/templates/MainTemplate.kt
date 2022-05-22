@@ -1,12 +1,13 @@
-package templates
+package cj.jukebox.templates
 
 import cj.jukebox.config
-import cj.jukebox.templates.Header
+import cj.jukebox.database.User
+
 import io.ktor.server.html.*
 import kotlinx.html.*
 
 open class MainTemplate(
-    private val user: String,
+    private val user: User,
     private val content: Template<FlowContent>,
     private val music: Template<FlowContent>? = null
 ) : Template<HTML> {
@@ -52,7 +53,7 @@ open class MainTemplate(
                                 }
                                 li("nav-item") {
                                     p("nav-link") {
-                                        a("/logout") { text("Logout from $user") }
+                                        a("/logout") { text("Logout from ${user.name}") }
                                     }
                                 }
                             }
