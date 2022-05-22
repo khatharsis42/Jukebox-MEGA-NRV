@@ -1,5 +1,6 @@
 package cj.jukebox.plugins
 
+import cj.jukebox.database
 import cj.jukebox.templates.Settings
 import cj.jukebox.utils.getUserSession
 import io.ktor.server.application.*
@@ -8,7 +9,6 @@ import io.ktor.server.html.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Application.settings() {
     routing {
@@ -22,7 +22,7 @@ fun Application.settings() {
                     val style = parameters["style"]
 
                     val session = call.getUserSession()!!
-                    transaction { session.user.theme = style }
+                    database.dbQuery { session.user.theme = style }
 
                     call.respondRedirect("settings")
                 }
