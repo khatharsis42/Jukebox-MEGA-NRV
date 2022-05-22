@@ -6,6 +6,13 @@ import cj.jukebox.database.User
 import io.ktor.server.html.*
 import kotlinx.html.*
 
+/**
+ * Template principal, contient non seulement les headers mais également les scripts.
+ *
+ * @param[user] L'utilisateur de la session.
+ * @param[content] Le contenu principal de cet page.
+ * @param[music] Valeur existant uniquement pour la page d'acceuil, permet d'avoir un endroit reservé pour les musiques.
+ */
 open class MainTemplate(
     private val user: User,
     private val content: Template<FlowContent>,
@@ -14,7 +21,7 @@ open class MainTemplate(
     private val flowTemplate = TemplatePlaceholder<Template<FlowContent>>()
     private val header = TemplatePlaceholder<Header>()
     override fun HTML.apply() {
-        insert(Header(), header)
+        insert(Header(user.theme), header)
         body {
             onMouseOver = "pageStatus=true;"
             onMouseOut = "pageStatus=false;"
@@ -28,7 +35,7 @@ open class MainTemplate(
                             ul("nav") {
                                 li("nav-item") {
                                     p("nav-link") {
-                                        a("/app") { text("Acceuil") }
+                                        a("/app") { text("Accueil") }
                                     }
                                 }
                                 li("nav-item") {

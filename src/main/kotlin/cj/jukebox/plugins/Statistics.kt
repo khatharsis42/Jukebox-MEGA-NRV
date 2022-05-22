@@ -26,8 +26,7 @@ fun Application.statistics() {
 
                     val username = call.getParam("username")
                     val res = database.dbQuery {
-                        User
-                            .find { Users.name eq username }
+                        User.find { Users.name eq username }
                             .limit(1).toList()
                     }
                     if (res.isNotEmpty()) {

@@ -24,8 +24,7 @@ fun Application.auth() {
 
             validate { credentials ->
                 val res = database.dbQuery {
-                    User
-                        .find { (Users.name eq credentials.name) and (Users.pass eq credentials.password) }
+                    User.find { (Users.name eq credentials.name) and (Users.pass eq credentials.password) }
                         .limit(1).toList()
                 }
                 if (res.isNotEmpty()) {
@@ -93,13 +92,13 @@ fun Application.auth() {
 
         authenticate("auth-login") {
             post("/login") {
-                call.respondRedirect("app")
+                call.respondRedirect("/app")
             }
         }
 
         authenticate("auth-signup") {
             post("/signup") {
-                call.respondRedirect("app")
+                call.respondRedirect("/app")
             }
         }
 
@@ -111,7 +110,7 @@ fun Application.auth() {
                 }
                 post {
                     call.clearUserSession()
-                    call.respondRedirect("auth")
+                    call.respondRedirect("/auth")
                 }
             }
         }

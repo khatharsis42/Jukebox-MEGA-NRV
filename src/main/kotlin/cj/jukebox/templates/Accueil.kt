@@ -5,6 +5,11 @@ import cj.jukebox.database.User
 import io.ktor.server.html.*
 import kotlinx.html.*
 
+/**
+ * La page d'accueil, accessible via le /app.
+ *
+ * @param[user] L'utilisateur de la session.
+ */
 class Accueil(user: User) : MainTemplate(
     user,
     music = object : Template<FlowContent> {
@@ -24,7 +29,7 @@ class Accueil(user: User) : MainTemplate(
             }
             div("form-group form-inline") {
                 div("col-0") {
-                    img() {
+                    img {
                         classes = setOf("icon","btn-volume")
                         style = "margin: auto;"
                     }
