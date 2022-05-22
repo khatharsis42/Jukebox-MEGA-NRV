@@ -34,6 +34,7 @@ fun Application.statistics() {
                         val lookedUpUser = res.first()
                         call.respondHtmlTemplate(UserStatistics(user, lookedUpUser)) {}
                     } else {
+                        // TODO: proper redirection
                         call.respondText("Invalid username")
                     }
                 }
@@ -42,12 +43,11 @@ fun Application.statistics() {
                     val user = call.getUserSession()!!.user
 
                     val songId = call.getParam("song").toInt()
-                    val song = database.dbQuery {
-                        Song.findById(songId)
-                    }
+                    val song = database.dbQuery { Song.findById(songId) }
                     if (song != null) {
                         call.respondHtmlTemplate(SongStatistics(user, song)) {}
                     } else {
+                        // TODO: proper redirection
                         call.respondText("Invalid song")
                     }
                 }
