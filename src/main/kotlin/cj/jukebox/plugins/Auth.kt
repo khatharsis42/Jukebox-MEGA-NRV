@@ -60,25 +60,33 @@ fun Application.auth() {
             get {
                 call.respondHtmlTemplate(Auth()) {}
             }
-            post {
-                val parameters = call.receiveParameters()
-                val action = parameters["action"].toString()
-
-                when (action) {
-                    "login" -> call.respondText { "Yer trying to connect" }
-                    "signup" -> call.respondText { "Yer trying to signup" }
-                    else -> call.respondRedirect("/auth")
-                    // Flash something there
-                }
-
-//                val userName = call.principal<UserIdPrincipal>()?.name.toString()
-//                call.sessions.set(UserSession(name = userName))
-//                call.respondText("${call.sessions.get<UserSession>()?.name}")
-            }
+//            post {
+//                val parameters = call.receiveParameters()
+//                val action = parameters["action"].toString()
+//
+//                when (action) {
+//                    "login" -> call.respondText { "Yer trying to connect" }
+//                    "signup" -> call.respondText { "Yer trying to signup" }
+//                    else -> call.respondRedirect("/auth")
+//                    // Flash something there
+//                }
+//
+////                val userName = call.principal<UserIdPrincipal>()?.name.toString()
+////                call.sessions.set(UserSession(name = userName))
+////                call.respondText("${call.sessions.get<UserSession>()?.name}")
+//            }
 
             authenticate("auth-form") {
 
             }
+        }
+        post("login") {
+            call.respondText { "Yer trying to connect" }
+            println(call.receiveParameters())
+        }
+        post("signup") {
+            call.respondText { "Yer trying to signup" }
+            println(call.receiveParameters())
         }
 
         get("/logout") {
