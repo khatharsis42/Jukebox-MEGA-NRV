@@ -1,8 +1,10 @@
 package cj.jukebox.plugins
 
+import cj.jukebox.database
 import cj.jukebox.database.*
 import cj.jukebox.templates.*
 import cj.jukebox.utils.getParam
+import cj.jukebox.utils.getUserSession
 
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -10,30 +12,52 @@ import io.ktor.server.html.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-import org.jetbrains.exposed.dao.id.EntityID
-
 fun Application.statistics() {
     routing {
         authenticate("auth-session") {
             route("/statistics") {
                 get {
-                    call.respondHtmlTemplate(GlobalStatistics("test")) {}
+                    val user = call.getUserSession()!!.user
+                    call.respondHtmlTemplate(GlobalStatistics(user)) {}
                 }
 
                 get("/user/{username}") {
+                    val user = call.getUserSession()!!.user
+
                     val username = call.getParam("username")
-                    call.respondHtmlTemplate(UserStatistics("test", User(EntityID(0, Users)))) {}
+                    val res = database.dbQuery {
+                        User
+                            .find { Users.name eq username }
+                            .limit(1).toList()
+                    }
+                    if (res.isNotEmpty()) {
+                        val lookedUpUser = res.first()
+                        call.respondHtmlTemplate(UserStatistics(user, lookedUpUser)) {}
+                    } else {
+                        call.respondText("Invalid username")
+                    }
                 }
 
                 get("/song/{song}") {
-                    val song = call.getParam("song").toInt()
-                    call.respondHtmlTemplate(SongStatistics("test", Song(EntityID(0, Songs)))) {}
+                    val user = call.getUserSession()!!.user
+
+                    val songId = call.getParam("song").toInt()
+                    val song = database.dbQuery {
+                        Song.findById(songId)
+                    }
+                    if (song != null) {
+                        call.respondHtmlTemplate(SongStatistics(user, song)) {}
+                    } else {
+                        call.respondText("Invalid song")
+                    }
                 }
             }
             route("/history") {
                 get("/{count}") {
+                    val user = call.getUserSession()!!.user
+
                     val count = call.getParam("count").toInt()
-                    call.respondHtmlTemplate(History("test", count)) {}
+                    call.respondHtmlTemplate(History(user, count)) {}
                 }
                 get {
                     call.respondRedirect("/history/50")
