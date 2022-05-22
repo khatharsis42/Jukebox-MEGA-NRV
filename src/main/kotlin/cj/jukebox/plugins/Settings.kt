@@ -3,6 +3,7 @@ package cj.jukebox.plugins
 import cj.jukebox.database
 import cj.jukebox.templates.Settings
 import cj.jukebox.utils.getUserSession
+
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.html.*
@@ -15,7 +16,7 @@ fun Application.settings() {
         authenticate("auth-session") {
             route("/settings") {
                 get {
-                    call.respondHtmlTemplate(Settings(call.getUserSession()!!.user.name)) {}
+                    call.respondHtmlTemplate(Settings(call.getUserSession()!!.user)) {}
                 }
                 post {
                     val parameters = call.receiveParameters()

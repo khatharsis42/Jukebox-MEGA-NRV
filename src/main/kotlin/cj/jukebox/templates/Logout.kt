@@ -1,16 +1,18 @@
 package cj.jukebox.templates
 
+import cj.jukebox.database.User
+
 import io.ktor.server.html.*
 import kotlinx.html.*
 
-class Logout(val user: String) : Template<HTML> {
+class Logout(val user: User) : Template<HTML> {
     private val header = TemplatePlaceholder<Header>()
     override fun HTML.apply() {
         insert(Header(), header)
         body("text-center") {
             div("container") {
                 h1 { text("Attention !") }
-                h2 { text("Se déconnecter désassociera ce PC du compte $user.")}
+                h2 { text("Se déconnecter désassociera ce PC du compte ${user.name}.")}
                 form {
                     action="/logout"
                     method=FormMethod.post

@@ -7,6 +7,7 @@ import io.ktor.server.html.*
 import io.ktor.server.http.content.*
 import io.ktor.server.response.*
 import cj.jukebox.templates.Accueil
+import cj.jukebox.utils.getUserSession
 import io.ktor.server.auth.*
 import java.io.File
 
@@ -18,11 +19,13 @@ fun Application.routing() {
             }
 
             get("/app") {
-                call.respondHtmlTemplate(Accueil("Test")) {}
+                val user = call.getUserSession()!!.user
+                call.respondHtmlTemplate(Accueil(user)) {}
             }
 
             get("/help") {
-                call.respondHtmlTemplate(Help("Test")) {}
+                val user = call.getUserSession()!!.user
+                call.respondHtmlTemplate(Help(user)) {}
             }
 
             get("/status") {

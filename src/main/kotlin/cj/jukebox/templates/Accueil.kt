@@ -1,9 +1,11 @@
 package cj.jukebox.templates
 
+import cj.jukebox.database.User
+
 import io.ktor.server.html.*
 import kotlinx.html.*
 
-class Accueil(user: String) : MainTemplate(
+class Accueil(user: User) : MainTemplate(
     user,
     music = object : Template<FlowContent> {
         override fun FlowContent.apply() {

@@ -33,7 +33,7 @@ private class StatsColumn(val name: String, content: Array<Array<String>>) :
     }
 }
 
-class GlobalStatistics(user: String) : MainTemplate(
+class GlobalStatistics(user: User) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         private val statsColumn = TemplatePlaceholder<StatsColumn>()
@@ -64,7 +64,7 @@ class GlobalStatistics(user: String) : MainTemplate(
     }
 )
 
-class UserStatistics(user: String, userStats: User) : MainTemplate(
+class UserStatistics(user: User, lookedUpUser: User) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         private val statsColumn = TemplatePlaceholder<StatsColumn>()
@@ -72,7 +72,7 @@ class UserStatistics(user: String, userStats: User) : MainTemplate(
             div("container") {
                 div {
                     style = "text-align:center"
-                    h1 { text("Statistiques de ${userStats.name}") }
+                    h1 { text("Statistiques de ${lookedUpUser.name}") }
                 }
                 div("statistics") {
                     div("col-xl-6 statcol") {
@@ -87,7 +87,7 @@ class UserStatistics(user: String, userStats: User) : MainTemplate(
     }
 )
 
-class SongStatistics(user: String, song: Song) : MainTemplate(
+class SongStatistics(user: User, song: Song) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         private val statsColumn = TemplatePlaceholder<StatsColumn>()
@@ -120,7 +120,7 @@ class SongStatistics(user: String, song: Song) : MainTemplate(
     }
 )
 
-class History(user: String, n: Int = 50) : MainTemplate(
+class History(user: User, n: Int = 50) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         private val statsColumn = TemplatePlaceholder<StatsColumn>()

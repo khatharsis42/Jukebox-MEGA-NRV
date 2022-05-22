@@ -106,8 +106,8 @@ fun Application.auth() {
         authenticate("auth-session") {
             route("/logout") {
                 get {
-                    val userName = call.getUserSession()!!.user.name
-                    call.respondHtmlTemplate(Logout(userName)) {}
+                    val user = call.getUserSession()!!.user
+                    call.respondHtmlTemplate(Logout(user)) {}
                 }
                 post {
                     call.clearUserSession()
