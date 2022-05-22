@@ -6,7 +6,7 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 
 object Users : IntIdTable() {
-    val name = varchar("name", 50)
+    val name = varchar("name", 50).uniqueIndex()
     val pass = varchar("pass", 50)
 
     val theme = varchar("theme", 50).nullable()
