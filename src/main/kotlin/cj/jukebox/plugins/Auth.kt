@@ -1,6 +1,9 @@
 package cj.jukebox.plugins
 
 import cj.jukebox.config
+import cj.jukebox.database
+import cj.jukebox.database.User
+import cj.jukebox.database.Users
 
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -11,11 +14,11 @@ import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import io.ktor.util.*
 
-import kotlinx.html.*
-import templates.Auth
-import templates.Logout
+import org.jetbrains.exposed.sql.and
 
-data class UserSession(val name: String) : Principal
+import templates.*
+
+data class UserSession(val name: String, val theme: String?) : Principal
 
 fun Application.auth() {
     install(Sessions) {
@@ -29,64 +32,80 @@ fun Application.auth() {
     }
 
     authentication {
-        form("auth-form") {
-            userParamName = "username"
-            passwordParamName = "password"
-            validate { credentials ->
-                if (credentials.name == "jetbrains" && credentials.password == "foobar") {
-                    UserIdPrincipal(credentials.name)
-                } else {
-                    null
-                }
-            }
-        }
-
         session<UserSession>("auth-session") {
-            validate { session ->
-                if(session.name.startsWith("jet")) {
-                    session
-                } else {
-                    null
-                }
-            }
-            challenge {
-                call.respondRedirect("/auth")
-            }
+            validate { sessions.get<UserSession>() }
+            challenge("auth")
         }
     }
 
     routing {
         route("/auth") {
             get {
-                call.respondHtmlTemplate(Auth()) {}
+                if (call.authentication.principal<UserSession>() != null) {
+                    call.respondRedirect("app")
+                } else {
+                    call.respondHtmlTemplate(Auth()) {}
+                }
             }
+
             post {
                 val parameters = call.receiveParameters()
-                val action = parameters["action"].toString()
 
-                when (action) {
-                    "login" -> call.respondText { "Yer trying to connect" }
-                    "signup" -> call.respondText { "Yer trying to signup" }
-                    else -> call.respondRedirect("/auth")
-                    // Flash something there
+                val userName = parameters["user"].toString()
+                val password = parameters["pass"].toString()
+
+                when(parameters["action"].toString()) {
+                    "login" -> {
+                        val res = database.dbQuery {
+                            User
+                                .find { (Users.name eq userName) and (Users.pass eq password) }
+                                .limit(1).toList()
+                        }
+                        if (res.isNotEmpty()) {
+                            val user = res.first()
+                            call.sessions.set(UserSession(name = user.name, theme = user.theme))
+                            UserIdPrincipal(userName)
+                            call.respondRedirect("app")
+                        } else {
+                            call.respondRedirect("auth")
+                        }
+                    }
+
+                    "signup" -> {
+                        val res = database.dbQuery {
+                            User.find { Users.name eq userName }.limit(1).toList()
+                        }
+                        if (res.isEmpty()) {
+                            database.dbQuery {
+                                User.new {
+                                    name = userName
+                                    pass = password
+                                }
+                            }
+                            call.sessions.set(UserSession(name = userName, theme = null))
+                            UserIdPrincipal(userName)
+                            call.respondRedirect("app")
+                        } else {
+                            call.respondRedirect("auth")
+                        }
+                    }
+
+                    else -> call.respondRedirect("auth")
                 }
-
-//                val userName = call.principal<UserIdPrincipal>()?.name.toString()
-//                call.sessions.set(UserSession(name = userName))
-//                call.respondText("${call.sessions.get<UserSession>()?.name}")
-            }
-
-            authenticate("auth-form") {
-
             }
         }
 
-        get("/logout") {
-            call.respondHtmlTemplate(Logout("Test")) {}
-        }
-        post("/logout") {
-            call.sessions.clear<UserSession>()
-            call.respondRedirect("auth")
+        authenticate("auth-session") {
+            route("/logout") {
+                get {
+                    val userName = call.sessions.get<UserSession>()!!.name
+                    call.respondHtmlTemplate(Logout(userName)) {}
+                }
+                post {
+                    call.sessions.clear<UserSession>()
+                    call.respondRedirect("auth")
+                }
+            }
         }
     }
 }
