@@ -1,8 +1,11 @@
-package cj.jukebox.templates
+package cj.jukebox.plugins.settings
 
+import cj.jukebox.templates.MainTemplate
 import cj.jukebox.utils.UserSession
+
 import io.ktor.server.html.*
 import kotlinx.html.*
+
 import java.io.File
 
 /**

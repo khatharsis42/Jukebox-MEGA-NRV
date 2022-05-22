@@ -6,9 +6,7 @@ import io.ktor.server.sessions.*
 import io.ktor.server.util.*
 import org.jetbrains.exposed.dao.id.EntityID
 
-//data class UserSession(val user: User) : Principal
 data class UserSession(val id: Int, val name: String, var theme: String?) : Principal
-
 
 @JvmName("getUserSession1")
 fun ApplicationCall.getUserSession(): UserSession? = sessions.get()

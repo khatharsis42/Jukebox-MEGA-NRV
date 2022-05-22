@@ -1,9 +1,8 @@
-package cj.jukebox.plugins
+package cj.jukebox.plugins.auth
 
 import cj.jukebox.config
 import cj.jukebox.database
 import cj.jukebox.database.*
-import cj.jukebox.templates.*
 import cj.jukebox.utils.*
 
 import io.ktor.server.application.*

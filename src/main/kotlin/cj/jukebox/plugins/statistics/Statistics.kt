@@ -1,8 +1,7 @@
-package cj.jukebox.plugins
+package cj.jukebox.plugins.statistics
 
 import cj.jukebox.database
 import cj.jukebox.database.*
-import cj.jukebox.templates.*
 import cj.jukebox.utils.getParam
 import cj.jukebox.utils.getUserSession
 
@@ -65,3 +64,10 @@ fun Application.statistics() {
         }
     }
 }
+
+fun giveTestArray() = arrayOf(
+    arrayOf("Name 1", "Name 2"),
+    arrayOf("Test1", "1"),
+    arrayOf("Test2", "6"),
+    arrayOf("Test3", "9")
+)

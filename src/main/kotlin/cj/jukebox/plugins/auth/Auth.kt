@@ -1,4 +1,6 @@
-package cj.jukebox.templates
+package cj.jukebox.plugins.auth
+
+import cj.jukebox.templates.*
 
 import io.ktor.server.html.*
 import kotlinx.html.*

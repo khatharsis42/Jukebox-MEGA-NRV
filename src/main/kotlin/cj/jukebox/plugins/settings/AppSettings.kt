@@ -1,8 +1,7 @@
-package cj.jukebox.plugins
+package cj.jukebox.plugins.settings
 
 import cj.jukebox.database
 import cj.jukebox.database.User
-import cj.jukebox.templates.Settings
 import cj.jukebox.utils.getUserSession
 
 import io.ktor.server.application.*

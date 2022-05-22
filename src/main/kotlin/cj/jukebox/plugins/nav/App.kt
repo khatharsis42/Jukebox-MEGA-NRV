@@ -1,5 +1,6 @@
-package cj.jukebox.templates
+package cj.jukebox.plugins.nav
 
+import cj.jukebox.templates.MainTemplate
 import cj.jukebox.utils.UserSession
 
 import io.ktor.server.html.*
@@ -11,7 +12,7 @@ import kotlinx.html.*
  * @param[user] L'utilisateur de la session.
  * @author khatharsis
  */
-class Accueil(user: User) : MainTemplate(
+class App(user: UserSession) : MainTemplate(
     user,
     music = object : Template<FlowContent> {
         override fun FlowContent.apply() {
