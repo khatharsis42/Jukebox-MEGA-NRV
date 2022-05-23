@@ -5,7 +5,12 @@ import cj.jukebox.utils.UserSession
 import io.ktor.server.html.*
 import kotlinx.html.*
 
-class Accueil(user: UserSession) : MainTemplate(
+/**
+ * La page d'accueil, accessible via le /app.
+ *
+ * @param[user] L'utilisateur de la session.
+ */
+class Accueil(user: User) : MainTemplate(
     user,
     music = object : Template<FlowContent> {
         override fun FlowContent.apply() {

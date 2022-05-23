@@ -26,8 +26,7 @@ fun Application.statistics() {
 
                     val username = call.getParam("username")
                     val res = database.dbQuery {
-                        User
-                            .find { Users.name eq username }
+                        User.find { Users.name eq username }
                             .limit(1).toList()
                     }
                     if (res.isNotEmpty()) {
@@ -39,16 +38,16 @@ fun Application.statistics() {
                     }
                 }
 
-                get("/song/{song}") {
+                get("/track/{track}") {
                     val user = call.getUserSession()!!
 
-                    val songId = call.getParam("song").toInt()
-                    val song = database.dbQuery { Song.findById(songId) }
-                    if (song != null) {
-                        call.respondHtmlTemplate(SongStatistics(user, song)) {}
+                    val trackId = call.getParam("track").toInt()
+                    val track = database.dbQuery { Track.findById(trackId) }
+                    if (track != null) {
+                        call.respondHtmlTemplate(TrackStatistics(user, track)) {}
                     } else {
                         // TODO: proper redirection
-                        call.respondText("Invalid song")
+                        call.respondText("Invalid track !")
                     }
                 }
             }

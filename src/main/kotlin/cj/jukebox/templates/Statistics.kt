@@ -1,6 +1,6 @@
 package cj.jukebox.templates
 
-import cj.jukebox.database.Song
+import cj.jukebox.database.Track
 import cj.jukebox.database.User
 import cj.jukebox.utils.UserSession
 import io.ktor.server.html.*
@@ -53,7 +53,7 @@ class GlobalStatistics(user: UserSession) : MainTemplate(
                     div("col-xl-6 statcol") {
                         h2 {
                             style = "text-align:center"
-                            text("Songs with most play counts:")
+                            text("Tracks with most play counts:")
                         }
                         insert(StatsColumn("All Time", giveTestArray()), statsColumn)
                         insert(StatsColumn("Last seven days", giveTestArray()), statsColumn)
@@ -88,7 +88,7 @@ class UserStatistics(user: UserSession, lookedUpUser: User) : MainTemplate(
     }
 )
 
-class SongStatistics(user: UserSession, song: Song) : MainTemplate(
+class TrackStatistics(user: UserSession, track: Track) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         private val statsColumn = TemplatePlaceholder<StatsColumn>()
@@ -96,12 +96,12 @@ class SongStatistics(user: UserSession, song: Song) : MainTemplate(
             div("container") {
                 div {
                     style = "text-align:center"
-                    h1 { text("Statistiques de ${song.song}") }
+                    h1 { text("Statistiques de ${track.track}") }
                     when {
-                        song.obsolete -> h2 { style = "color:red"; text("Obsolete song") }
-                        song.blacklisted -> h2 { style = "color:red"; text("Blacklisted song") }
+                        track.obsolete -> h2 { style = "color:red"; text("Obsolete track") }
+                        track.blacklisted -> h2 { style = "color:red"; text("Blacklisted track") }
                         else -> form {
-                            action = "/add/${song.id}"
+                            action = "/add/${track.id}"
                             method = FormMethod.post
                             input {
                                 type = InputType.submit

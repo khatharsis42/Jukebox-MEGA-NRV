@@ -18,7 +18,7 @@ class DatabaseFactory(path: String) {
     private fun createSchema() {
         transaction(database) {
             SchemaUtils.create(Users)
-            SchemaUtils.create(Songs)
+            SchemaUtils.create(Tracks)
             SchemaUtils.create(Logs)
         }
     }
