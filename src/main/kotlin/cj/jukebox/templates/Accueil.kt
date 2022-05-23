@@ -1,6 +1,6 @@
 package cj.jukebox.templates
 
-import cj.jukebox.database.User
+import cj.jukebox.utils.UserSession
 
 import io.ktor.server.html.*
 import kotlinx.html.*

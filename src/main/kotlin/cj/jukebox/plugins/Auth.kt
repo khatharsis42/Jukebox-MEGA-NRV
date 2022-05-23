@@ -29,7 +29,7 @@ fun Application.auth() {
                 }
                 if (res.isNotEmpty()) {
                     val user = res.first()
-                    sessions.setUserSession(user)
+                    sessions.setUserSession(user.id, user.name, user.theme)
                     UserIdPrincipal(credentials.name)
                 } else {
                     null
@@ -53,7 +53,7 @@ fun Application.auth() {
                             pass = credentials.password
                         }
                     }
-                    sessions.setUserSession(user)
+                    sessions.setUserSession(user.id, user.name, user.theme)
                     UserIdPrincipal(credentials.name)
                 } else {
                     null
@@ -63,7 +63,7 @@ fun Application.auth() {
         }
 
         session<UserSession>("auth-session") {
-            validate { sessions.get<UserSession>() }
+            validate { getUserSession() }
             challenge("auth")
         }
     }
@@ -105,7 +105,7 @@ fun Application.auth() {
         authenticate("auth-session") {
             route("/logout") {
                 get {
-                    val user = call.getUserSession()!!.user
+                    val user = call.getUserSession()!!
                     call.respondHtmlTemplate(Logout(user)) {}
                 }
                 post {

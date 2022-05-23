@@ -2,6 +2,7 @@ package cj.jukebox.templates
 
 import cj.jukebox.database.Track
 import cj.jukebox.database.User
+import cj.jukebox.utils.UserSession
 import io.ktor.server.html.*
 import kotlinx.html.*
 
@@ -41,7 +42,7 @@ private class StatsColumn(val name: String, content: Array<Array<String>>) :
  * @param[user] L'utilisateur de la session.
  * @author khatharsis
  */
-class GlobalStatistics(user: User) : MainTemplate(
+class GlobalStatistics(user: UserSession) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         private val statsColumn = TemplatePlaceholder<StatsColumn>()
@@ -78,7 +79,7 @@ class GlobalStatistics(user: User) : MainTemplate(
  * @param[lookedUpUser] L'utilisateur dont on veut voir les stats.
  * @author khatharsis
  */
-class UserStatistics(user: User, lookedUpUser: User) : MainTemplate(
+class UserStatistics(user: UserSession, lookedUpUser: User) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         private val statsColumn = TemplatePlaceholder<StatsColumn>()
@@ -107,7 +108,7 @@ class UserStatistics(user: User, lookedUpUser: User) : MainTemplate(
  * @param[track] La musique dont on veut voir les stats.
  * @author khatharsis
  */
-class TrackStatistics(user: User, track: Track) : MainTemplate(
+class TrackStatistics(user: UserSession, track: Track) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         private val statsColumn = TemplatePlaceholder<StatsColumn>()
@@ -146,7 +147,7 @@ class TrackStatistics(user: User, track: Track) : MainTemplate(
  * @param[n] Nombre de musiques que l'on souhaite voir. (On devrait vraiment plutôt faire des pages).
  * @author khatharsis
  */
-class History(user: User, n: Int = 50) : MainTemplate(
+class History(user: UserSession, n: Int = 50) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         private val statsColumn = TemplatePlaceholder<StatsColumn>()

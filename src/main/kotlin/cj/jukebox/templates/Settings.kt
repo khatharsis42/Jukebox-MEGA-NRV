@@ -1,7 +1,6 @@
 package cj.jukebox.templates
 
-import cj.jukebox.database.User
-
+import cj.jukebox.utils.UserSession
 import io.ktor.server.html.*
 import kotlinx.html.*
 import java.io.File
@@ -11,7 +10,7 @@ import java.io.File
  * @param[user] L'utilisateur de la session.
  * @author khatharsis
  */
-class Settings(user: User) : MainTemplate(
+class Settings(user: UserSession) : MainTemplate(
     user,
     content = object: Template<FlowContent> {
         override fun FlowContent.apply() {

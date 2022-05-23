@@ -17,12 +17,12 @@ fun Application.statistics() {
         authenticate("auth-session") {
             route("/statistics") {
                 get {
-                    val user = call.getUserSession()!!.user
+                    val user = call.getUserSession()!!
                     call.respondHtmlTemplate(GlobalStatistics(user)) {}
                 }
 
                 get("/user/{username}") {
-                    val user = call.getUserSession()!!.user
+                    val user = call.getUserSession()!!
 
                     val username = call.getParam("username")
                     val res = database.dbQuery {
@@ -39,7 +39,7 @@ fun Application.statistics() {
                 }
 
                 get("/track/{track}") {
-                    val user = call.getUserSession()!!.user
+                    val user = call.getUserSession()!!
 
                     val trackId = call.getParam("track").toInt()
                     val track = database.dbQuery { Track.findById(trackId) }
@@ -53,7 +53,7 @@ fun Application.statistics() {
             }
             route("/history") {
                 get("/{count}") {
-                    val user = call.getUserSession()!!.user
+                    val user = call.getUserSession()!!
 
                     val count = call.getParam("count").toInt()
                     call.respondHtmlTemplate(History(user, count)) {}
