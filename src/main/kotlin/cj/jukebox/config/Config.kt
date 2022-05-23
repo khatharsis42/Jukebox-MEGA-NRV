@@ -18,11 +18,11 @@ class Config(file: String) {
     var data: ConfigData = Json.decodeFromString(fileRepr.readText())
 
     private fun reset() {
-        this.data = ConfigData()
-        return this.save()
+        data = ConfigData()
+        return save()
     }
 
     private fun save() {
-        this.fileRepr.writeText(Json.encodeToString(this.data))
+        fileRepr.writeText(Json.encodeToString(data))
     }
 }
