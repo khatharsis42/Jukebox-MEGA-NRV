@@ -11,7 +11,7 @@ import kotlinx.html.*
  * @param[user] L'utilisateur de la session.
  * @author khatharsis
  */
-class Accueil(user: User) : MainTemplate(
+class Accueil(user: UserSession) : MainTemplate(
     user,
     music = object : Template<FlowContent> {
         override fun FlowContent.apply() {
