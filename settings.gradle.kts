@@ -1,1 +1,1 @@
-rootProject.name = "cj.jukebox.ktor-sample"
+rootProject.name = "cj.jukebox.markI"
