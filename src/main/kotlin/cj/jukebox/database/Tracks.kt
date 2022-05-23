@@ -1,6 +1,7 @@
 package cj.jukebox.database
 
 import cj.jukebox.database
+
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -27,8 +28,6 @@ object Tracks : IntIdTable() {
 }
 
 class Track(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<Track>(Tracks)
-
     var url by Tracks.url
     var source by Tracks.source_
     var track by Tracks.track
@@ -38,4 +37,19 @@ class Track(id: EntityID<Int>) : IntEntity(id) {
     var duration by Tracks.duration
     var blacklisted by Tracks.blacklisted
     var obsolete by Tracks.obsolete
+
+    companion object : IntEntityClass<Track>(Tracks) {
+        fun importFromId(id: Int): Track? = database.dbQuery { Track.findById(id) }
+
+        fun importFromName(name: String): Iterable<Track> =
+            database.dbQuery { Track.find { Tracks.track eq name } }
+
+        fun importFromUrl(trackUrl: String): Track? =
+            database.dbQuery {
+                val res = Track
+                    .find { Tracks.url eq trackUrl }
+                    .limit(1).toList()
+                if (res.isNotEmpty()) res.first() else null
+            }
+    }
 }

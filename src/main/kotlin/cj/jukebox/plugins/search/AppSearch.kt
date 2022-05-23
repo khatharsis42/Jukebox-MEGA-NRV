@@ -1,6 +1,5 @@
 package cj.jukebox.plugins.search
 
-import cj.jukebox.database.Track
 import cj.jukebox.search.SearchEngine
 
 import io.ktor.server.application.*
@@ -31,7 +30,7 @@ fun Application.search() {
                 val parameters = call.request.queryParameters
                 val url = parameters["url"]
                 if (url != null) {
-                    Track.refresh(url)
+                    //Track.refresh(url)
                 } else {
                     println("xd")
                 }
