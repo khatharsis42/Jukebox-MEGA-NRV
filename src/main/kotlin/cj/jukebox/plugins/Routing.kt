@@ -8,25 +8,34 @@ import io.ktor.server.html.*
 import io.ktor.server.http.content.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
-import templates.Accueil
+import cj.jukebox.templates.Accueil
+import cj.jukebox.utils.UserSession
+import cj.jukebox.utils.getUserSession
+import io.ktor.server.auth.*
+import io.ktor.server.sessions.*
 import java.io.File
 
 fun Application.routing() {
     routing {
-        get("/") {
-            call.respondRedirect("app")
-        }
+        authenticate("auth-session") {
+            get("/") {
+                call.respondRedirect("app")
+            }
 
-        get("/app") {
-            call.respondHtmlTemplate(Accueil("Test")) {}
-        }
+            get("/app") {
+                val user = call.sessions.get<UserSession>()!!
+                call.respondHtmlTemplate(Accueil(user)) {}
+            }
 
-        get("/help") {
-            call.respondHtmlTemplate(Help("Test")) {}
-        }
+            get("/help") {
+                val user = call.getUserSession()!!
+                call.respondHtmlTemplate(Help(user)) {}
+            }
 
-        get("/status") {
-            call.respondText("status")
+            get("/status") {
+                // TODO: proper reply
+                call.respondText("status")
+            }
         }
 
         post("/search") {

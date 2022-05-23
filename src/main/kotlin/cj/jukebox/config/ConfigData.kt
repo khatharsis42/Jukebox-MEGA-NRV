@@ -17,7 +17,7 @@ data class ConfigData(
     @EncodeDefault val YT_KEYS: ArrayList<String> = arrayListOf(),
     @EncodeDefault val AMIXER_CHANNEL: String = "Master",
 
-    @EncodeDefault val DATABASE_PATH: String = "config/jukebox.sqlite3",
+    @EncodeDefault val DATABASE_PATH: String = "src/main/resources/jukebox.sqlite3",
     @EncodeDefault val TMP_PATH: String = "src/backend/tmp/",
 
     @EncodeDefault val SECRET_ENCRYPT_KEY: String = "6b6287991d47e783e3a261cca1a0a1b9",

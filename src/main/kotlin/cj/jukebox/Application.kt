@@ -1,11 +1,14 @@
 package cj.jukebox
 
 import cj.jukebox.config.Config
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
+import cj.jukebox.database.DatabaseFactory
 import cj.jukebox.plugins.*
 
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
+
 val config = Config("src/main/resources/config.json")
+val database = DatabaseFactory(config.data.DATABASE_PATH)
 
 fun main() {
     embeddedServer(
@@ -17,6 +20,5 @@ fun main() {
         routing()
         statistics()
         settings()
-        serialization()
     }.start(wait = true)
 }

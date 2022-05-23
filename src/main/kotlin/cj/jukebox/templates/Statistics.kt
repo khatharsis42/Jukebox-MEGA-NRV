@@ -1,15 +1,17 @@
 package cj.jukebox.templates
 
-import cj.jukebox.database.Song
+import cj.jukebox.database.Track
 import cj.jukebox.database.User
+import cj.jukebox.utils.UserSession
 import io.ktor.server.html.*
-import kotlinx.css.*
 import kotlinx.html.*
-import templates.MainTemplate
 
 /**
  * Une classe permettant de représenter rapidement le tableau fourni.
  * La première ligne de cet Array doit être le nom des colonnes.
+ * @param[name] Le nom que l'on veut donner à ce tableau.
+ * @param[content] Tableau que l'on veut transformer en tableau HTML. Sa première ligne doit contenir les titres.
+ * @author khatharsis
  */
 private class StatsColumn(val name: String, content: Array<Array<String>>) :
     Template<FlowContent> {
@@ -35,7 +37,12 @@ private class StatsColumn(val name: String, content: Array<Array<String>>) :
     }
 }
 
-class GlobalStatistics(user: String) : MainTemplate(
+/**
+ * Statistiques globales du jukebox.
+ * @param[user] L'utilisateur de la session.
+ * @author khatharsis
+ */
+class GlobalStatistics(user: UserSession) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         private val statsColumn = TemplatePlaceholder<StatsColumn>()
@@ -44,7 +51,7 @@ class GlobalStatistics(user: String) : MainTemplate(
                 div("statistics") {
                     div("col-xl-6 statcol") {
                         h2 {
-                            style="text-align:center"
+                            style = "text-align:center"
                             text("Users with most play counts:")
                         }
                         insert(StatsColumn("All Time", giveTestArray()), statsColumn)
@@ -53,7 +60,7 @@ class GlobalStatistics(user: String) : MainTemplate(
                     }
                     div("col-xl-6 statcol") {
                         h2 {
-                            style="text-align:center"
+                            style = "text-align:center"
                             text("Tracks with most play counts:")
                         }
                         insert(StatsColumn("All Time", giveTestArray()), statsColumn)
@@ -66,7 +73,13 @@ class GlobalStatistics(user: String) : MainTemplate(
     }
 )
 
-class UserStatistics(user: String, userStats: User) : MainTemplate(
+/**
+ * Statistiques d'un seul utilisateur.
+ * @param[user] L'utilisateur de la session.
+ * @param[lookedUpUser] L'utilisateur dont on veut voir les stats.
+ * @author khatharsis
+ */
+class UserStatistics(user: UserSession, lookedUpUser: User) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         private val statsColumn = TemplatePlaceholder<StatsColumn>()
@@ -74,7 +87,7 @@ class UserStatistics(user: String, userStats: User) : MainTemplate(
             div("container") {
                 div {
                     style = "text-align:center"
-                    h1 {text("Statistiques de ${userStats.name}")}
+                    h1 { text("Statistiques de ${lookedUpUser.name}") }
                 }
                 div("statistics") {
                     div("col-xl-6 statcol") {
@@ -89,22 +102,32 @@ class UserStatistics(user: String, userStats: User) : MainTemplate(
     }
 )
 
-class TrackStatistics(user: String, track: Song) : MainTemplate(
+/**
+ * Pages de statistiques pour une musique.
+ * @param[user] L'utilisateur de la session.
+ * @param[track] La musique dont on veut voir les stats.
+ * @author khatharsis
+ */
+class TrackStatistics(user: UserSession, track: Track) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         private val statsColumn = TemplatePlaceholder<StatsColumn>()
         override fun FlowContent.apply() {
             div("container") {
                 div {
-                    style="text-align:center"
+                    style = "text-align:center"
                     h1 { text("Statistiques de ${track.track}") }
                     when {
-                        track.obsolete -> h2 { style="color:red"; text("Track obsolete")}
-                        track.blacklisted -> h2 { style="color:red"; text("Track blacklisted")}
+                        track.obsolete -> h2 { style = "color:red"; text("Obsolete track") }
+                        track.blacklisted -> h2 { style = "color:red"; text("Blacklisted track") }
                         else -> form {
-                            action="/add/${track.id}"
+                            action = "/add/${track.id}"
                             method = FormMethod.post
-                            input {type=InputType.submit; name="Add"; value="Ajouter à la file d'attente."}
+                            input {
+                                type = InputType.submit
+                                name = "Add"
+                                value = "Ajouter à la file d'attente."
+                            }
                         }
                     }
                 }
@@ -118,20 +141,26 @@ class TrackStatistics(user: String, track: Song) : MainTemplate(
     }
 )
 
-class History(user:String, n: Int = 50) : MainTemplate(
+/**
+ * Historique des musiques passées sur le jukebox.
+ * @param[user] L'utilisateur de la session.
+ * @param[n] Nombre de musiques que l'on souhaite voir. (On devrait vraiment plutôt faire des pages).
+ * @author khatharsis
+ */
+class History(user: UserSession, n: Int = 50) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         private val statsColumn = TemplatePlaceholder<StatsColumn>()
         override fun FlowContent.apply() {
             div("container") {
                 div {
-                    style="text-align:center;"
-                    h1 {text("Historique des $n dernières musiques.")}
+                    style = "text-align:center;"
+                    h1 { text("Historique des $n dernières musiques.") }
                 }
                 div("statistics") {
-                    style="padding:30px;"
+                    style = "padding:30px;"
                     div("col statcol") {
-                        style="margin: auto;"
+                        style = "margin: auto;"
                         insert(StatsColumn("", giveTestArray()), statsColumn)
                     }
                 }

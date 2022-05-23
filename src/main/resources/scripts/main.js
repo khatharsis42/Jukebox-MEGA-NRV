@@ -22,7 +22,7 @@ function template(html, d) {
 
 
 /**
- * Called on click of the buttons which switch the recto/verso of song tiles.
+ * Called on click of the buttons which switch the recto/verso of track tiles.
  * These buttons are .btn-more and .btn-back.
  */
 function toggle_recto_verso() {

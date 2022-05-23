@@ -1,15 +1,23 @@
-package templates
+package cj.jukebox.templates
+
+import cj.jukebox.utils.UserSession
 
 import io.ktor.server.html.*
 import kotlinx.html.*
 
-class Accueil(user: String) : MainTemplate(
+/**
+ * La page d'accueil, accessible via le /app.
+ *
+ * @param[user] L'utilisateur de la session.
+ * @author khatharsis
+ */
+class Accueil(user: User) : MainTemplate(
     user,
     music = object : Template<FlowContent> {
         override fun FlowContent.apply() {
             div("form-group") {
                 input(InputType.search) {
-                    placeholder="Recherchez un morceau ou collez une URL"
+                    placeholder = "Recherchez un morceau ou collez une URL"
                     autoComplete = false
                     autoFocus = true
                     classes = setOf("form-control", "form-control-lg")
@@ -22,7 +30,7 @@ class Accueil(user: String) : MainTemplate(
             }
             div("form-group form-inline") {
                 div("col-0") {
-                    img() {
+                    img {
                         classes = setOf("icon","btn-volume")
                         style = "margin: auto;"
                     }

@@ -1,19 +1,28 @@
-package templates
+package cj.jukebox.templates
 
 import cj.jukebox.config
-import cj.jukebox.templates.Header
+import cj.jukebox.utils.UserSession
+
 import io.ktor.server.html.*
 import kotlinx.html.*
 
+/**
+ * Template principal, contient non seulement les headers mais également les scripts.
+ *
+ * @param[user] L'utilisateur de la session.
+ * @param[content] Le contenu principal de cet page.
+ * @param[music] Valeur existant uniquement pour la page d'acceuil, permet d'avoir un endroit reservé pour les musiques.
+ * @author khatharsis
+ */
 open class MainTemplate(
-    private val user: String,
+    private val user: UserSession,
     private val content: Template<FlowContent>,
     private val music: Template<FlowContent>? = null
 ) : Template<HTML> {
     private val flowTemplate = TemplatePlaceholder<Template<FlowContent>>()
     private val header = TemplatePlaceholder<Header>()
     override fun HTML.apply() {
-        insert(Header(), header)
+        insert(Header(user.theme), header)
         body {
             onMouseOver = "pageStatus=true;"
             onMouseOut = "pageStatus=false;"
@@ -27,7 +36,7 @@ open class MainTemplate(
                             ul("nav") {
                                 li("nav-item") {
                                     p("nav-link") {
-                                        a("/app") { text("Acceuil") }
+                                        a("/app") { text("Accueil") }
                                     }
                                 }
                                 li("nav-item") {
@@ -52,7 +61,7 @@ open class MainTemplate(
                                 }
                                 li("nav-item") {
                                     p("nav-link") {
-                                        a("/logout") { text("Logout from $user") }
+                                        a("/logout") { text("Logout from ${user.name}") }
                                     }
                                 }
                             }
