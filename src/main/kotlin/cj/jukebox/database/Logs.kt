@@ -36,7 +36,18 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
 
         fun getUserLog(user: User, timeDelta: Int? = null): List<Log> =
             database.dbQuery {
+                Log.find {
+                    if (timeDelta == null) {
+                        Logs.userId eq user.id
+                    } else {
+                        (Logs.userId eq user.id) and (Logs.time greater (getNow() - timeDelta) )
+                    }
+                }.orderBy(Logs.time to SortOrder.DESC).toList()
+            }
 
+        fun getLastLogs(n: Int): List<Log> =
+            database.dbQuery {
+                Log.all().orderBy(Logs.time to SortOrder.DESC).limit(n).toList()
             }
     }
 }
