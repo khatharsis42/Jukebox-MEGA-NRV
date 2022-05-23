@@ -65,7 +65,7 @@ class Track(id: EntityID<Int>) : IntEntity(id) {
     fun refreshTrack(metadatas: TrackData) {
         for (property in this::class.memberProperties) {
             if (property is KMutableProperty<*> && property.name in metadatas::class.memberProperties.map { it.name }) {
-                property.setter.call(metadatas::class.memberProperties.first { it.name == property.name })
+                property.setter.call(metadatas::class.memberProperties.first { it.name == property.name }.getter.call())
             }
         }
         // This should work, right ?
