@@ -1,6 +1,7 @@
 package cj.jukebox.search
 
 import cj.jukebox.database.Track
+import cj.jukebox.database.TrackData
 import cj.jukebox.database.urlReg
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -24,63 +25,68 @@ enum class SearchEngine {
      * Corresponds à une URL directe vers une musique de Jamendo.
      */
     JAMENDO {
-        override fun downloadSingle(url: String): Array<Track> {
+        override fun downloadSingle(url: String): Array<TrackData> {
             throw NotImplementedError()
         }
 
         override val urlRegex = urlRegexMaker("jamendo\\.com")
     },
+
     /**
      * Corresponds à une URL directe vers une vidéo de Twitch.
      */
     TWITCH {
-        override fun downloadSingle(url: String): Array<Track> {
+        override fun downloadSingle(url: String): Array<TrackData> {
             throw NotImplementedError()
         }
 
         override val urlRegex = urlRegexMaker("twitch\\.tv")
     },
+
     /**
      * Corresponds à une URL directe vers une musique Bandcamp.
      */
     BANDCAMP {
-        override fun downloadSingle(url: String): Array<Track> {
+        override fun downloadSingle(url: String): Array<TrackData> {
             throw NotImplementedError()
         }
 
         override val urlRegex = urlRegexMaker("bandcamp\\.com")
     },
+
     /**
      * Corresponds à une URL directe vers une musique.
      */
     DIRECT_FILE {
-        override fun downloadSingle(url: String): Array<Track> {
+        override fun downloadSingle(url: String): Array<TrackData> {
             throw NotImplementedError()
         }
 
         override val urlRegex = Regex("^(https?://)?\\.*\\.(mp3|mp4|ogg|flac|wav|webm)")
         override val queryRegex = Regex("^!direct .+\$")
     },
+
     /**
      * Corresponds à une recherche Soundcloud.
      */
     SOUNDCLOUD {
-        override fun downloadSingle(url: String): Array<Track> {
+        override fun downloadSingle(url: String): Array<TrackData> {
             throw NotImplementedError()
         }
 
         override val urlRegex = urlRegexMaker("soundcloud\\.com")
         override val queryRegex = Regex("^!sc .+\$")
     },
+
     /**
      * Corresponds à la recherche avec YouTube.
      */
     YOUTUBE {
-        override fun downloadSingle(url: String): Array<Track> {
+        override fun downloadSingle(url: String): Array<TrackData> {
             TODO("Not yet implemented")
         }
 
-        override fun downloadMultiple(request: String): Array<Track> {
+        override fun downloadMultiple(request: String): Array<TrackData> {
             TODO("Not yet implemented")
         }
 
@@ -93,17 +99,17 @@ enum class SearchEngine {
     /**
      * Permet de télécharger des metadatas depuis une URL. Utilise quasi exclusivement youtube-dl.
      * @param[url] Une URL vers une musique ou une playlist.
-     * @return Une [Array] de [Track], correspondant à l'URL.
+     * @return Une [Array] de [TrackData], correspondant à l'URL.
      */
-    abstract fun downloadSingle(url: String): Array<Track>
+    abstract fun downloadSingle(url: String): Array<TrackData>
 
     /**
      * Permet de télécharger des metadatas depuis une requête textuelle.
      * Est implémenté ssi [queryRegex] est non null.
      * @param[url] Une URL vers une musique ou une playlist.
-     * @return Une [Array] de [Track], correspondant à la requête.
+     * @return Une [Array] de [TrackData], correspondant à la requête.
      */
-    open fun downloadMultiple(request: String): Array<Track> {
+    open fun downloadMultiple(request: String): Array<TrackData> {
         throw NotImplementedError()
     }
 
@@ -128,7 +134,7 @@ enum class SearchEngine {
      * Exécute une recherche via youtube-dl. Une liste des métadonnées en Json.
      * @param[request] Une [List]<[JsonObject]> correspondant aux métadonnées de la requête.
      */
-    fun searchYoutubeDL(request: String): List<JsonObject> {
+    private fun searchYoutubeDL(request: String): List<JsonObject> {
         println(request)
         val wholeRequest = "yt-dlp --id --write-info-json --skip-download " +
                 if (youtubeArgs.isNotEmpty()) {
