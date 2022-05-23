@@ -1,67 +1,154 @@
 package cj.jukebox.search
 
-import cj.jukebox.database.Song
-import kotlinx.html.Dir
-import kotlinx.serialization.Serializable
+import cj.jukebox.database.Track
+import cj.jukebox.database.urlReg
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import java.io.File
-import java.io.IOException
 import java.util.concurrent.TimeUnit
-import kotlin.random.Random
+
 
 /**
- * La classe de base pour faire une recherche.
+ * Pour créer facilement des regex à partir d'un nom de domaine.
  */
-interface SearchEngine {
+private fun urlRegexMaker(domain: String) = Regex("^(https?\\:\\/\\/)?((www\\.)?$domain)\\/.+$")
+
+/**
+ * Enumération de toutes les sources prises en compte.
+ * NB: Ce n'est pas forcément très beau, mais ça marche très bien.
+ * @author khatharsis
+ */
+enum class SearchEngine {
     /**
-     * Permet de télécharger des metadatas depuis une URL.
-     * @param[url] Une URL vers une musique ou une playlist.
-     * @return Une [Array] de [Song], correspondant à l'URL.
+     * Corresponds à une URL directe vers une musique de Jamendo.
      */
-    fun downloadSingle(url:String): Array<Song> {
-        throw NotImplementedError()
-    }
+    JAMENDO {
+        override fun downloadSingle(url: String): Array<Track> {
+            throw NotImplementedError()
+        }
+
+        override val urlRegex = urlRegexMaker("jamendo\\.com")
+    },
+    /**
+     * Corresponds à une URL directe vers une vidéo de Twitch.
+     */
+    TWITCH {
+        override fun downloadSingle(url: String): Array<Track> {
+            throw NotImplementedError()
+        }
+
+        override val urlRegex = urlRegexMaker("twitch\\.tv")
+    },
+    /**
+     * Corresponds à une URL directe vers une musique Bandcamp.
+     */
+    BANDCAMP {
+        override fun downloadSingle(url: String): Array<Track> {
+            throw NotImplementedError()
+        }
+
+        override val urlRegex = urlRegexMaker("bandcamp\\.com")
+    },
+    /**
+     * Corresponds à une URL directe vers une musique.
+     */
+    DIRECT_FILE {
+        override fun downloadSingle(url: String): Array<Track> {
+            throw NotImplementedError()
+        }
+
+        override val urlRegex = Regex("^(https?://)?\\.*\\.(mp3|mp4|ogg|flac|wav|webm)")
+        override val queryRegex = Regex("^!direct .+\$")
+    },
+    /**
+     * Corresponds à une recherche Soundcloud.
+     */
+    SOUNDCLOUD {
+        override fun downloadSingle(url: String): Array<Track> {
+            throw NotImplementedError()
+        }
+
+        override val urlRegex = urlRegexMaker("soundcloud\\.com")
+        override val queryRegex = Regex("^!sc .+\$")
+    },
+    /**
+     * Corresponds à la recherche avec YouTube.
+     */
+    YOUTUBE {
+        override fun downloadSingle(url: String): Array<Track> {
+            TODO("Not yet implemented")
+        }
+
+        override fun downloadMultiple(request: String): Array<Track> {
+            TODO("Not yet implemented")
+        }
+
+        override val youtubeArgs: Map<String, String> = mapOf("yes-playlist" to "")
+        override val urlRegex = urlRegexMaker("youtube\\.com|youtu\\.be")
+        override val queryRegex = "^!yt .+\$".toRegex()
+
+    };
+
+    /**
+     * Permet de télécharger des metadatas depuis une URL. Utilise quasi exclusivement youtube-dl.
+     * @param[url] Une URL vers une musique ou une playlist.
+     * @return Une [Array] de [Track], correspondant à l'URL.
+     */
+    abstract fun downloadSingle(url: String): Array<Track>
+
     /**
      * Permet de télécharger des metadatas depuis une requête textuelle.
+     * Est implémenté ssi [queryRegex] est non null.
      * @param[url] Une URL vers une musique ou une playlist.
-     * @return Une [Array] de [Song], correspondant à la requête.
+     * @return Une [Array] de [Track], correspondant à la requête.
      */
-    fun downloadMultiple(request:String): Array<Song> {
+    open fun downloadMultiple(request: String): Array<Track> {
         throw NotImplementedError()
     }
 
     /**
      * Les arguments donnés à youtube-dl.
      */
-    val youtubeArgs : Map<String, String>
+    protected open val youtubeArgs: Map<String, String> = mapOf()
 
-    private val tempDir: File
-        get() = File("./src/main/resources/temp")
+    /**
+     * Une regex permettant de reconnaître une URL.
+     */
+    abstract val urlRegex: Regex
+
+    /**
+     * Un regex permettant de reconnaître une query.
+     */
+    open val queryRegex: Regex? = null
+
+    private val tempDir = File("./src/main/resources/temp")
 
     /**
      * Exécute une recherche via youtube-dl. Une liste des métadonnées en Json.
      * @param[request] Une [List]<[JsonObject]> correspondant aux métadonnées de la requête.
-      */
-    fun searchYoutubeDL(request:String) : List<JsonObject> {
+     */
+    fun searchYoutubeDL(request: String): List<JsonObject> {
         println(request)
         val wholeRequest = "yt-dlp --id --write-info-json --skip-download " +
                 if (youtubeArgs.isNotEmpty()) {
                     youtubeArgs
                         .map { (key, value) -> "--$key ${if (value.isEmpty()) "" else "$value "}" }
                         .reduce { acc, s -> acc + s }
-                } else {""} + request
+                } else {
+                    ""
+                } + request
         val randomValue = (0..Int.MAX_VALUE).random()
         "mkdir $randomValue".runCommand(tempDir)
         wholeRequest.runCommand(tempDir.resolve(randomValue.toString()))
         val retour = tempDir.resolve(randomValue.toString())
             .listFiles { file, s -> s.endsWith(".json") }
-            ?.map {Json.decodeFromString<JsonObject>(it.readText(Charsets.UTF_8))}
+            ?.map { Json.decodeFromString<JsonObject>(it.readText(Charsets.UTF_8)) }
         "rm -rf $randomValue".runCommand(tempDir)
         return retour ?: listOf()
     }
-    fun String.runCommand(workingDir: File) {
+
+    private fun String.runCommand(workingDir: File) {
         ProcessBuilder(*split(" ").toTypedArray())
             .directory(workingDir)
             .redirectOutput(ProcessBuilder.Redirect.INHERIT)

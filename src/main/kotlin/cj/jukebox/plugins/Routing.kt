@@ -1,6 +1,6 @@
 package cj.jukebox.plugins
 
-import cj.jukebox.search.Youtube
+import cj.jukebox.search.SearchEngine
 import cj.jukebox.templates.Help
 import io.ktor.server.routing.*
 import io.ktor.server.application.*
@@ -41,8 +41,17 @@ fun Application.routing() {
         post("/search") {
             val parameters = call.receiveParameters()
             val query = parameters["q" ]
-            if (query != null && query.isNotBlank())
-            Youtube().downloadSingle(query)
+            println(query)
+            if (query != null && query.isNotBlank()) {
+                for (a in SearchEngine.values()) {
+                    if (query.matches(a.urlRegex))
+                        println(a)
+                    if (a.queryRegex != null) {
+                        if (query.matches(a.queryRegex!!))
+                            println(a)
+                    }
+                }
+            }
         }
 
         static("/assets") {
