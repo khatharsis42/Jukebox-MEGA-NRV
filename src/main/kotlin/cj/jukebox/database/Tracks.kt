@@ -1,5 +1,6 @@
 package cj.jukebox.database
 
+import cj.jukebox.database
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -10,6 +11,7 @@ const val urlReg = """https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0
 object Tracks : IntIdTable() {
     val url = varchar("url", 200)
         .check { it.match(urlReg) }
+        .uniqueIndex()
 
     val source_ = varchar("source", 20)
     val track = varchar("track", 50).nullable()
