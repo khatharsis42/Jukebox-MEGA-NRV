@@ -2,14 +2,15 @@ package cj.jukebox.database
 
 import cj.jukebox.database
 import cj.jukebox.search.SearchEngine
-import io.ktor.util.*
 
+import kotlin.reflect.KMutableProperty
+import kotlin.reflect.full.memberProperties
+
+import io.ktor.util.*
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
-import kotlin.reflect.KMutableProperty
-import kotlin.reflect.full.memberProperties
 
 const val urlReg =
     """https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"""
@@ -76,22 +77,22 @@ class Track(id: EntityID<Int>) : IntEntity(id) {
         /**
          * Importe une Track à partir de son id dans la BDD.
          * @param[id] [Int] indiquant son entier dans la BDD.
-         * @return Une [Track] si l'ID est dans la DB, [null] sinon
+         * @return Une [Track] si l'ID est dans la DB, [Nothing] sinon
          */
         fun importFromId(id: Int): Track? = database.dbQuery { Track.findById(id) }
 
         /**
          * Importe toutes les tracks dont le nom corresponds à la [String] donnée en argument.
          * @param[name] Nom que l'on utilise pour matcher.
-         * @return Un [Iterable] des [Tracks] dont le nom match.
+         * @return Une [List] des [Tracks] dont le nom match.
          */
-        fun importFromName(name: String): Iterable<Track> =
-            database.dbQuery { Track.find { Tracks.track eq name } }
+        fun importFromName(name: String): List<Track> =
+            database.dbQuery { Track.find { Tracks.track eq name }.toList() }
 
         /**
          * Importe une track à partir de son URL.
          * @param[trackUrl] L'URL d'une track.
-         * @return Une [Track] si l'URL est dans la DB, [null] sinon
+         * @return Une [Track] si l'URL est dans la DB, [Nothing] sinon
          */
         fun importFromUrl(trackUrl: String): Track? =
             database.dbQuery {
@@ -105,7 +106,7 @@ class Track(id: EntityID<Int>) : IntEntity(id) {
          * Refresh une track dans la BDD depuis son URL. Ne fait rien s'il n'existe pas de Track correspondante.
          * @param[trackUrl] L'URL d'une track.
          */
-        fun resfreshTrack(trackUrl: String) {
+        fun refreshTrack(trackUrl: String) {
             val track = importFromUrl(trackUrl)
             if (track != null) {
                 val sourceEngine: SearchEngine

@@ -31,7 +31,7 @@ fun Application.search() {
                 val parameters = call.request.queryParameters
                 val url = parameters["url"]
                 if (url != null && url.isNotBlank()) {
-                    Track.resfreshTrack(url)
+                    Track.refreshTrack(url)
                 } else {
                     println("xd")
                 }
