@@ -1,11 +1,11 @@
 package cj.jukebox.templates
 
-import cj.jukebox.database.User
+import cj.jukebox.utils.UserSession
 
 import io.ktor.server.html.*
 import kotlinx.html.*
 
-class Accueil(user: User) : MainTemplate(
+class Accueil(user: UserSession) : MainTemplate(
     user,
     music = object : Template<FlowContent> {
         override fun FlowContent.apply() {
@@ -24,7 +24,7 @@ class Accueil(user: User) : MainTemplate(
             }
             div("form-group form-inline") {
                 div("col-0") {
-                    img() {
+                    img {
                         classes = setOf("icon","btn-volume")
                         style = "margin: auto;"
                     }

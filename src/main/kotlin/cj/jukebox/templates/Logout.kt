@@ -1,11 +1,11 @@
 package cj.jukebox.templates
 
-import cj.jukebox.database.User
+import cj.jukebox.utils.UserSession
 
 import io.ktor.server.html.*
 import kotlinx.html.*
 
-class Logout(val user: User) : Template<HTML> {
+class Logout(val user: UserSession) : Template<HTML> {
     private val header = TemplatePlaceholder<Header>()
     override fun HTML.apply() {
         insert(Header(), header)

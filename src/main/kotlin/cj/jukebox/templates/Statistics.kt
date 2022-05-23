@@ -2,6 +2,7 @@ package cj.jukebox.templates
 
 import cj.jukebox.database.Song
 import cj.jukebox.database.User
+import cj.jukebox.utils.UserSession
 import io.ktor.server.html.*
 import kotlinx.html.*
 
@@ -33,7 +34,7 @@ private class StatsColumn(val name: String, content: Array<Array<String>>) :
     }
 }
 
-class GlobalStatistics(user: User) : MainTemplate(
+class GlobalStatistics(user: UserSession) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         private val statsColumn = TemplatePlaceholder<StatsColumn>()
@@ -64,7 +65,7 @@ class GlobalStatistics(user: User) : MainTemplate(
     }
 )
 
-class UserStatistics(user: User, lookedUpUser: User) : MainTemplate(
+class UserStatistics(user: UserSession, lookedUpUser: User) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         private val statsColumn = TemplatePlaceholder<StatsColumn>()
@@ -87,7 +88,7 @@ class UserStatistics(user: User, lookedUpUser: User) : MainTemplate(
     }
 )
 
-class SongStatistics(user: User, song: Song) : MainTemplate(
+class SongStatistics(user: UserSession, song: Song) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         private val statsColumn = TemplatePlaceholder<StatsColumn>()
@@ -120,7 +121,7 @@ class SongStatistics(user: User, song: Song) : MainTemplate(
     }
 )
 
-class History(user: User, n: Int = 50) : MainTemplate(
+class History(user: UserSession, n: Int = 50) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         private val statsColumn = TemplatePlaceholder<StatsColumn>()

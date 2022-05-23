@@ -1,16 +1,15 @@
 package cj.jukebox.templates
 
 import cj.jukebox.config
-import cj.jukebox.database.User
+import cj.jukebox.utils.UserSession
 
 import io.ktor.server.html.*
-
 import kotlinx.html.FlowContent
 import kotlinx.html.a
 import kotlinx.html.div
 import kotlinx.html.p
 
-class Help(user: User) : MainTemplate(
+class Help(user: UserSession) : MainTemplate(
     user,
     content = object : Template<FlowContent> {
         override fun FlowContent.apply() {
