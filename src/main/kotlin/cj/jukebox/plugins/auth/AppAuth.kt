@@ -23,7 +23,7 @@ fun Application.auth() {
 
             validate { credentials ->
                 val res = database.dbQuery {
-                    User.find { (Users.name eq credentials.name) and (Users.pass eq credentials.password) }
+                    User.find { (Users.name eq credentials.name) and (Users.pass eq credentials.password.encrypt()) }
                         .limit(1).toList()
                 }
                 if (res.isNotEmpty()) {
@@ -49,7 +49,7 @@ fun Application.auth() {
                     val user = database.dbQuery {
                         User.new {
                             name = credentials.name
-                            pass = credentials.password
+                            pass = credentials.password.encrypt()
                         }
                     }
                     sessions.setUserSession(user.id, user.name, user.theme)

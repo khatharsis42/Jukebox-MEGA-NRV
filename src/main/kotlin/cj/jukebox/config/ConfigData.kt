@@ -22,6 +22,8 @@ data class ConfigData(
 
     @EncodeDefault val SECRET_ENCRYPT_KEY: String = "6b6287991d47e783e3a261cca1a0a1b9",
     @EncodeDefault val SECRET_SIGN_KEY: String = "9cb8d9913aebc815cb58562aa479",
+
+    @EncodeDefault var SECRET_PASSWORD_ENCRYPT: String = "kXp2s5v8y/B?E(H+"
 ) {
     init {
         require(APP_NAME.isNotEmpty()) { "App name can't be empty" }
