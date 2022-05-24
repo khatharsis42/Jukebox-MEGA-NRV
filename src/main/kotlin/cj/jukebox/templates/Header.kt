@@ -6,7 +6,7 @@ import kotlinx.html.*
 
 /**
  * Un template HTML pour le Header.
- * @param styleSheet Le nom d'une des stylesheet disponible. Peut valoir null, auquel cas elle n'est pas prise en compte.
+ * @param styleSheet Le nom d'une des stylesheet disponible. Peut valoir null, auquel cas, elle n'est pas prise en compte.
  * @author khatharsis
  */
 class Header(private val styleSheet: String? = null) : Template<HTML> {

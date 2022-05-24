@@ -10,8 +10,8 @@ import kotlinx.html.*
  * Template principal, contient non seulement les headers mais également les scripts.
  *
  * @param[user] L'utilisateur de la session.
- * @param[content] Le contenu principal de cet page.
- * @param[music] Valeur existant uniquement pour la page d'acceuil, permet d'avoir un endroit reservé pour les musiques.
+ * @param[content] Le contenu principal de cette page.
+ * @param[music] Valeur existant uniquement pour la page d'accueil, permet d'avoir un endroit reservé pour les musiques.
  * @author khatharsis
  */
 open class MainTemplate(

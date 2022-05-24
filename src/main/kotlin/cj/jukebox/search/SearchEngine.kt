@@ -1,8 +1,6 @@
 package cj.jukebox.search
 
-import cj.jukebox.database.Track
 import cj.jukebox.database.TrackData
-import cj.jukebox.database.urlReg
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -13,7 +11,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Pour créer facilement des regex à partir d'un nom de domaine.
  */
-private fun urlRegexMaker(domain: String) = Regex("^(https?\\:\\/\\/)?((www\\.)?$domain)\\/.+$")
+private fun urlRegexMaker(domain: String) = Regex("^(https?://)?((www\\.)?$domain)/.+$")
 
 /**
  * Enumération de toutes les sources prises en compte.
@@ -148,7 +146,7 @@ enum class SearchEngine {
         "mkdir $randomValue".runCommand(tempDir)
         wholeRequest.runCommand(tempDir.resolve(randomValue.toString()))
         val retour = tempDir.resolve(randomValue.toString())
-            .listFiles { file, s -> s.endsWith(".json") }
+            .listFiles { _, s -> s.endsWith(".json") }
             ?.map { Json.decodeFromString<JsonObject>(it.readText(Charsets.UTF_8)) }
         "rm -rf $randomValue".runCommand(tempDir)
         return retour ?: listOf()

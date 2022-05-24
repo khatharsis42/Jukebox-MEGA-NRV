@@ -8,7 +8,7 @@ import kotlinx.html.*
 /**
  * Classe de template pour l'authentification.
  *
- * @param correct Indique si l'authentification précèdente était correcte.
+ * @param correct Indique si l'authentification précédente était correcte.
  * Vaut true de base pour des raisons évidentes.
  * Permet de faire spawner un texte en rouge indiquant à l'utilisateur que le login n'a pas réussi.
  * TODO: remplacer ça par une enum dans le futur, pour traiter tous les problèmes possibles.

@@ -1,7 +1,7 @@
 .gradle
 build/
 src/main/resources/config.json
-src/main/resources/jukebox.sqlite3
+src/main/resources/jukebox.sqlite3*
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
