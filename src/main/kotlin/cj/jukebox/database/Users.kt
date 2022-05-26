@@ -2,6 +2,7 @@ package cj.jukebox.database
 
 import cj.jukebox.database
 import cj.jukebox.utils.encrypt
+
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -25,6 +26,13 @@ class User(id: EntityID<Int>) : IntEntity(id) {
     var name  by Users.name
     var pass  by Users.pass
     var theme by Users.theme
+
+    /**
+     * Met à jour le [theme] de l'[User].
+     */
+    @JvmName("setTheme1")
+    fun setTheme(style: String?) = database.dbQuery { this.theme = style }
+
     companion object : IntEntityClass<User>(Users) {
         /**
          * Crée un·e [User] à partir des informations fournies.
@@ -36,6 +44,11 @@ class User(id: EntityID<Int>) : IntEntity(id) {
                     pass = password.encrypt()
                 }
             }
+
+        /**
+         * Cherche un·e [User] étant donné son [id].
+         */
+        fun findUser(id: Int): User? = database.dbQuery { User.findById(id) }
 
         /**
          * Cherche un·e [User] correspondant au [name] donné.

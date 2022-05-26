@@ -1,6 +1,5 @@
 package cj.jukebox.plugins.settings
 
-import cj.jukebox.database
 import cj.jukebox.database.User
 import cj.jukebox.utils.getUserSession
 
@@ -24,10 +23,7 @@ fun Application.settings() {
 
                     val userSession = call.getUserSession()!!
                     userSession.theme = style
-                    database.dbQuery {
-                        val user = User.findById(userSession.id)!!
-                        user.theme = style
-                    }
+                    User.findUser(userSession.id)?.setTheme(style)
 
                     call.respondRedirect("settings")
                 }
