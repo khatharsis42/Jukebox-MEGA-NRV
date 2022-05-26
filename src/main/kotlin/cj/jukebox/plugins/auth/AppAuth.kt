@@ -15,6 +15,11 @@ import io.ktor.util.*
 
 import org.jetbrains.exposed.sql.and
 
+/**
+ * Module d'authentification du jukebox.
+ * Gestion du login, logout, sign-in et de la session, ainsi que toutes leurs exceptions.
+ * @author Ukabi
+ */
 fun Application.auth() {
     authentication {
         form("auth-login") {

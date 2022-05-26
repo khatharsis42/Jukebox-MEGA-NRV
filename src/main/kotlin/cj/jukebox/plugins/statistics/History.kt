@@ -1,6 +1,7 @@
 package cj.jukebox.plugins.statistics
 
 import cj.jukebox.database.Log
+import cj.jukebox.database.Track
 import cj.jukebox.templates.MainTemplate
 import cj.jukebox.utils.UserSession
 
@@ -39,5 +40,10 @@ class History(user: UserSession, n: Int = 50) : MainTemplate(
     }
 )
 
+/**
+ * Prépare les données nécessaires à l'affichage de l'historique.
+ * @param[n] le nombre de [Track] à afficher.
+ * @author Ukabi
+ */
 private fun prepareData(n: Int): List<List<Any>> =
     listOf(Log.getLogs(n).map { listOf(it.userId.name, it.trackId.track, it.trackId.id.value) })

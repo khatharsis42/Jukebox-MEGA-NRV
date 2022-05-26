@@ -6,6 +6,11 @@ import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.IOError
 
+/**
+ * Classe contenant toutes les informations nécessaires à la configuration du jukebox.
+ * @param[file] emplacement du fichier de configuration (format .json).
+ * @author Ukabi
+ */
 class Config(file: String) {
     private val fileRepr: File = File(file)
     init {
@@ -17,11 +22,17 @@ class Config(file: String) {
     }
     var data: ConfigData = Json.decodeFromString(fileRepr.readText())
 
+    /**
+     * Rétablit la configuration à celle par défaut, puis la sauvegarde.
+     */
     private fun reset() {
         data = ConfigData()
         return save()
     }
 
+    /**
+     * Exporte la configuration actuelle.
+     */
     private fun save() {
         fileRepr.writeText(Json.encodeToString(data))
     }

@@ -3,9 +3,15 @@ package cj.jukebox.config
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.Serializable
 
-const val nb0to255 = """(25[0-5]|2[0-4]\d|[01]?\d\d?)"""
-val regIP = Regex("""$nb0to255\.$nb0to255\.$nb0to255\.$nb0to255""")
-val regHex = Regex("""[\da-fA-F]+""")
+private const val nb0to255 = """(25[0-5]|2[0-4]\d|[01]?\d\d?)"""
+private val regIP = Regex("""$nb0to255\.$nb0to255\.$nb0to255\.$nb0to255""")
+private val regHex = Regex("""[\da-fA-F]+""")
+
+/**
+ * Data class faisant office de représentation d'un fichier de configuration.
+ * Implémente aussi quelques vérifications de format à l'initialisation.
+ * @author Ukabi
+ */
 @Serializable
 data class ConfigData(
     @EncodeDefault val APP_NAME: String = "Jukebox",

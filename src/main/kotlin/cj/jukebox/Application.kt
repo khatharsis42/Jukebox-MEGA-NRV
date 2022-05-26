@@ -16,6 +16,10 @@ import io.ktor.server.netty.*
 val config = Config("src/main/resources/config.json")
 val database = DatabaseFactory(config.data.DATABASE_PATH)
 
+/**
+ * Lieu de lancement de l'application jukebox.
+ * Récupère port, adresse et module puis lance le serveur.
+ */
 fun main() {
     embeddedServer(
         Netty,

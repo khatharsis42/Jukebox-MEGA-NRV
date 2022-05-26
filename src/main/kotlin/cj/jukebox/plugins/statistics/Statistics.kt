@@ -11,6 +11,12 @@ import io.ktor.server.html.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
+/**
+ * Module de statistiques du jukebox.
+ * Gère les statistiques globales ou spécifiques à un·e [User], une [Track]
+ * ainsi que l'historique des dernières [Track].
+ * @author Ukabi
+ */
 fun Application.statistics() {
     routing {
         authenticate("auth-session") {

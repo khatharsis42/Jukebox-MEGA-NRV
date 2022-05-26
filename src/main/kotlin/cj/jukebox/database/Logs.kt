@@ -17,12 +17,19 @@ object Logs : IntIdTable() {
     val time = integer("time")
 }
 
+/**
+ * Représentation objet d'une ligne de la table [Logs]
+ * @author Ukabi
+ */
 class Log(id: EntityID<Int>) : IntEntity(id) {
     var trackId by Track referencedOn Logs.trackId
     var userId  by User referencedOn Logs.userId
     var time    by Logs.time
 
     companion object : IntEntityClass<Log>(Logs) {
+        /**
+         * Créé une nouvelle occurrence dans la table [Logs].
+         */
         fun createLog(track: Track, user: User) =
             database.dbQuery {
                 Log.new {
@@ -32,6 +39,9 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
                 }
             }
 
+        /**
+         * Récupère les [n] derniers [Log].
+         */
         fun getLogs(n: Int): List<Log> =
             database.dbQuery { Log
                 .all()
@@ -40,6 +50,10 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
                 .toList()
             }
 
+        /**
+         * Récupère les [Log] ayant été créés dans les [timeDelta] dernières secondes.
+         * Si [timeDelta] est [Nothing], renvoie tous les [Log].
+         */
         fun getLogs(timeDelta: Int? = null): List<Log> =
             database.dbQuery { Log
                 .timeFilter(timeDelta)
@@ -47,6 +61,10 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
                 .toList()
             }
 
+        /**
+         * Récupère les [Log] correspondant à [user].
+         * Filtre les [Log] des [timeDelta] dernières secondes si fourni.
+         */
         fun getUserLogs(user: User, timeDelta: Int? = null): List<Log> =
             database.dbQuery { Log
                 .find { (Logs.userId eq user.id).timeFilter(timeDelta) }
@@ -54,6 +72,10 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
                 .toList()
             }
 
+        /**
+         * Récupère les [Log] correspondant à [track].
+         * Filtre les [Log] des [timeDelta] dernières secondes si fourni.
+         */
         fun getTrackLogs(track: Track, timeDelta: Int? = null): List<Log> =
             database.dbQuery { Log
                 .find { (Logs.trackId eq track.id).timeFilter(timeDelta) }
@@ -61,6 +83,12 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
                 .toList()
             }
 
+        /**
+         * Renvoie une [List] de [Pair<Int, User>] triée par ordre décroissant,
+         * où l'entier correspond au nombre de fois qu'un·e [User] apparait dans [Log].
+         * Filtre les [Log] des [timeDelta] dernières secondes si fourni.
+         * Coupe la liste aux [n] [User] les plus actif·ve·s, si fourni.
+         */
         fun getMostActiveUsers(timeDelta: Int? = null, n: Int? = null): List<Pair<Int, User>> =
             database.dbQuery { Logs
                 .slice(Logs.userId.count(), Logs.userId)
@@ -71,6 +99,12 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
                 .map { it[Logs.userId.count()].toInt() to User[it[Logs.userId]] }
             }
 
+        /**
+         * Renvoie une [List] de [Pair<Int, Track>] triée par ordre décroissant,
+         * où l'entier correspond au nombre de fois qu'une [Track] apparait dans [Log].
+         * Filtre les [Log] des [timeDelta] dernières secondes si fourni.
+         * Coupe la liste aux [n] [Track] les plus écoutées, si fourni.
+         */
         fun getMostPlayedTracks(timeDelta: Int? = null, n: Int? = null): List<Pair<Int, Track>> =
             database.dbQuery { Logs
                 .slice(Logs.userId.count(), Logs.userId)
@@ -81,6 +115,14 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
                 .map { it[Logs.trackId.count()].toInt() to Track[it[Logs.trackId]] }
             }
 
+
+        /**
+         * Pour une [track] donnée, renvoie une [List] de [Pair<Int, User>] triée
+         * par ordre décroissant, où l'entier correspond au nombre de fois qu'un·e [User]
+         * apparait dans [Logs].
+         * Filtre les [Log] des [timeDelta] dernières secondes si fourni.
+         * Coupe la liste aux [n] [User] les plus actif·ve·s, si fourni.
+         */
         fun getMostActiveUsers(track: Track, timeDelta: Int? = null, n: Int? = null): List<Pair<Int, User>> =
             database.dbQuery { Logs
                 .slice(Logs.userId.count(), Logs.userId)
@@ -91,6 +133,13 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
                 .map { it[Logs.userId.count()].toInt() to User[it[Logs.userId]] }
             }
 
+        /**
+         * Pour un·e [user] donné·e, renvoie une [List] de [Pair<Int, Track>] triée
+         * par ordre décroissant, où l'entier correspond au nombre de fois qu'une [Track]
+         * apparait dans [Logs].
+         * Filtre les [Log] des [timeDelta] dernières secondes si fourni.
+         * Coupe la liste aux [n] [Track] les plus écoutées, si fourni.
+         */
         fun getMostPlayedTracks(user: User, timeDelta: Int? = null, n: Int? = null): List<Pair<Int, Track>> =
             database.dbQuery { Logs
                 .slice(Logs.trackId.count(), Logs.trackId)
@@ -103,8 +152,14 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
     }
 }
 
+/**
+ * Raccourci pour renvoyer le timestamp actuel.
+ */
 private fun getNow() = Instant.now().epochSecond.toInt()
 
+/**
+ * Raccourci pour filtrer [Logs] aux [timeDelta] dernières secondes.
+ */
 private fun Op<Boolean>.timeFilter(timeDelta: Int?): Op<Boolean> =
     this.let {
         if (timeDelta != null) {
@@ -112,6 +167,9 @@ private fun Op<Boolean>.timeFilter(timeDelta: Int?): Op<Boolean> =
         } else it
     }
 
+/**
+ * Raccourci pour filtrer [Logs] aux [timeDelta] dernières secondes.
+ */
 private fun FieldSet.timeFilter(timeDelta: Int?): Query =
     this.let {
         if (timeDelta != null) {
@@ -119,6 +177,9 @@ private fun FieldSet.timeFilter(timeDelta: Int?): Query =
         } else it.selectAll()
     }
 
+/**
+ * Raccourci pour filtrer [Logs] aux [timeDelta] dernières secondes.
+ */
 private fun Log.Companion.timeFilter(timeDelta: Int?): SizedIterable<Log> =
     this.let {
         if (timeDelta != null) {
