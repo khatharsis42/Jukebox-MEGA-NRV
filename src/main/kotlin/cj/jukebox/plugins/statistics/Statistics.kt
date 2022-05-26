@@ -66,8 +66,8 @@ fun Application.statistics() {
 }
 
 fun giveTestArray() = arrayOf(
-    arrayOf("Name 1", "Name 2"),
-    arrayOf("Test1", "1"),
-    arrayOf("Test2", "6"),
-    arrayOf("Test3", "9")
-)
+    arrayOf("Name 1", "Name 2").toList(),
+    arrayOf("Test1", "1").toList(),
+    arrayOf("Test2", "6").toList(),
+    arrayOf("Test3", "9").toList()
+).toList()

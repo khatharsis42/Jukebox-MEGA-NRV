@@ -10,10 +10,10 @@ import kotlinx.html.*
  * @param[content] Tableau que l'on veut transformer en tableau HTML. Sa première ligne doit contenir les titres.
  * @author khatharsis
  */
-class StatsColumn(val name: String, content: Array<Array<String>>) :
-    Template<FlowContent> {
-    private val colNames = content.first()
-    private val columns = content.copyOfRange(1, content.size)
+class StatsColumn(val name: String, content: List<List<Any>>) : Template<FlowContent> {
+    private val colNames = content.firstOrNull()?.map { it.toString() }
+    private val columns = content.slice(1..content.size).map { list -> list.map { it.toString() } }
+
     override fun FlowContent.apply() {
         div("statdisplay") {
             h3 {
@@ -21,13 +21,17 @@ class StatsColumn(val name: String, content: Array<Array<String>>) :
                 text(name)
             }
             table {
-                thead {
-                    tr {
-                        colNames.forEach { th { text(it) } }
+                if (colNames != null) {
+                    thead {
+                        tr {
+                            colNames.forEach { th { text(it) } }
+                        }
                     }
                 }
-                tbody {
-                    columns.forEach { tr { it.forEach { th { text(it) } } } }
+                if (columns.isNotEmpty()) {
+                    tbody {
+                        columns.forEach { tr { it.forEach { th { text(it) } } } }
+                    }
                 }
             }
         }
