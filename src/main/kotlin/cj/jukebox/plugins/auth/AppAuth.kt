@@ -1,7 +1,6 @@
 package cj.jukebox.plugins.auth
 
 import cj.jukebox.config
-import cj.jukebox.database
 import cj.jukebox.database.*
 import cj.jukebox.utils.*
 
@@ -12,8 +11,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import io.ktor.util.*
-
-import org.jetbrains.exposed.sql.and
 
 /**
  * Module d'authentification du jukebox.
@@ -27,12 +24,8 @@ fun Application.auth() {
             passwordParamName = "pass"
 
             validate { credentials ->
-                val res = database.dbQuery {
-                    User.find { (Users.name eq credentials.name) and (Users.pass eq credentials.password.encrypt()) }
-                        .limit(1).toList()
-                }
-                if (res.isNotEmpty()) {
-                    val user = res.first()
+                val user = User.findUser(credentials.name, credentials.password)
+                if (user != null) {
                     sessions.setUserSession(user.id, user.name, user.theme)
                     UserIdPrincipal(credentials.name)
                 } else {
@@ -47,16 +40,9 @@ fun Application.auth() {
             passwordParamName = "pass"
 
             validate { credentials ->
-                val res = database.dbQuery {
-                    User.find { Users.name eq credentials.name }.limit(1).toList()
-                }
-                if (res.isEmpty()) {
-                    val user = database.dbQuery {
-                        User.new {
-                            name = credentials.name
-                            pass = credentials.password.encrypt()
-                        }
-                    }
+                val res = User.findUser(credentials.name)
+                if (res == null) {
+                    val user = User.createUser(credentials.name, credentials.password)
                     sessions.setUserSession(user.id, user.name, user.theme)
                     UserIdPrincipal(credentials.name)
                 } else {
