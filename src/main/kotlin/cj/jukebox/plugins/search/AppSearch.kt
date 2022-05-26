@@ -1,7 +1,6 @@
 package cj.jukebox.plugins.search
 
 import cj.jukebox.database.Track
-import cj.jukebox.search.SearchEngine
 
 import io.ktor.server.application.*
 import io.ktor.server.auth.*

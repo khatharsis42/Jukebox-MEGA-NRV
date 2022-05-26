@@ -1,7 +1,7 @@
 package cj.jukebox.database
 
 import cj.jukebox.database
-import cj.jukebox.search.SearchEngine
+import cj.jukebox.plugins.search.SearchEngine
 
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.full.memberProperties

@@ -1,9 +1,11 @@
-package cj.jukebox.search
+package cj.jukebox.plugins.search
 
 import cj.jukebox.database.TrackData
+
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -104,7 +106,7 @@ enum class SearchEngine {
     /**
      * Permet de télécharger des metadatas depuis une requête textuelle.
      * Est implémenté ssi [queryRegex] est non null.
-     * @param[url] Une URL vers une musique ou une playlist.
+     * @param[request] Une URL vers une musique ou une playlist.
      * @return Une [Array] de [TrackData], correspondant à la requête.
      */
     open fun downloadMultiple(request: String): Array<TrackData> {
