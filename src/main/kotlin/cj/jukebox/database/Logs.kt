@@ -64,6 +64,20 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
             }
 
         /**
+         * Pour un·e [user] et une [track] donné·e·s, renvoie le nombre
+         * de fois que l'[user] a ajouté [track] à la playlist.
+         * Possibilité de limiter la recherche aux [timeDelta] dernières secondes, si fourni.
+         */
+        fun getCount(user: User, track: Track, timeDelta: Int? = null): Int =
+            database.dbQuery {
+                Logs
+                    .slice(Logs.id.count())
+                    .select { (Logs.trackId eq track.id).and(Logs.userId eq user.id).timeFilter(timeDelta) }
+                    .map { it[Logs.id.count()].toInt() }
+                    .first()
+            }
+
+        /**
          * Récupère les [Log] correspondant à [user].
          * Filtre les [Log] des [timeDelta] dernières secondes si fourni.
          */
@@ -86,6 +100,21 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
                     .orderBy(Logs.time to SortOrder.DESC)
                     .toList()
             }
+
+        /**
+         * Pour un·e [user] donné·e, renvoie le nombre de fois qu'[user] a
+         * ajouté des [Track] à la playlist.
+         * Possibilité de limiter la recherche aux [timeDelta] dernières secondes, si fourni.
+         */
+        fun getUserCount(user: User, timeDelta: Int? = null): Int =
+            getUserLogs(user, timeDelta).size
+
+        /**
+         * Pour une [track] donnée, renvoie le nombre de fois que [track] a été ajoutée à la playlist.
+         * Possibilité de limiter la recherche aux [timeDelta] dernières secondes, si fourni.
+         */
+        fun getTrackCount(track: Track, timeDelta: Int? = null): Int =
+            getTrackLogs(track, timeDelta).size
 
         /**
          * Renvoie une [List] de [Pair<Int, User>] triée par ordre décroissant,
