@@ -184,6 +184,22 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
                     .let { if (n != null) it.limit(n) else it }
                     .map { it[Logs.trackId.count()].toInt() to Track[it[Logs.trackId]] }
             }
+
+        /**
+         * Renvoie une [List] de [n] des précédents [Log] dont la [Track] peut être jouée.
+         * @author Ukabi
+         */
+        fun getRandom(n: Int = 5): List<Log> =
+            database.dbQuery {
+                Logs
+                    .innerJoin(Tracks)
+                    .slice(Logs.columns)
+                    .select { (Tracks.blacklisted eq false).and(Tracks.obsolete eq false) }
+                    .orderBy(Random())
+                    .limit(n)
+                    .distinctBy { Tracks.id }
+                    .map { Log.wrapRow(it) }
+            }
     }
 }
 

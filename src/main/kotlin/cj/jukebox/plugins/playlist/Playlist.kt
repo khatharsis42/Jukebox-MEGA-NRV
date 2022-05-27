@@ -83,4 +83,10 @@ fun Playlist.suggest(n: Int = 5): List<Log> =
  * Renvoie la somme des durées (en secondes) de chacune des [Track] de la [Playlist].
  * @author Ukabi
  */
-fun Playlist.duration(): Int = mapNotNull { it.second.duration }.reduce { acc, i -> acc + i }
+fun Playlist.duration(): Int = mapNotNull { it.trackId.duration }.reduce { acc, i -> acc + i }
+
+/**
+ * Renvoie une [List] de [n] des précédents [Log] dont la [Track] peut être jouée.
+ * @author Ukabi
+ */
+fun suggest(n: Int = 5): List<Log> = Log.getRandom(n)
