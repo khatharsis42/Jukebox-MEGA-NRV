@@ -10,6 +10,11 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
+/**
+ * Module de paramétrage utilisateur du jukebox.
+ * Gestion du changement de style.
+ * @author Ukabi
+ */
 fun Application.settings() {
     routing {
         authenticate("auth-session") {

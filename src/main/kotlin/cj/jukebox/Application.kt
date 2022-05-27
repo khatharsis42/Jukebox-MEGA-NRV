@@ -2,6 +2,7 @@ package cj.jukebox
 
 import cj.jukebox.config.Config
 import cj.jukebox.database.DatabaseFactory
+
 import cj.jukebox.plugins.auth.auth
 import cj.jukebox.plugins.nav.nav
 import cj.jukebox.plugins.playlist.playlist

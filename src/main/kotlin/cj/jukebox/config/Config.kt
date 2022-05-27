@@ -16,7 +16,7 @@ class Config(file: String) {
     init {
         if (!fileRepr.exists()) {
             this.reset()
-        } else if (!fileRepr.canRead() && !fileRepr.canRead()) {
+        } else if (!fileRepr.canRead() && !fileRepr.canWrite()) {
             throw IOError(Throwable("Cannot manipulate config file ${file}."))
         }
     }

@@ -15,13 +15,15 @@ fun String.encrypt(): String {
     val secretKeySpec = SecretKeySpec(secretKey.toByteArray(), "AES")
     val iv = ByteArray(16)
     val charArray = secretKey.toCharArray()
-    for (i in charArray.indices) { iv[i] = charArray[i].code.toByte() }
+    for (i in charArray.indices) {
+        iv[i] = charArray[i].code.toByte()
+    }
     val gcmParameterSpec = GCMParameterSpec(128, iv)
 
     val cipher = Cipher.getInstance("AES/GCM/NoPadding")
     cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, gcmParameterSpec)
 
-    val encryptedValue = cipher.doFinal(this.toByteArray())
+    val encryptedValue = cipher.doFinal(toByteArray())
     return Base64.getEncoder().encodeToString(encryptedValue)
 }
 
@@ -32,7 +34,9 @@ fun String.decrypt(): String {
     val secretKeySpec = SecretKeySpec(secretKey.toByteArray(), "AES")
     val iv = ByteArray(16)
     val charArray = secretKey.toCharArray()
-    for (i in charArray.indices) { iv[i] = charArray[i].code.toByte() }
+    for (i in charArray.indices) {
+        iv[i] = charArray[i].code.toByte()
+    }
     val gcmParameterSpec = GCMParameterSpec(128, iv)
 
     val cipher = Cipher.getInstance("AES/GCM/NoPadding")

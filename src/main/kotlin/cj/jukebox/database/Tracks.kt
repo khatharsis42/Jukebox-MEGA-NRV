@@ -39,11 +39,11 @@ object Tracks : IntIdTable() {
 data class TrackData(
     val url: String,
     val source: String,
-    val track: String,
-    val artist: String,
-    val album: String,
-    val albumArtUrl: String,
-    val duration: String,
+    val track: String?,
+    val artist: String?,
+    val album: String?,
+    val albumArtUrl: String?,
+    val duration: String?,
     val blacklisted: String,
     val obsolete: String
 )

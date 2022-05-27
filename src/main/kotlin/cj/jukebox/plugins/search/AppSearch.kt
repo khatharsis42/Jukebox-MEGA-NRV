@@ -18,9 +18,8 @@ fun Application.search() {
                     for (a in SearchEngine.values()) {
                         if (query.matches(a.urlRegex))
                             println(a)
-                        if (a.queryRegex != null) {
-                            if (query.matches(a.queryRegex!!))
-                                println(a)
+                        if (a.queryRegex != null && query.matches(a.queryRegex!!)) {
+                            println(a)
                         }
                     }
                 }
