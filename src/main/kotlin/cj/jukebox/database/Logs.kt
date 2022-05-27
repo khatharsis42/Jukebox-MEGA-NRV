@@ -23,8 +23,8 @@ object Logs : IntIdTable() {
  */
 class Log(id: EntityID<Int>) : IntEntity(id) {
     var trackId by Track referencedOn Logs.trackId
-    var userId  by User referencedOn Logs.userId
-    var time    by Logs.time
+    var userId by User referencedOn Logs.userId
+    var time by Logs.time
 
     companion object : IntEntityClass<Log>(Logs) {
         /**
@@ -43,11 +43,12 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
          * Récupère les [n] derniers [Log].
          */
         fun getLogs(n: Int): List<Log> =
-            database.dbQuery { Log
-                .all()
-                .orderBy(Logs.time to SortOrder.DESC)
-                .limit(n)
-                .toList()
+            database.dbQuery {
+                Log
+                    .all()
+                    .orderBy(Logs.time to SortOrder.DESC)
+                    .limit(n)
+                    .toList()
             }
 
         /**
@@ -55,10 +56,11 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
          * Si [timeDelta] est [Nothing], renvoie tous les [Log].
          */
         fun getLogs(timeDelta: Int? = null): List<Log> =
-            database.dbQuery { Log
-                .timeFilter(timeDelta)
-                .orderBy(Logs.time to SortOrder.DESC)
-                .toList()
+            database.dbQuery {
+                Log
+                    .timeFilter(timeDelta)
+                    .orderBy(Logs.time to SortOrder.DESC)
+                    .toList()
             }
 
         /**
@@ -66,10 +68,11 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
          * Filtre les [Log] des [timeDelta] dernières secondes si fourni.
          */
         fun getUserLogs(user: User, timeDelta: Int? = null): List<Log> =
-            database.dbQuery { Log
-                .find { (Logs.userId eq user.id).timeFilter(timeDelta) }
-                .orderBy(Logs.time to SortOrder.DESC)
-                .toList()
+            database.dbQuery {
+                Log
+                    .find { (Logs.userId eq user.id).timeFilter(timeDelta) }
+                    .orderBy(Logs.time to SortOrder.DESC)
+                    .toList()
             }
 
         /**
@@ -77,10 +80,11 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
          * Filtre les [Log] des [timeDelta] dernières secondes si fourni.
          */
         fun getTrackLogs(track: Track, timeDelta: Int? = null): List<Log> =
-            database.dbQuery { Log
-                .find { (Logs.trackId eq track.id).timeFilter(timeDelta) }
-                .orderBy(Logs.time to SortOrder.DESC)
-                .toList()
+            database.dbQuery {
+                Log
+                    .find { (Logs.trackId eq track.id).timeFilter(timeDelta) }
+                    .orderBy(Logs.time to SortOrder.DESC)
+                    .toList()
             }
 
         /**
@@ -90,13 +94,14 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
          * Coupe la liste aux [n] [User] les plus actif·ve·s, si fourni.
          */
         fun getMostActiveUsers(timeDelta: Int? = null, n: Int? = null): List<Pair<Int, User>> =
-            database.dbQuery { Logs
-                .slice(Logs.userId.count(), Logs.userId)
-                .timeFilter(timeDelta)
-                .groupBy(Logs.userId)
-                .orderBy(Logs.userId.count() to SortOrder.DESC)
-                .let { if (n != null) it.limit(n) else it }
-                .map { it[Logs.userId.count()].toInt() to User[it[Logs.userId]] }
+            database.dbQuery {
+                Logs
+                    .slice(Logs.userId.count(), Logs.userId)
+                    .timeFilter(timeDelta)
+                    .groupBy(Logs.userId)
+                    .orderBy(Logs.userId.count() to SortOrder.DESC)
+                    .let { if (n != null) it.limit(n) else it }
+                    .map { it[Logs.userId.count()].toInt() to User[it[Logs.userId]] }
             }
 
         /**
@@ -106,15 +111,15 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
          * Coupe la liste aux [n] [Track] les plus écoutées, si fourni.
          */
         fun getMostPlayedTracks(timeDelta: Int? = null, n: Int? = null): List<Pair<Int, Track>> =
-            database.dbQuery { Logs
-                .slice(Logs.userId.count(), Logs.userId)
-                .timeFilter(timeDelta)
-                .groupBy(Logs.userId)
-                .orderBy(Logs.trackId.count() to SortOrder.DESC)
-                .let { if (n != null) it.limit(n) else it }
-                .map { it[Logs.trackId.count()].toInt() to Track[it[Logs.trackId]] }
+            database.dbQuery {
+                Logs
+                    .slice(Logs.userId.count(), Logs.userId)
+                    .timeFilter(timeDelta)
+                    .groupBy(Logs.userId)
+                    .orderBy(Logs.trackId.count() to SortOrder.DESC)
+                    .let { if (n != null) it.limit(n) else it }
+                    .map { it[Logs.trackId.count()].toInt() to Track[it[Logs.trackId]] }
             }
-
 
         /**
          * Pour une [track] donnée, renvoie une [List] de [Pair<Int, User>] triée
@@ -124,13 +129,14 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
          * Coupe la liste aux [n] [User] les plus actif·ve·s, si fourni.
          */
         fun getMostActiveUsers(track: Track, timeDelta: Int? = null, n: Int? = null): List<Pair<Int, User>> =
-            database.dbQuery { Logs
-                .slice(Logs.userId.count(), Logs.userId)
-                .select { (Logs.trackId eq track.id).timeFilter(timeDelta) }
-                .groupBy(Logs.userId)
-                .orderBy(Logs.userId.count() to SortOrder.DESC)
-                .let { if (n != null) it.limit(n) else it }
-                .map { it[Logs.userId.count()].toInt() to User[it[Logs.userId]] }
+            database.dbQuery {
+                Logs
+                    .slice(Logs.userId.count(), Logs.userId)
+                    .select { (Logs.trackId eq track.id).timeFilter(timeDelta) }
+                    .groupBy(Logs.userId)
+                    .orderBy(Logs.userId.count() to SortOrder.DESC)
+                    .let { if (n != null) it.limit(n) else it }
+                    .map { it[Logs.userId.count()].toInt() to User[it[Logs.userId]] }
             }
 
         /**
@@ -141,13 +147,14 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
          * Coupe la liste aux [n] [Track] les plus écoutées, si fourni.
          */
         fun getMostPlayedTracks(user: User, timeDelta: Int? = null, n: Int? = null): List<Pair<Int, Track>> =
-            database.dbQuery { Logs
-                .slice(Logs.trackId.count(), Logs.trackId)
-                .select { (Logs.userId eq user.id).timeFilter(timeDelta) }
-                .groupBy(Logs.trackId)
-                .orderBy(Logs.trackId.count() to SortOrder.DESC)
-                .let { if (n != null) it.limit(n) else it }
-                .map { it[Logs.trackId.count()].toInt() to Track[it[Logs.trackId]] }
+            database.dbQuery {
+                Logs
+                    .slice(Logs.trackId.count(), Logs.trackId)
+                    .select { (Logs.userId eq user.id).timeFilter(timeDelta) }
+                    .groupBy(Logs.trackId)
+                    .orderBy(Logs.trackId.count() to SortOrder.DESC)
+                    .let { if (n != null) it.limit(n) else it }
+                    .map { it[Logs.trackId.count()].toInt() to Track[it[Logs.trackId]] }
             }
     }
 }
@@ -161,7 +168,7 @@ private fun getNow() = Instant.now().epochSecond.toInt()
  * Raccourci pour filtrer [Logs] aux [timeDelta] dernières secondes.
  */
 private fun Op<Boolean>.timeFilter(timeDelta: Int?): Op<Boolean> =
-    this.let {
+    let {
         if (timeDelta != null) {
             it.and(Logs.time greater (getNow() - timeDelta))
         } else it
@@ -171,7 +178,7 @@ private fun Op<Boolean>.timeFilter(timeDelta: Int?): Op<Boolean> =
  * Raccourci pour filtrer [Logs] aux [timeDelta] dernières secondes.
  */
 private fun FieldSet.timeFilter(timeDelta: Int?): Query =
-    this.let {
+    let {
         if (timeDelta != null) {
             it.select(Logs.time greater (getNow() - timeDelta))
         } else it.selectAll()
@@ -181,7 +188,7 @@ private fun FieldSet.timeFilter(timeDelta: Int?): Query =
  * Raccourci pour filtrer [Logs] aux [timeDelta] dernières secondes.
  */
 private fun Log.Companion.timeFilter(timeDelta: Int?): SizedIterable<Log> =
-    this.let {
+    let {
         if (timeDelta != null) {
             it.find { Logs.time greater (getNow() - timeDelta) }
         } else it.all()

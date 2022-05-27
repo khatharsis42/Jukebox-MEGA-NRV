@@ -31,7 +31,7 @@ class User(id: EntityID<Int>) : IntEntity(id) {
      * Met à jour le [theme] de l'[User].
      */
     @JvmName("setTheme1")
-    fun setTheme(style: String?) = database.dbQuery { this.theme = style }
+    fun setTheme(style: String?) = database.dbQuery { theme = style }
 
     companion object : IntEntityClass<User>(Users) {
         /**

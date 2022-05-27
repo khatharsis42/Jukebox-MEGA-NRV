@@ -28,10 +28,8 @@ class StatsColumn(val name: String, content: List<List<Any>>) : Template<FlowCon
                         }
                     }
                 }
-                if (columns.isNotEmpty()) {
-                    tbody {
-                        columns.forEach { tr { it.forEach { th { text(it) } } } }
-                    }
+                tbody {
+                    columns.forEach { tr { it.forEach { th { text(it) } } } }
                 }
             }
         }

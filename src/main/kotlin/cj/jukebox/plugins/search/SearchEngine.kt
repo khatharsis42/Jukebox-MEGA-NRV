@@ -1,5 +1,6 @@
 package cj.jukebox.plugins.search
 
+import cj.jukebox.config
 import cj.jukebox.database.TrackData
 
 import kotlinx.serialization.decodeFromString
@@ -22,7 +23,7 @@ private fun urlRegexMaker(domain: String) = Regex("^(https?://)?((www\\.)?$domai
  */
 enum class SearchEngine {
     /**
-     * Corresponds à une URL directe vers une musique de Jamendo.
+     * Correspond à une URL directe vers une musique de Jamendo.
      */
     JAMENDO {
         override fun downloadSingle(url: String): Array<TrackData> {
@@ -33,7 +34,7 @@ enum class SearchEngine {
     },
 
     /**
-     * Corresponds à une URL directe vers une vidéo de Twitch.
+     * Correspond à une URL directe vers une vidéo de Twitch.
      */
     TWITCH {
         override fun downloadSingle(url: String): Array<TrackData> {
@@ -44,7 +45,7 @@ enum class SearchEngine {
     },
 
     /**
-     * Corresponds à une URL directe vers une musique Bandcamp.
+     * Correspond à une URL directe vers une musique Bandcamp.
      */
     BANDCAMP {
         override fun downloadSingle(url: String): Array<TrackData> {
@@ -55,7 +56,7 @@ enum class SearchEngine {
     },
 
     /**
-     * Corresponds à une URL directe vers une musique.
+     * Correspond à une URL directe vers une musique.
      */
     DIRECT_FILE {
         override fun downloadSingle(url: String): Array<TrackData> {
@@ -67,7 +68,7 @@ enum class SearchEngine {
     },
 
     /**
-     * Corresponds à une recherche Soundcloud.
+     * Correspond à une recherche Soundcloud.
      */
     SOUNDCLOUD {
         override fun downloadSingle(url: String): Array<TrackData> {
@@ -79,7 +80,7 @@ enum class SearchEngine {
     },
 
     /**
-     * Corresponds à la recherche avec YouTube.
+     * Correspond à la recherche avec YouTube.
      */
     YOUTUBE {
         override fun downloadSingle(url: String): Array<TrackData> {
@@ -93,7 +94,6 @@ enum class SearchEngine {
         override val youtubeArgs: Map<String, String> = mapOf("yes-playlist" to "")
         override val urlRegex = urlRegexMaker("youtube\\.com|youtu\\.be")
         override val queryRegex = "^!yt .+\$".toRegex()
-
     };
 
     /**
@@ -128,7 +128,7 @@ enum class SearchEngine {
      */
     open val queryRegex: Regex? = null
 
-    private val tempDir = File("./src/main/resources/temp")
+    private val tmpDir = File(config.data.TMP_PATH)
 
     /**
      * Exécute une recherche via youtube-dl. Une liste des métadonnées en Json.
@@ -144,13 +144,17 @@ enum class SearchEngine {
                 } else {
                     ""
                 } + request
+
         val randomValue = (0..Int.MAX_VALUE).random()
-        "mkdir $randomValue".runCommand(tempDir)
-        wholeRequest.runCommand(tempDir.resolve(randomValue.toString()))
-        val retour = tempDir.resolve(randomValue.toString())
+
+        "mkdir $randomValue".runCommand(tmpDir)
+        wholeRequest.runCommand(tmpDir.resolve(randomValue.toString()))
+
+        val retour = tmpDir.resolve(randomValue.toString())
             .listFiles { _, s -> s.endsWith(".json") }
             ?.map { Json.decodeFromString<JsonObject>(it.readText(Charsets.UTF_8)) }
-        "rm -rf $randomValue".runCommand(tempDir)
+        "rm -rf $randomValue".runCommand(tmpDir)
+
         return retour ?: listOf()
     }
 
