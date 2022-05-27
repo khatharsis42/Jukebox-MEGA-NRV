@@ -28,11 +28,7 @@ class History(user: UserSession, n: Int = 50) : MainTemplate(user, content = obj
                 style = "padding:30px;"
                 div("col statcol") {
                     style = "margin: auto;"
-                    insert(
-                        StatsColumn(
-                            if (data.isNotEmpty()) "" else "Y'a r :/", data
-                        ), statsColumn
-                    )
+                    insert(StatsColumn(if (data.isNotEmpty()) "" else "Y'a r :/", data), statsColumn)
                 }
             }
         }

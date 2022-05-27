@@ -19,7 +19,7 @@ class TrackStatistics(user: UserSession, track: Track) : MainTemplate(user, cont
         div("container") {
             div {
                 style = "text-align:center"
-                h1 { text("Statistiques de ${track.track}") }
+                h1 { text("Statistiques de ${track.artist} - ${track.track}") }
                 when {
                     track.obsolete -> h2 { style = "color:red"; text("Obsolete track") }
                     track.blacklisted -> h2 { style = "color:red"; text("Blacklisted track") }
@@ -47,5 +47,5 @@ class TrackStatistics(user: UserSession, track: Track) : MainTemplate(user, cont
  * Prépare les données nécessaires à l'affichage des statistiques.
  * @author Ukabi
  */
-private fun prepareData(track: Track, timeDelta: Int? = null): List<List<Any>> =
-    listOf(listOf("User", "Count")) + Log.getMostActiveUsers(track).map { listOf(it.second.name, it.first) }
+private fun prepareData(track: Track, timeDelta: Int? = null): List<List<Any>> = listOf(listOf("User", "Count")) +
+        Log.getMostActiveUsers(track, timeDelta).map { listOf(it.second.name, it.first) }
