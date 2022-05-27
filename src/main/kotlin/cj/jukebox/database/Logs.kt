@@ -1,6 +1,7 @@
 package cj.jukebox.database
 
 import cj.jukebox.database
+import cj.jukebox.utils.getNow
 
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
@@ -8,8 +9,6 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.greater
-
-import java.time.Instant
 
 object Logs : IntIdTable() {
     val trackId = reference("trackId", Tracks)
@@ -187,11 +186,6 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
             }
     }
 }
-
-/**
- * Raccourci pour renvoyer le timestamp actuel.
- */
-private fun getNow() = Instant.now().epochSecond.toInt()
 
 /**
  * Raccourci pour filtrer [Logs] aux [timeDelta] dernières secondes.

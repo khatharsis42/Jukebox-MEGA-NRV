@@ -1,10 +1,12 @@
 package cj.jukebox.plugins.statistics
 
-import cj.jukebox.database.Log
-import cj.jukebox.database.Track
+import cj.jukebox.database.*
 import cj.jukebox.templates.MainTemplate
+
 import cj.jukebox.utils.UserSession
+
 import io.ktor.server.html.*
+
 import kotlinx.html.*
 
 /**

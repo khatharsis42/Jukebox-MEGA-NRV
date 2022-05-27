@@ -1,16 +1,17 @@
 package cj.jukebox.plugins.statistics
 
-import cj.jukebox.database.Log
-import cj.jukebox.database.User
+import cj.jukebox.database.*
 import cj.jukebox.templates.MainTemplate
+
 import cj.jukebox.utils.UserSession
+import cj.jukebox.utils.month
+
 import io.ktor.server.html.*
+
 import kotlinx.html.FlowContent
 import kotlinx.html.div
 import kotlinx.html.h1
 import kotlinx.html.style
-
-const val month = 2629800
 
 /**
  * Statistiques d'un seul utilisateur.

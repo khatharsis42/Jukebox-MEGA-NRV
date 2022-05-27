@@ -1,18 +1,18 @@
 package cj.jukebox.plugins.statistics
 
-import cj.jukebox.database.Log
-import cj.jukebox.database.Track
-import cj.jukebox.database.User
+import cj.jukebox.database.*
 import cj.jukebox.templates.MainTemplate
+
 import cj.jukebox.utils.UserSession
+import cj.jukebox.utils.day
+import cj.jukebox.utils.week
+
 import io.ktor.server.html.*
+
 import kotlinx.html.FlowContent
 import kotlinx.html.div
 import kotlinx.html.h2
 import kotlinx.html.style
-
-const val day = 86400
-const val week = 604800
 
 /**
  * Statistiques globales du jukebox.
