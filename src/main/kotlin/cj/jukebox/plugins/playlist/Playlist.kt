@@ -5,6 +5,37 @@ import cj.jukebox.utils.UserSession
 
 typealias Playlist = MutableList<Log>
 
+enum class Direction { UP, DOWN }
+
+/**
+ * Échange les [Track] étant aux emplacements [from] et [to].
+ * @author Ukabi
+ */
+fun Playlist.move(from: Int, to: Int) = apply {
+    this[from] = this[to].also { this[to] = this[from] }
+}
+
+/**
+ * Échange l'élément [from] de la [Playlist] avec l'élément au-dessus ou en dessous,
+ * selon la valeur de [direction].
+ * Ne procède pas à l'échange si le bord de la [Playlist] est dépassé.
+ * @author Ukabi
+ */
+fun Playlist.move(from: Int, direction: Direction) =
+    when (direction) {
+        Direction.UP -> from - 1
+        Direction.DOWN -> from + 1
+    }.let { if ((it !in arrayOf(-1, size))) move(from, it) }
+
+/**
+ * Retrouve [log] dans la [Playlist], puis l'échange avec l'élément au-dessus ou en dessous,
+ * selon la valeur de [direction]. Le cas échéant, ne fait rien.
+ * Ne procède pas à l'échange si le bord de la [Playlist] est dépassé.
+ * @author Ukabi
+ */
+fun Playlist.move(log: Log, direction: Direction) =
+    indexOf(log).let { if (it != -1) move(it, direction) }
+
 /**
  * Vérifie si la [track] fournie peut être jouée, puis l'ajoute à la [Playlist].
  * Garde aussi la trace de l'[user] l'ayant requêtée.
@@ -58,14 +89,6 @@ fun Playlist.removeIfPossible(track: Track, delete: Boolean = true): Boolean =
  */
 fun Playlist.removeIfPossible(trackId: Int, delete: Boolean = false): Boolean =
     Track.importFromId(trackId).let { (it != null) && removeIfPossible(it, delete) }
-
-/**
- * Échange les [Track] étant aux emplacements [from] et [to].
- * @author Ukabi
- */
-fun Playlist.move(from: Int, to: Int) {
-    this[from] = this[to].also { this[to] = this[from] }
-}
 
 /**
  * Renvoie la somme des durées (en secondes) de chacune des [Track] de la [Playlist].
