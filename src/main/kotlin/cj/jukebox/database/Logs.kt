@@ -29,12 +29,12 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
         /**
          * Créé une nouvelle occurrence dans la table [Logs].
          */
-        fun createLog(track: Track, user: User) =
+        fun createLog(track: Track, user: User, timestamp: Int? = null) =
             database.dbQuery {
                 Log.new {
                     trackId = track
                     userId = user
-                    time = getNow()
+                    time = timestamp ?: getNow()
                 }
             }
 
