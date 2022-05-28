@@ -2,6 +2,7 @@ package cj.jukebox
 
 import cj.jukebox.config.Config
 import cj.jukebox.database.DatabaseFactory
+import cj.jukebox.database.Log
 
 import cj.jukebox.plugins.auth.auth
 import cj.jukebox.plugins.nav.nav
@@ -16,6 +17,7 @@ import io.ktor.server.netty.*
 
 val config = Config("src/main/resources/config.json")
 val database = DatabaseFactory(config.data.DATABASE_PATH)
+val playlist = mutableListOf<Log>()
 
 /**
  * Lieu de lancement de l'application jukebox.
