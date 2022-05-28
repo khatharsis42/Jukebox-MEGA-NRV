@@ -5,7 +5,11 @@ import cj.jukebox.utils.UserSession
 
 typealias Playlist = MutableList<Log>
 
-enum class Direction { UP, DOWN }
+enum class Direction(val direction: String) {
+    TOP("top"),
+    UP("up"),
+    DOWN("down")
+}
 
 /**
  * Échange les [Track] étant aux emplacements [from] et [to].
@@ -23,9 +27,10 @@ private fun Playlist.move(from: Int, to: Int) {
  */
 fun Playlist.move(from: Int, direction: Direction) =
     when (direction) {
-        Direction.UP -> from - 1
-        Direction.DOWN -> from + 1
-    }.let { if ((it !in arrayOf(-1, size))) move(from, it) }
+        Direction.TOP -> add(0, removeAt(from))
+        Direction.UP -> (from - 1).takeIf { it >= 0 }?.let { move(from, it) }
+        Direction.DOWN -> (from + 1).takeIf { it < size }?.let { move(from, it) }
+    }
 
 /**
  * Retrouve [log] dans la [Playlist], puis l'échange avec l'élément au-dessus ou en dessous,
