@@ -11,7 +11,7 @@ enum class Direction { UP, DOWN }
  * Échange les [Track] étant aux emplacements [from] et [to].
  * @author Ukabi
  */
-fun Playlist.move(from: Int, to: Int) = apply {
+private fun Playlist.move(from: Int, to: Int) {
     this[from] = this[to].also { this[to] = this[from] }
 }
 
@@ -34,7 +34,7 @@ fun Playlist.move(from: Int, direction: Direction) =
  * @author Ukabi
  */
 fun Playlist.move(log: Log, direction: Direction) =
-    indexOf(log).let { if (it != -1) move(it, direction) }
+    indexOf(log).takeIf { it >= 0 }?.let { move(it, direction) }
 
 /**
  * Vérifie si la [track] fournie peut être jouée, puis l'ajoute à la [Playlist].
@@ -87,7 +87,7 @@ fun Playlist.removeIfPossible(track: Track, delete: Boolean = true): Boolean =
  * Efface aussi l'occurrence de [Log] précédemment créée si [delete] est fourni.
  * @author Ukabi
  */
-fun Playlist.removeIfPossible(trackId: Int, delete: Boolean = false): Boolean =
+fun Playlist.removeIfPossible(trackId: Int, delete: Boolean = true): Boolean =
     Track.importFromId(trackId).let { (it != null) && removeIfPossible(it, delete) }
 
 /**

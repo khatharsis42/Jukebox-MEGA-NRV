@@ -17,7 +17,7 @@ import kotlinx.html.*
 open class MainTemplate(
     private val user: UserSession,
     private val content: Template<FlowContent>,
-    private val music: Template<FlowContent>? = null
+    private val music: Template<FlowContent>? = null,
 ) : Template<HTML> {
     private val flowTemplate = TemplatePlaceholder<Template<FlowContent>>()
     private val header = TemplatePlaceholder<Header>()

@@ -1,6 +1,5 @@
 package cj.jukebox.plugins.statistics
 
-import cj.jukebox.database
 import cj.jukebox.database.*
 import cj.jukebox.utils.getParam
 import cj.jukebox.utils.getUserSession
@@ -27,35 +26,24 @@ fun Application.statistics() {
                 }
 
                 get("/user/{username}") {
-                    val user = call.getUserSession()!!
-
                     val username = call.getParam("username")
-                    val res = database.dbQuery {
-                        User.find { Users.name eq username }
-                            .limit(1).toList()
-                    }
-                    if (res.isNotEmpty()) {
-                        val lookedUpUser = res.first()
-                        call.respondHtmlTemplate(UserStatistics(user, lookedUpUser)) {}
-                    } else {
-                        // TODO: proper redirection
-                        call.respondText("Invalid username")
-                    }
+                    // TODO: proper failure redirection
+                    val lookedUpUser = User.findUser(username) ?: return@get call.respondText("Invalid username")
+
+                    val user = call.getUserSession()!!
+                    call.respondHtmlTemplate(UserStatistics(user, lookedUpUser)) {}
                 }
 
                 get("/track/{track}") {
-                    val user = call.getUserSession()!!
-
                     val trackId = call.getParam("track").toInt()
-                    val track = database.dbQuery { Track.findById(trackId) }
-                    if (track != null) {
-                        call.respondHtmlTemplate(TrackStatistics(user, track)) {}
-                    } else {
-                        // TODO: proper redirection
-                        call.respondText("Invalid track !")
-                    }
+                    // TODO: proper failure redirection
+                    val track = Track.importFromId(trackId) ?: return@get call.respondText("Invalid track !")
+
+                    val user = call.getUserSession()!!
+                    call.respondHtmlTemplate(TrackStatistics(user, track)) {}
                 }
             }
+
             route("/history") {
                 get("/{count}") {
                     val user = call.getUserSession()!!

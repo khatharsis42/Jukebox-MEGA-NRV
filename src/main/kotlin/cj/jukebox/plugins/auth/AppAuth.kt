@@ -24,13 +24,10 @@ fun Application.auth() {
             passwordParamName = "pass"
 
             validate { credentials ->
-                val user = User.findUser(credentials.name, credentials.password)
-                if (user != null) {
-                    sessions.setUserSession(user.id, user.name, user.theme)
-                    UserIdPrincipal(credentials.name)
-                } else {
-                    null
-                }
+                val user = User.findUser(credentials.name, credentials.password) ?: return@validate null
+
+                sessions.setUserSession(user.id, user.name, user.theme)
+                UserIdPrincipal(credentials.name)
             }
             challenge("auth?failed=true")
         }
@@ -40,14 +37,11 @@ fun Application.auth() {
             passwordParamName = "pass"
 
             validate { credentials ->
-                val res = User.findUser(credentials.name)
-                if (res == null) {
-                    val user = User.createUser(credentials.name, credentials.password)
-                    sessions.setUserSession(user.id, user.name, user.theme)
-                    UserIdPrincipal(credentials.name)
-                } else {
-                    null
-                }
+                User.findUser(credentials.name)?.let { return@validate null }
+
+                val user = User.createUser(credentials.name, credentials.password)
+                sessions.setUserSession(user.id, user.name, user.theme)
+                UserIdPrincipal(credentials.name)
             }
             challenge("auth?failed=true")
         }
@@ -71,12 +65,12 @@ fun Application.auth() {
     routing {
         route("/auth") {
             get {
-                if (call.getUserSession() != null) {
-                    call.respondRedirect("app")
-                } else {
+                call.getUserSession()?.let {
                     val correct = call.request.queryParameters["failed"] != "true"
                     call.respondHtmlTemplate(Auth(correct)) {}
+                    return@get
                 }
+                call.respondRedirect("app")
             }
         }
 
