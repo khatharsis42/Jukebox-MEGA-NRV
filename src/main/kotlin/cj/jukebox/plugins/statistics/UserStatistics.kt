@@ -10,6 +10,7 @@ import kotlinx.html.FlowContent
 import kotlinx.html.div
 import kotlinx.html.h1
 import kotlinx.html.style
+import java.time.Duration
 
 /**
  * Statistiques d'un seul utilisateur.
@@ -42,5 +43,5 @@ class UserStatistics(user: UserSession, lookedUpUser: User) :
  * Prépare les données nécessaires à l'affichage des statistiques.
  * @author Ukabi
  */
-private fun prepareData(user: User, timeDelta: Int? = null): List<List<Any>> = listOf(listOf("Track", "Count")) +
+private fun prepareData(user: User, timeDelta: Duration? = null): List<List<Any>> = listOf(listOf("Track", "Count")) +
         Log.getMostPlayedTracks(user, timeDelta).map { listOf("${it.second.artist} - ${it.second.track}", it.first) }

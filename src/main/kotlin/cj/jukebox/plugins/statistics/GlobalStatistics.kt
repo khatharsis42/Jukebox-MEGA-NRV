@@ -12,6 +12,7 @@ import kotlinx.html.FlowContent
 import kotlinx.html.div
 import kotlinx.html.h2
 import kotlinx.html.style
+import java.time.Duration
 
 /**
  * Statistiques globales du jukebox.
@@ -50,12 +51,12 @@ class GlobalStatistics(user: UserSession) : MainTemplate(user, content = object 
  * Prépare les données nécessaires à l'affichage des statistiques des [User].
  * @author Ukabi
  */
-private fun prepareUserData(n: Int, timeDelta: Int? = null): List<List<Any>> = listOf(listOf("User", "Count")) +
+private fun prepareUserData(n: Int, timeDelta: Duration? = null): List<List<Any>> = listOf(listOf("User", "Count")) +
         Log.getMostActiveUsers(timeDelta, n).map { listOf(it.second.name, it.first) }
 
 /**
  * Prépare les données nécessaires à l'affichage des statistiques des [Track].
  * @author Ukabi
  */
-private fun prepareTrackData(n: Int, timeDelta: Int? = null): List<List<Any>> = listOf(listOf("Track", "Count")) +
+private fun prepareTrackData(n: Int, timeDelta: Duration? = null): List<List<Any>> = listOf(listOf("Track", "Count")) +
         Log.getMostPlayedTracks(timeDelta, n).map { listOf("${it.second.artist} - ${it.second.track}", it.first) }
