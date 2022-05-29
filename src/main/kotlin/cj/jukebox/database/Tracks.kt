@@ -125,7 +125,6 @@ class Track(id: EntityID<Int>) : IntEntity(id) {
                 Track
                     .find { Tracks.url eq trackUrl }
                     .limit(1)
-                    .toList()
                     .firstOrNull()
             }
 

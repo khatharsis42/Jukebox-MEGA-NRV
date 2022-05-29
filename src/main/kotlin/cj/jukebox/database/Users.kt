@@ -59,7 +59,6 @@ class User(id: EntityID<Int>) : IntEntity(id) {
                 User
                     .find { (Users.name eq name).passFilter(pass) }
                     .limit(1)
-                    .toList()
                     .firstOrNull()
             }
     }
