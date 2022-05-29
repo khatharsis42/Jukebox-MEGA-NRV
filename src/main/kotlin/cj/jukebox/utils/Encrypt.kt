@@ -12,18 +12,8 @@ val secretKey = config.data.SECRET_PASSWORD_ENCRYPT
  * Permet de chiffrer une [String]. Utilise le chiffrage AES-GCM.
  */
 fun String.encrypt(): String {
-    val secretKeySpec = SecretKeySpec(secretKey.toByteArray(), "AES")
-    val iv = ByteArray(16)
-    val charArray = secretKey.toCharArray()
-    for (i in charArray.indices) {
-        iv[i] = charArray[i].code.toByte()
-    }
-    val gcmParameterSpec = GCMParameterSpec(128, iv)
+    val encryptedValue = createCipherFromSecret(true, toByteArray())
 
-    val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-    cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, gcmParameterSpec)
-
-    val encryptedValue = cipher.doFinal(toByteArray())
     return Base64.getEncoder().encodeToString(encryptedValue)
 }
 
@@ -31,17 +21,20 @@ fun String.encrypt(): String {
  * Permet de déchiffrer une [String]. Utilise le chiffrage AES-GCM.
  */
 fun String.decrypt(): String {
-    val secretKeySpec = SecretKeySpec(secretKey.toByteArray(), "AES")
-    val iv = ByteArray(16)
-    val charArray = secretKey.toCharArray()
-    for (i in charArray.indices) {
-        iv[i] = charArray[i].code.toByte()
-    }
-    val gcmParameterSpec = GCMParameterSpec(128, iv)
+    val decryptedValue = createCipherFromSecret(false, Base64.getDecoder().decode(this))
+
+    return String(decryptedValue)
+}
+
+private fun createCipherFromSecret(encrypt: Boolean, value: ByteArray): ByteArray {
+    val secretBuffer = secretKey.toByteArray()
+    val secretKeySpec = SecretKeySpec(secretBuffer, "AES")
+    val gcmParameterSpec = GCMParameterSpec(128, secretBuffer)
+
+    val cipherMode = if (encrypt) Cipher.ENCRYPT_MODE else Cipher.DECRYPT_MODE
 
     val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-    cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, gcmParameterSpec)
+    cipher.init(cipherMode, secretKeySpec, gcmParameterSpec)
 
-    val decryptedByteValue = cipher.doFinal(Base64.getDecoder().decode(this))
-    return String(decryptedByteValue)
+    return cipher.doFinal(value)
 }
