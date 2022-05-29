@@ -2,7 +2,6 @@ val kotlinVersion: String by project
 
 val exposedVersion: String by project
 val kotlinCssVersion: String by project
-val ktormVersion: String by project
 val ktorVersion: String by project
 val logbackVersion: String by project
 
@@ -46,7 +45,6 @@ dependencies {
 
     implementation("org.jetbrains.kotlin-wrappers:kotlin-css:$kotlinCssVersion")
 
-    // implementation("org.ktorm:ktorm-core:${ktorm_version}")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 
