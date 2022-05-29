@@ -138,22 +138,26 @@ enum class SearchEngine {
         println(request)
         val wholeRequest = "yt-dlp --id --write-info-json --skip-download " +
                 if (youtubeArgs.isNotEmpty()) {
-                    youtubeArgs
-                        .map { (key, value) -> "--$key ${if (value.isEmpty()) "" else "$value "}" }
-                        .reduce { acc, s -> acc + s }
+                    youtubeArgs.entries
+                        .joinToString("") { (key, value) ->
+                            "--$key ${if (value.isEmpty()) "" else "$value "}"
+                        }
                 } else {
                     ""
                 } + request
 
         val randomValue = (0..Int.MAX_VALUE).random()
 
-        "mkdir $randomValue".runCommand(tmpDir)
-        wholeRequest.runCommand(tmpDir.resolve(randomValue.toString()))
+        val workingDir = tmpDir.resolve(randomValue.toString())
+        workingDir.mkdirs()
 
-        val retour = tmpDir.resolve(randomValue.toString())
-            .listFiles { _, s -> s.endsWith(".json") }
+        wholeRequest.runCommand(workingDir)
+
+        val retour = workingDir
+            .listFiles { _, s ->s.endsWith(".json") }
             ?.map { Json.decodeFromString<JsonObject>(it.readText(Charsets.UTF_8)) }
-        "rm -rf $randomValue".runCommand(tmpDir)
+
+        workingDir.deleteRecursively()
 
         return retour ?: listOf()
     }
