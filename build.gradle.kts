@@ -47,7 +47,7 @@ dependencies {
     implementation("org.jetbrains.kotlin-wrappers:kotlin-css:$kotlinCssVersion")
 
     // implementation("org.ktorm:ktorm-core:${ktorm_version}")
-    // testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
-    // testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 
 }

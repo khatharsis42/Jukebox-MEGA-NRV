@@ -1,29 +1,28 @@
 package cj.jukebox
 
-import io.ktor.server.routing.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.auth.*
-import io.ktor.util.*
-import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.request.*
+import cj.jukebox.plugins.nav.nav
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import kotlin.test.*
+import io.ktor.http.*
+import io.ktor.server.auth.*
 import io.ktor.server.testing.*
-import cj.jukebox.plugins.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class ApplicationTest {
     @Test
     fun testRoot() = testApplication {
         application {
-            configureRouting()
+            authentication {
+                provider("auth-session") {
+                    authenticate {  }
+                }
+            }
+            nav()
         }
-        client.get("/").apply {
+        client.get("/status").apply {
             assertEquals(HttpStatusCode.OK, status)
-            assertEquals("Hello World!", bodyAsText())
+            assertEquals("status", bodyAsText())
         }
     }
 }
