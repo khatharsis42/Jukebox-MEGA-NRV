@@ -30,7 +30,7 @@ fun Application.settings() {
                     userSession.theme = style
                     User.findUser(userSession.id)?.setTheme(style)
 
-                    call.respondRedirect("settings")
+                    call.respondRedirect("/settings")
                 }
             }
         }

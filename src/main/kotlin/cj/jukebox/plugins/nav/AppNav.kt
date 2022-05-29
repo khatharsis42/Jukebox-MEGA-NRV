@@ -16,7 +16,7 @@ fun Application.nav() {
     routing {
         authenticate("auth-session") {
             get("/") {
-                call.respondRedirect("app")
+                call.respondRedirect("/app")
             }
 
             get("/app") {

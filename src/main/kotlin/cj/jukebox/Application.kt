@@ -1,8 +1,7 @@
 package cj.jukebox
 
 import cj.jukebox.config.Config
-import cj.jukebox.database.DatabaseFactory
-import cj.jukebox.database.Log
+import cj.jukebox.database.*
 
 import cj.jukebox.plugins.auth.auth
 import cj.jukebox.plugins.nav.nav

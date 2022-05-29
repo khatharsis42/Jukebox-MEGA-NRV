@@ -19,7 +19,7 @@ data class UserSession(val id: Int, val name: String, var theme: String?) : Prin
     /**
      * Convertit la [UserSession] en l'occurrence de la table [Users] correspondante.
      */
-    fun toUser(): User = User[id]
+    fun toUser(): User = User.findUser(id)!! // can assert because [User] exists if [UserSession] exists too
 }
 
 /**

@@ -29,7 +29,7 @@ fun Application.auth() {
                 sessions.setUserSession(user.id, user.name, user.theme)
                 UserIdPrincipal(credentials.name)
             }
-            challenge("auth?failed=true")
+            challenge("/auth?failed=true")
         }
 
         form("auth-signup") {
@@ -43,12 +43,12 @@ fun Application.auth() {
                 sessions.setUserSession(user.id, user.name, user.theme)
                 UserIdPrincipal(credentials.name)
             }
-            challenge("auth?failed=true")
+            challenge("/auth?failed=true")
         }
 
         session<UserSession>("auth-session") {
             validate { getUserSession() }
-            challenge("auth")
+            challenge("/auth")
         }
     }
 
@@ -65,12 +65,12 @@ fun Application.auth() {
     routing {
         route("/auth") {
             get {
-                call.getUserSession()?.let {
+                call.getUserSession() ?: run {
                     val correct = call.request.queryParameters["failed"] != "true"
                     call.respondHtmlTemplate(Auth(correct)) {}
                     return@get
                 }
-                call.respondRedirect("app")
+                call.respondRedirect("/app")
             }
         }
 
