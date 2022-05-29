@@ -79,7 +79,7 @@ class Track(id: EntityID<Int>) : IntEntity(id) {
          * @param[id] [Int] indiquant son entier dans la BDD.
          * @return Une [Track] si l'ID est dans la DB, [Nothing] sinon
          */
-        fun importFromId(id: Int): Track? = database.dbQuery { Track.findById(id) }
+        fun getTrack(id: Int): Track? = database.dbQuery { Track.findById(id) }
 
         /**
          * Importe toutes les tracks dont le nom corresponds à la [String] donnée en argument.

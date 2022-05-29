@@ -25,10 +25,10 @@ fun Application.statistics() {
                     call.respondHtmlTemplate(GlobalStatistics(user)) {}
                 }
 
-                get("/user/{username}") {
-                    val username = call.getParam("username")
+                get("/user/{userId}") {
+                    val userId = call.getParam("userId").toInt()
                     // TODO: proper failure redirection
-                    val lookedUpUser = User.findUser(username) ?: return@get call.respondText("Invalid username")
+                    val lookedUpUser = User.findUser(userId) ?: return@get call.respondText("Invalid user!")
 
                     val user = call.getUserSession()!!
                     call.respondHtmlTemplate(UserStatistics(user, lookedUpUser)) {}
@@ -37,7 +37,7 @@ fun Application.statistics() {
                 get("/track/{track}") {
                     val trackId = call.getParam("track").toInt()
                     // TODO: proper failure redirection
-                    val track = Track.importFromId(trackId) ?: return@get call.respondText("Invalid track !")
+                    val track = Track.getTrack(trackId) ?: return@get call.respondText("Invalid track!")
 
                     val user = call.getUserSession()!!
                     call.respondHtmlTemplate(TrackStatistics(user, track)) {}

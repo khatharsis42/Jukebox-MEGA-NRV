@@ -57,7 +57,7 @@ fun Playlist.addIfPossible(track: Track, user: User): Boolean =
  * @author Ukabi
  */
 fun Playlist.addIfPossible(trackId: Int, user: User): Boolean =
-    Track.importFromId(trackId)?.let { addIfPossible(it, user) } ?: false
+    Track.getTrack(trackId)?.let { addIfPossible(it, user) } ?: false
 
 /**
  * Vérifie si la [Track] correspondant à la [trackId] fournie peut être jouée, puis l'ajoute à la [Playlist].
@@ -93,7 +93,7 @@ fun Playlist.removeIfPossible(track: Track, delete: Boolean = true): Int? =
  * @author Ukabi
  */
 fun Playlist.removeIfPossible(trackId: Int, delete: Boolean = true): Int? =
-    Track.importFromId(trackId)?.let { removeIfPossible(it, delete) }
+    Track.getTrack(trackId)?.let { removeIfPossible(it, delete) }
 
 /**
  * Renvoie la somme des durées (en secondes) de chacune des [Track] de la [Playlist].

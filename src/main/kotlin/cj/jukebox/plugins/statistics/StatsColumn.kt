@@ -12,7 +12,7 @@ import kotlinx.html.*
  */
 class StatsColumn(val name: String, content: List<List<Any>>) : Template<FlowContent> {
     private val colNames = content.firstOrNull()?.map { it.toString() }
-    private val columns = content.slice(1..content.size).map { list -> list.map { it.toString() } }
+    private val columns = content.slice(1 until content.size).map { list -> list.map { it.toString() } }
 
     override fun FlowContent.apply() {
         div("statdisplay") {
