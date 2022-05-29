@@ -21,6 +21,7 @@ fun Application.playlist() {
                 TODO("waiting for progress in /search before going further")
             }
 
+            // TODO: this is just for tests, but don't forget to make this post after
             get("/add/{id}") {
                 val session = call.getUserSession()!!
 

@@ -30,16 +30,11 @@ val player = "python player.py http://${config.data.LISTEN_ADDRESS}/sync"
  * Récupère port, adresse et module puis lance le serveur.
  */
 fun main() {
-    embeddedServer(
-        Netty,
-        port = config.data.LISTEN_PORT,
-        host = config.data.LISTEN_ADDRESS
-    ) {
+    embeddedServer(Netty, port = config.data.LISTEN_PORT, host = config.data.LISTEN_ADDRESS) {
         auth()
         nav()
         settings()
         statistics()
-
         playlist()
         track()
         search()

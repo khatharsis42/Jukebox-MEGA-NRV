@@ -3,6 +3,7 @@ import requests
 import sys
 import signal
 import itertools
+import multiprocessing
 
 from typing import (
     Iterable,
@@ -39,7 +40,8 @@ def _next(sig_num, stack_frame):
 
 def _update(sig_num, stack_frame):
     """On signal, asking script to ask for a playlist update."""
-    player.playlist_next()
+    global to_update
+    to_update = True
 
 
 def update():
@@ -51,12 +53,20 @@ def update():
         player.playlist_append(url_or_path)
 
 
+def wait():
+    global done
+    player.wait_for_playback()
+    done = True
+
+
 if __name__ == "__main__":
     # Checking if request url was provided
     if not (args := sys.argv[1:]):
         raise ValueError("Host name required.")
 
     # Global variables for script
+    done = False
+    to_skip = False
     to_update = True
     url = args[0]
 
@@ -66,26 +76,35 @@ if __name__ == "__main__":
     signal.signal(signal.SIGUSR2, _update)         # Custom signal
 
     while True:
-        try:
-            # DEBUG: printing playlist
-            print(player.playlist_filenames)
+        # DEBUG: printing playlist
+        print(player.playlist_filenames)
 
-            # Waiting for track to end
-            player.wait_for_playback()
+        try:
+            # Waiting for track to end or skip signal
+            waiting = multiprocessing.Process(target=wait)
+            waiting.start()
+            while not to_skip or not done:
+                pass
+
+            waiting.terminate()
+            done = False
+            # If skip signal received, setting to_skip value back to False
+            if to_skip:
+                to_skip = False
 
             # Removing the track that just ended playing
             player.playlist_remove(0)
-
-            # If update signal was received, resets playlist
-            # by requesting new playlist state
-            if to_update:
-                update()
-                to_update = False
-
-            # Sending back the current state of player to server
-            requests.post(url, ids)
 
         # An error that happens sometimes, just
         # ignoring it and restarting player
         except mpv.ShutdownError as e:
             player: mpv.MPV = get_player()
+
+        # If update signal was received, resets playlist
+        # by requesting new playlist state
+        if to_update:
+            update()
+            to_update = False
+
+        # Sending back the current state of player to server
+        requests.post(url, ids)
