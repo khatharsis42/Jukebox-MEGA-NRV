@@ -14,7 +14,6 @@ fun String.runCommand(workingDir: File = File("."), toNbr: Long = 60, toUnit: Ti
             .start().also { it.waitFor(toNbr, toUnit) }
     }.onFailure { it.printStackTrace() }.getOrNull()
 
-
 fun Process.sendSignal(sigName: SigName) {
     "kill -${sigName.name} ${pid().toInt()}".runCommand()
 }

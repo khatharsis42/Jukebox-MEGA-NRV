@@ -3,9 +3,6 @@ package cj.jukebox.database
 import cj.jukebox.database
 import cj.jukebox.plugins.search.SearchEngine
 
-import kotlin.reflect.KMutableProperty
-import kotlin.reflect.full.memberProperties
-
 import io.ktor.util.*
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
@@ -25,7 +22,7 @@ object Tracks : IntIdTable() {
     val artist = varchar("artist", 50).nullable()
     val album = varchar("album", 50).nullable()
     val albumArtUrl = varchar("albumArtUrl", 200).nullable()
-    val duration = integer("duration").nullable()
+    val duration = integer("duration")
 
     val blacklisted = bool("blacklisted")
         .default(false)
@@ -43,9 +40,9 @@ data class TrackData(
     val artist: String?,
     val album: String?,
     val albumArtUrl: String?,
-    val duration: String?,
-    val blacklisted: String,
-    val obsolete: String
+    val duration: Int,
+    val blacklisted: Boolean,
+    val obsolete: Boolean,
 )
 
 class Track(id: EntityID<Int>) : IntEntity(id) {
@@ -75,36 +72,39 @@ class Track(id: EntityID<Int>) : IntEntity(id) {
 
     companion object : IntEntityClass<Track>(Tracks) {
         /**
-         * Importe une Track à partir de son id dans la BDD.
-         * @param[id] [Int] indiquant son entier dans la BDD.
-         * @return Une [Track] si l'ID est dans la DB, [Nothing] sinon
+         * Renvoie la [Track] ayant pour id [id] dans la [Tracks].
+         * @param[id] L'id à chercher.
+         * @return La [Track] correspondante à l'id fourni (si existante).
          */
         fun getTrack(id: Int): Track? = database.dbQuery { Track.findById(id) }
 
         /**
-         * Importe toutes les tracks dont le nom corresponds à la [String] donnée en argument.
-         * @param[name] Nom que l'on utilise pour matcher.
-         * @return Une [List] des [Tracks] dont le nom match.
+         * Donne toutes les [Track] pour lesquelles [name] correspond.
+         * @param[name] Nom à chercher.
+         * @return Une [List] des [Track] dont le nom match.
          */
-        fun importFromName(name: String): List<Track> =
+        fun getFromName(name: String): List<Track> =
             database.dbQuery { Track.find { Tracks.track eq name }.toList() }
 
         /**
-         * Importe une track à partir de son URL.
-         * @param[trackUrl] L'URL d'une track.
-         * @return Une [Track] si l'URL est dans la DB, [Nothing] sinon
+         * Importe une [Track] à partir de [trackUrl].
+         * @param[trackUrl] L'URL à chercher.
+         * @return La [Track] correspondante à l'URL fournie (si existante).
          */
-        fun importFromUrl(trackUrl: String): Track? =
+        fun getFromUrl(trackUrl: String): Track? =
             database.dbQuery {
-                val res = Track
+                Track
                     .find { Tracks.url eq trackUrl }
-                    .limit(1).toList()
-                if (res.isNotEmpty()) res.first() else null
+                    .limit(1)
+                    .toList()
+                    .firstOrNull()
             }
 
         /**
-         * Refresh une track dans la BDD depuis son URL. Ne fait rien s'il n'existe pas de Track correspondante.
+         * Met à jour les métadonnées de la [Track] liée à [trackUrl].
+         * Ne fait rien s'il n'existe pas de [Track] correspondante.
          * @param[trackUrl] L'URL d'une track.
+         * @return La [Track] correspondante à l'URL fournie (si existante) et mise à jour.
          */
         fun refreshTrack(trackUrl: String) {
             val track = importFromUrl(trackUrl)
