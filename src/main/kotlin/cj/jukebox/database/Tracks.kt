@@ -58,19 +58,48 @@ class Track(id: EntityID<Int>) : IntEntity(id) {
 
     /**
      * Refresh les metadatas d'une track dans la BDD.
-     * @param[metadatas] Les metadatas, dans une TrackData.
      */
-    fun refreshTrack(metadatas: TrackData) {
-        for (property in this::class.memberProperties) {
-            if (property is KMutableProperty<*> && property.name in metadatas::class.memberProperties.map { it.name }) {
-                property.setter.call(metadatas::class.memberProperties.first { it.name == property.name }.getter.call())
-            }
+    fun refresh() {
+        val trackSource = source.toUpperCasePreservingASCIIRules()
+        val sourceEngine = if (trackSource in SearchEngine.values().map { it.name }) {
+            SearchEngine.valueOf(trackSource)
+        } else {
+            SearchEngine.values().first { url.matches(it.urlRegex) }
         }
-        // This should work, right ?
-        // C'est vraiment parce que j'avais la flemme de tout écrire à la main.
+
+        val metadatas = sourceEngine.downloadSingle(url).first()
+        database.dbQuery {
+            source = metadatas.source
+            track = metadatas.track
+            artist = metadatas.artist
+            album = metadatas.album
+            albumArtUrl = metadatas.albumArtUrl
+            duration = metadatas.duration
+            blacklisted = metadatas.blacklisted
+            obsolete = metadatas.obsolete
+        }
     }
 
     companion object : IntEntityClass<Track>(Tracks) {
+        fun createTrack(metadatas: TrackData): Track =
+            database.dbQuery {
+                Track.new {
+                    url = metadatas.url
+                    source = metadatas.source
+                    track = metadatas.track
+                    artist = metadatas.artist
+                    album = metadatas.album
+                    albumArtUrl = metadatas.albumArtUrl
+                    duration = metadatas.duration
+                    blacklisted = metadatas.blacklisted
+                    obsolete = metadatas.obsolete
+                }
+            }
+
+        fun createTrack(url: String): Track {
+            return Track.new {  }
+        }
+
         /**
          * Renvoie la [Track] ayant pour id [id] dans la [Tracks].
          * @param[id] L'id à chercher.
@@ -106,20 +135,6 @@ class Track(id: EntityID<Int>) : IntEntity(id) {
          * @param[trackUrl] L'URL d'une track.
          * @return La [Track] correspondante à l'URL fournie (si existante) et mise à jour.
          */
-        fun refreshTrack(trackUrl: String) {
-            val track = importFromUrl(trackUrl)
-            if (track != null) {
-                val sourceEngine: SearchEngine
-                if (SearchEngine.values().map { it.toString() }
-                        .contains(track.source.toUpperCasePreservingASCIIRules())) {
-                    sourceEngine = SearchEngine.valueOf(track.source.toUpperCasePreservingASCIIRules())
-                } else {
-                    sourceEngine = SearchEngine.values().first { track.url.matches(it.urlRegex) }
-                    track.source = sourceEngine.toString()
-                }
-                val metadatas = sourceEngine.downloadSingle(track.url).first()
-                track.refreshTrack(metadatas)
-            }
-        }
+        fun refresh(trackUrl: String): Track? = getFromUrl(trackUrl)?.also { it.refresh() }
     }
 }
