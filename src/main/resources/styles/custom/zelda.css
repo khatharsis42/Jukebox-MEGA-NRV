@@ -16,9 +16,9 @@
 #playlist-playing, #playlist-queue {
     list-style-type: none;
     padding: 0;
-	text-align: center;
-	color: grey;
-	letter-spacing: 10px;
+    text-align: center;
+    color: grey;
+    letter-spacing: 10px;
     margin: 13px 10px 10px;
 }
 
@@ -29,15 +29,15 @@ body {
     font-weight: bold;
 }
 
-@media only screen and (orientation: portrait){
-    body{
+@media only screen and (orientation: portrait) {
+    body {
         background: url(https://i.pinimg.com/originals/30/4f/a1/304fa12fced766b70d6932cb59e49431.jpg) no-repeat center fixed;
         background-size: cover;
     }
 }
 
-h1, h2, h3, tr, td, p, li{
-    color:rgb(0,0,0);
+h1, h2, h3, tr, td, p, li {
+    color: rgb(0, 0, 0);
 }
 
 .container-fluid {
@@ -79,8 +79,8 @@ h1, h2, h3, tr, td, p, li{
 
 iframe#YT {
     width: 100%;
-    height : auto;
-    aspect-ratio : 16 / 9;
+    height: auto;
+    aspect-ratio: 16 / 9;
     /* Pour avoir un truc youtube centré un peu quand même */
     margin-top: 15px;
     margin-bottom: 15px;
@@ -91,7 +91,7 @@ a {
     text-shadow: -1px -1px 0 #000, -1px 0px 0 #000, -1px 1px 0 #000, 0px -1px 0 #000, 0px 0px 0 #000, 0px 1px 0 #000, 1px -1px 0 #000, 1px 0px 0 #000, 1px 1px 0 #000;
 }
 
-.float-right.lead.py-4>a {
+.float-right.lead.py-4 > a {
     text-shadow: -1px -1px 0 #000, -1px 0px 0 #000, -1px 1px 0 #000, -1px 2px 0 #000, 0px -1px 0 #000, 0px 0px 0 #000, 0px 1px 0 #000, 0px 2px 0 #000, 1px -1px 0 #000, 1px 0px 0 #000, 1px 1px 0 #000, 1px 2px 0 #000, 2px -1px 0 #000, 2px 0px 0 #000, 2px 1px 0 #000, 2px 2px 0 #000;
     margin-right: 5px;
 }
@@ -133,13 +133,14 @@ input[type="search"] {
 }
 
 label {
-    color:black;
-    margin-bottom:0;
+    color: black;
+    margin-bottom: 0;
 }
 
 select {
-    margin : 1em 0 1em 0;
+    margin: 1em 0 1em 0;
 }
+
 .form-group:focus {
     border-color: red;
     box-shadow: 0 0 10px 3px #2596be;
@@ -154,8 +155,8 @@ iframe, .list-group, .container {
 
 .container {
     background-color: none;
-    box-shadow:0 0 0 0;
-    max-width:100%;
+    box-shadow: 0 0 0 0;
+    max-width: 100%;
 }
 
 .statistics .statcol thead {
@@ -172,7 +173,7 @@ iframe, .list-group, .container {
 }
 
 table {
-    margin:auto;
+    margin: auto;
 }
 
 .list-group {
@@ -185,11 +186,11 @@ table {
 }
 
 .yt-btn {
-    margin:auto;
+    margin: auto;
 }
 
 #jump {
-    font-size:.9em;
+    font-size: .9em;
 }
 
 .albumart {
@@ -205,14 +206,14 @@ table {
     width: 100%;
     height: auto;
 }
-#pause, #rewind, #advance {
-    width:100%;
-    font-family:"Segoe UI";
-    background-color:#1887b5;
-    color:#dcf5f7;
-    border-color:white;
-}
 
+#pause, #rewind, #advance {
+    width: 100%;
+    font-family: "Segoe UI";
+    background-color: #1887b5;
+    color: #dcf5f7;
+    border-color: white;
+}
 
 
 .track-duration, .track-user, .track-source, .track-url, .track-album, .track-source, .track-title, .track-artist {

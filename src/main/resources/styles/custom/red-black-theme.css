@@ -1,5 +1,4 @@
-body
-{
+body {
     background: black;
     color: red;
     font-family: monospace;
@@ -15,7 +14,7 @@ body
     background: #101010;
 }
 
-input[type="search"]{
+input[type="search"] {
     text-align: left;
     direction: ltr;
     border-radius: 0;
@@ -24,7 +23,7 @@ input[type="search"]{
     background: #101010;
 }
 
-input[type="search"]:focus{
+input[type="search"]:focus {
     background: #202020;
     border-color: darkred;
     box-shadow: 0 0 0 .2rem darkred;
@@ -32,105 +31,118 @@ input[type="search"]:focus{
     /*background-image: ;*/
 }
 
-input[type="submit"]{
+input[type="submit"] {
     background: #101010;
     color: red;
     border: none;
 }
 
 
-select{
+select {
     border: none;
     background: darkred;
-   -webkit-appearance: none;
-   -moz-appearance: none;
-   color: black;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    color: black;
 }
 
 /* Volume slider */
 input[type=range] {
-  -webkit-appearance: none;
-  margin: 18px 0;
-  width: 100%;
-  background: black;
-  border: 1px solid #101010;
+    -webkit-appearance: none;
+    margin: 18px 0;
+    width: 100%;
+    background: black;
+    border: 1px solid #101010;
 }
+
 input[type=range]:focus {
-  outline: none;
-  -webkit-appearance: none;
-  background: black;
-  /*border: 1px solid #101010;*/
+    outline: none;
+    -webkit-appearance: none;
+    background: black;
+    /*border: 1px solid #101010;*/
     border-color: #101010;
 }
+
 input[type=range]::-webkit-slider-runnable-track {
-  width: 100%;
-  height: 8.4px;
-  cursor: pointer;
-  animate: 0.2s;
-  background: darkred;
+    width: 100%;
+    height: 8.4px;
+    cursor: pointer;
+    animate: 0.2s;
+    background: darkred;
 }
+
 input[type=range]:focus::-webkit-slider-runnable-track {
-  background: red;
+    background: red;
 }
+
 input[type=range]::-webkit-slider-thumb {
-  border: 1px solid #000000;
-  height: 16px;
-  width: 16px;
-  border-radius: 0;
-  background: #101010;
-  cursor: pointer;
-  -webkit-appearance: none;
-  margin-top: -4px;
+    border: 1px solid #000000;
+    height: 16px;
+    width: 16px;
+    border-radius: 0;
+    background: #101010;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -4px;
 }
+
 input[type=range]::-moz-range-track {
-  width: 100%;
-  height: 8.4px;
-  cursor: pointer;
-  animate: 0.2s;
-  background: darkred;
+    width: 100%;
+    height: 8.4px;
+    cursor: pointer;
+    animate: 0.2s;
+    background: darkred;
 }
+
 input[type=range]:focus::-moz-range-track {
     background: red;
 }
+
 input[type=range]::-moz-range-thumb {
-  border: 1px solid #000000;
-  height: 16px;
-  width: 16px;
-  border-radius: 0;
-  background: #101010;
-  cursor: pointer;
+    border: 1px solid #000000;
+    height: 16px;
+    width: 16px;
+    border-radius: 0;
+    background: #101010;
+    cursor: pointer;
 }
+
 input[type=range]::-ms-track {
-  width: 100%;
-  height: 8.4px;
-  cursor: pointer;
-  animate: 0.2s;
-  background: transparent;
-  border-color: transparent;
-  border-width: 16px 0;
-  color: transparent;
+    width: 100%;
+    height: 8.4px;
+    cursor: pointer;
+    animate: 0.2s;
+    background: transparent;
+    border-color: transparent;
+    border-width: 16px 0;
+    color: transparent;
 }
+
 input[type=range]::-ms-fill-lower {
-  background: darkred;
-  border-radius: 0;
+    background: darkred;
+    border-radius: 0;
 }
+
 input[type=range]::-ms-fill-upper {
-  background: black;
-  border-radius: 0;
+    background: black;
+    border-radius: 0;
 }
+
 input[type=range]::-ms-thumb {
-  border: 1px solid #000000;
-  height: 36px;
-  width: 16px;
-  border-radius: 0;
-  background: #101010;
-  cursor: pointer;
+    border: 1px solid #000000;
+    height: 36px;
+    width: 16px;
+    border-radius: 0;
+    background: #101010;
+    cursor: pointer;
 }
+
 input[type=range]:focus::-ms-fill-lower {
-  background: red;
+    background: red;
 }
+
 input[type=range]:focus::-ms-fill-upper {
-  background: darkred;
+    background: darkred;
 }
 
 /* Way the music cards are displayed */
@@ -154,9 +166,9 @@ h1::before {
 #playlist-playing, #playlist-queue {
     list-style-type: none;
     padding: 0;
-	text-align: center;
-	color: grey;
-	letter-spacing: 10px;
+    text-align: center;
+    color: grey;
+    letter-spacing: 10px;
     margin: 13px 10px 10px;
 
 }
@@ -164,20 +176,18 @@ h1::before {
 
 .albumart {
     object-fit: cover;
-        display: block;
-        max-width: 280px;
-        max-height: 140px;
-	    width: 100%;
-        height: auto;
+    display: block;
+    max-width: 280px;
+    max-height: 140px;
+    width: 100%;
+    height: auto;
 }
 
-a
-{
+a {
     color: red;
 }
 
-a:hover
-{
+a:hover {
     color: purple;
 }
 
@@ -226,56 +236,66 @@ a:hover
     display: block;
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
-    -webkit-mask-size:20px;
+    -webkit-mask-size: 20px;
     mask-size: 20px;
     -webkit-mask-position: center;
     mask-position: center;
 }
+
 .icon.btn-back {
     -webkit-mask-image: url("resources/icons/arrow-alt-circle-left-solid.svg");
     mask-image: url("resources/icons/arrow-alt-circle-left-solid.svg");
 }
+
 .icon.btn-more {
     -webkit-mask-image: url("resources/icons/ellipsis-h-solid.svg");
     mask-image: url("resources/icons/ellipsis-h-solid.svg");
 }
-.icon.btn-up{
+
+.icon.btn-up {
     -webkit-mask-image: url("resources/icons/chevron-up-solid.svg");
     mask-image: url("resources/icons/chevron-up-solid.svg");
 }
-.icon.btn-down{
+
+.icon.btn-down {
     -webkit-mask-image: url("resources/icons/chevron-down-solid.svg");
     mask-image: url("resources/icons/chevron-down-solid.svg");
 }
-.icon.btn-remove{
+
+.icon.btn-remove {
     -webkit-mask-image: url("resources/icons/x.svg");
     mask-image: url("resources/icons/x.svg");
 }
-.icon.btn-add{
+
+.icon.btn-add {
     -webkit-mask-image: url("resources/icons/plus-square-regular.svg");
     mask-image: url("resources/icons/plus-square-regular.svg");
 }
+
 .icon.btn-refresh {
     -webkit-mask-image: url("resources/icons/sync-solid.svg");
     mask-image: url("resources/icons/sync-solid.svg");
 }
+
 .icon.btn-stats {
     -webkit-mask-image: url("resources/icons/stats.svg");
     mask-image: url("resources/icons/stats.svg");
 }
-.icon.btn-top{
+
+.icon.btn-top {
     -webkit-mask-image: url("resources/icons/angle-double-up.svg");
     mask-image: url("resources/icons/angle-double-up.svg");
     height: 30px;
 }
+
 .icon.btn-volume {
-    -webkit-mask-image: url("resources/icons/volume.svg") ;
+    -webkit-mask-image: url("resources/icons/volume.svg");
     mask-image: url("resources/icons/volume.svg");
 }
 
 .btn {
-    color:red;
-    border-color:red;
+    color: red;
+    border-color: red;
 }
 
 .btn-remove, .btn-add, .btn-back, .btn-more, .btn-up, .btn-down, .btn-refresh {

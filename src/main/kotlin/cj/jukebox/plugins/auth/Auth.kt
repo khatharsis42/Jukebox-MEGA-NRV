@@ -1,7 +1,6 @@
 package cj.jukebox.plugins.auth
 
-import cj.jukebox.templates.*
-
+import cj.jukebox.templates.Header
 import io.ktor.server.html.*
 import kotlinx.html.*
 
@@ -43,7 +42,7 @@ class Auth(private val correct: Boolean = true) : Template<HTML> {
         body("text-center") {
             div("container") {
                 h1("h3 mb-3 font-weight-normal") { text("C'est koi ton p'tit nom ?") }
-                if (!correct) h2 { style="color:red"; text("Mot de passe ou nom d'utilisateur incorrect.")}
+                if (!correct) h2 { style = "color:red"; text("Mot de passe ou nom d'utilisateur incorrect.") }
                 label("sr-only") {
                     htmlFor = "inputUser"
                     text("Pseudo")

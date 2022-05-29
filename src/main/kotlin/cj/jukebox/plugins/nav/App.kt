@@ -32,7 +32,7 @@ class App(user: UserSession) : MainTemplate(
             div("form-group form-inline") {
                 div("col-0") {
                     img {
-                        classes = setOf("icon","btn-volume")
+                        classes = setOf("icon", "btn-volume")
                         style = "margin: auto;"
                     }
                 }

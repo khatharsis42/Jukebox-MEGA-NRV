@@ -1,33 +1,31 @@
-a{ /*Les "settings", "Help" et "Logout"*/
-    color:white;
-    text-shadow: -1px 1px 0 #0000008c, 1px 1px 0 #0000008c,1px -1px 0 #0000008c, -1px -1px 0 #0000008c;
+a { /*Les "settings", "Help" et "Logout"*/
+    color: white;
+    text-shadow: -1px 1px 0 #0000008c, 1px 1px 0 #0000008c, 1px -1px 0 #0000008c, -1px -1px 0 #0000008c;
 }
 
 h1 /*Le titre principal, ie : Jukebox*/
 {
     text-shadow: -1px 1px 0 #65b5ff,
-				  1px 1px 0 #65b5ff,
-				 1px -1px 0 #65b5ff,
-				-1px -1px 0 #65b5ff;
+    1px 1px 0 #65b5ff,
+    1px -1px 0 #65b5ff,
+    -1px -1px 0 #65b5ff;
     -webkit-text-stroke: 2px #65b5ff; /*may not work with every browser*/
 }
 
-h1:after
-{
-    content:" <3";
+h1:after {
+    content: " <3";
 }
 
-h1:before
-{
-    content:" <3";
+h1:before {
+    content: " <3";
 }
 
-@font-face{
+@font-face {
     font-family: "Digi";
     src: url("resources/digimon/DigimonBasic.ttf");
 }
 
-body{
+body {
     background: url("resources/digimon/wallpaper_digimon_world_next_order_01_1920x1080.jpg");
     background-size: cover;
     background-repeat: no-repeat;
@@ -37,8 +35,9 @@ body{
     font-weight: bold;
 }
 
-@media only screen and (orientation: portrait){ /*Image de fond*/
-    body{
+@media only screen and (orientation: portrait) {
+    /*Image de fond*/
+    body {
         background: url("resources/digimon/wallpaper_digimon_world_next_order_01_1920x1080.jpg");
         background-size: cover;
         background-repeat: repeat-x;
@@ -46,26 +45,26 @@ body{
     }
 }
 
-.display-3{
+.display-3 {
     font-family: "Digi", serif;
     visibility: hidden;
     font-size: 0;
     color: #fac700;
 }
 
-.display-3:after{
+.display-3:after {
     content: "Digimon World";
     visibility: visible;
     font-size: 3.7rem;
 }
 
-.display-4{/*Partie Suggestions*/
-    content:"Rien";
-    visibility:hidden;
-    font-size:20px;
+.display-4 { /*Partie Suggestions*/
+    content: "Rien";
+    visibility: hidden;
+    font-size: 20px;
 }
 
-.display-4:after{
+.display-4:after {
     content: "Suggestions";
     visibility: visible;
     font-size: 50px;
@@ -77,19 +76,20 @@ body{
 .display-4:before {
     content: url("resources/digimon/MegAgumon.png");
     visibility: visible;
-    height:1px;
-    width:1px;
+    height: 1px;
+    width: 1px;
     float: left;
     transform: scaleX(0.1) scaleY(0.1);
 }
+
 iframe#YT {
     width: 100%;
-    height : auto;
-    aspect-ratio : 16 / 9;
+    height: auto;
+    aspect-ratio: 16 / 9;
 }
 
-iframe, .list-group, .container{ /*Les chansons */
-    box-shadow: -2px -2px 0 0 #00000042,-2px 2px 0 0 #00000042,2px -2px 0 0 #00000042, 2px 2px 0 0 #00000042;
+iframe, .list-group, .container { /*Les chansons */
+    box-shadow: -2px -2px 0 0 #00000042, -2px 2px 0 0 #00000042, 2px -2px 0 0 #00000042, 2px 2px 0 0 #00000042;
     margin-left: -5px;
     border: none;
     border-radius: 0;
@@ -115,22 +115,22 @@ iframe, .list-group, .container{ /*Les chansons */
     background-color: rgba(250, 199, 0, 0.6);
 }
 
-.list-group{ /*La couleur des boites principales*/
+.list-group { /*La couleur des boites principales*/
     margin-right: 5px;
     background-color: rgba(255, 255, 255, .8);
 }
 
-.list-group{ /*La couleur des boites principales*/
+.list-group { /*La couleur des boites principales*/
     margin-right: 5px;
     background-color: rgba(255, 255, 255, .8);
 }
 
-.list-group-item.track{
+.list-group-item.track {
     background-color: transparent;
 }
 
 
-.albumart{  /*Les illustrations des vidéos */
+.albumart { /*Les illustrations des vidéos */
     border-radius: 0.5em;
     border-bottom-left-radius: 20px;
     border-top-left-radius: 20px;
@@ -138,7 +138,7 @@ iframe, .list-group, .container{ /*Les chansons */
     border-top-right-radius: 20px;
     margin-top: -7px;
     margin-left: -7px;
-    box-shadow: 0px 0px 0 2px#000000c7;
+    box-shadow: 0px 0px 0 2px #000000c7;
     object-fit: cover;
     max-width: 280px;
     max-height: 140px;
@@ -154,11 +154,12 @@ iframe, .list-group, .container{ /*Les chansons */
 .track-title, .track-artist {
     display: block;
 }
+
 .track-user, .track-duration {
     display: inline-block;
 }
 
-.icon{ /*Les icones de selection de chansons*/
+.icon { /*Les icones de selection de chansons*/
     background-image: none;
     background-color: transparent;
     background-repeat: no-repeat;
@@ -167,11 +168,12 @@ iframe, .list-group, .container{ /*Les chansons */
     padding-left: 4px;
     width: 50px;
     height: 50px;
-	cursor: pointer;
+    cursor: pointer;
     margin: 1px;
     display: block;
 }
-.icon.btn-top{
+
+.icon.btn-top {
     height: 50px;
     background-size: 50px 50px;
 }
@@ -184,55 +186,61 @@ iframe, .list-group, .container{ /*Les chansons */
 .icon.btn-more, .icon.btn-back {
     background-image: url("resources/digimon/more.png");
 }
-.icon.btn-up{
+
+.icon.btn-up {
     background-image: url("resources/digimon/up.png");
 }
-.icon.btn-down{
+
+.icon.btn-down {
     background-image: url("resources/digimon/down.png");
 }
-.icon.btn-remove{
+
+.icon.btn-remove {
     background-image: url("resources/digimon/remove.png");
 }
-.icon.btn-add{
+
+.icon.btn-add {
     background-image: url("resources/digimon/add.png");
 }
+
 .icon.btn-refresh {
     background-image: url("resources/digimon/refresh.png");
 }
 
 input[type=range] {
-  -webkit-appearance: none;     /*nécessaire pour Chrome */
-  padding: 0;                   /* nécessaire pour IE */
-  font: inherit;                /* même rendu suivant font document */
-  outline: none;
-  color: #069;                  /* sert pour couleur de référence, via currentColor, pour le curseur */
-  box-sizing: border-box;       /* même modèle de boîte pour tous */
-  transition: opacity .2s;
-  cursor: pointer;
-  height: 10px;
-  border: solid 2px#fac700;
-    -webkit-text-stroke: 1px #65b5ff ;
-  border-radius: 0;
+    -webkit-appearance: none; /*nécessaire pour Chrome */
+    padding: 0; /* nécessaire pour IE */
+    font: inherit; /* même rendu suivant font document */
+    outline: none;
+    color: #069; /* sert pour couleur de référence, via currentColor, pour le curseur */
+    box-sizing: border-box; /* même modèle de boîte pour tous */
+    transition: opacity .2s;
+    cursor: pointer;
+    height: 10px;
+    border: solid 2px #fac700;
+    -webkit-text-stroke: 1px #65b5ff;
+    border-radius: 0;
 }
 
-input[type=range]:focus, input[type=range]::-webkit-slider-runnable-track{
-  outline: none;
-  border-color: grey;
+input[type=range]:focus, input[type=range]::-webkit-slider-runnable-track {
+    outline: none;
+    border-color: grey;
 }
 
 /* la zone de déplacement */
 input[type=range]::-webkit-slider-runnable-track {
-  height: 100%;
-  border: none;
-  border-radius: 0;
-  background-color: white;
+    height: 100%;
+    border: none;
+    border-radius: 0;
+    background-color: white;
 }
+
 /* le curseur */
 input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;       /* également nécessaire sur le curseur */
-    height: inherit;                /* s'adapte à la hauteur de l'input */
+    -webkit-appearance: none; /* également nécessaire sur le curseur */
+    height: inherit; /* s'adapte à la hauteur de l'input */
     border-radius: 6px;
-    background: #fac700;       /* pris en compte sur Webkit only */
+    background: #fac700; /* pris en compte sur Webkit only */
     border: solid 3px #65b5ff;
     margin-top: -19px;
     margin-left: -2.5px;
@@ -240,15 +248,16 @@ input[type=range]::-webkit-slider-thumb {
 
 /* la zone de déplacement */
 input[type=range]::-moz-range-track {
-  height: 100%;
-  border: none;
-  border-radius: 4;
-  background-color: #fac700;
+    height: 100%;
+    border: none;
+    border-radius: 4;
+    background-color: #fac700;
 }
+
 /* le curseur */
 input[type=range]::-moz-range-thumb {
-    height: inherit;                /* s'adapte à la hauteur de l'input */
-    border-radius: 0;               /* supprimer le rayon */
+    height: inherit; /* s'adapte à la hauteur de l'input */
+    border-radius: 0; /* supprimer le rayon */
     background: #fac700;
     border: solid 3px #65b5ff;
 }

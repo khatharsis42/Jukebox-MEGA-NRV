@@ -1,9 +1,11 @@
 package cj.jukebox.plugins.auth
 
 import cj.jukebox.config
-import cj.jukebox.database.*
-import cj.jukebox.utils.*
-
+import cj.jukebox.database.User
+import cj.jukebox.utils.UserSession
+import cj.jukebox.utils.clearUserSession
+import cj.jukebox.utils.getUserSession
+import cj.jukebox.utils.setUserSession
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.html.*

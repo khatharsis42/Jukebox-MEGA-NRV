@@ -23,8 +23,8 @@ object Users : IntIdTable() {
  * @author Ukabi
  */
 class User(id: EntityID<Int>) : IntEntity(id) {
-    var name  by Users.name
-    var pass  by Users.pass
+    var name by Users.name
+    var pass by Users.pass
     var theme by Users.theme
 
     /**
@@ -55,11 +55,12 @@ class User(id: EntityID<Int>) : IntEntity(id) {
          * Filtre aussi par [pass], si fourni.
          */
         fun findUser(name: String, pass: String? = null): User? =
-            database.dbQuery { User
-                .find { (Users.name eq name).passFilter(pass) }
-                .limit(1)
-                .toList()
-                .firstOrNull()
+            database.dbQuery {
+                User
+                    .find { (Users.name eq name).passFilter(pass) }
+                    .limit(1)
+                    .toList()
+                    .firstOrNull()
             }
     }
 }

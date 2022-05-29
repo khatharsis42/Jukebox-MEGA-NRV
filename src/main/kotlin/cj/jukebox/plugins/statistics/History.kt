@@ -1,12 +1,14 @@
 package cj.jukebox.plugins.statistics
 
-import cj.jukebox.database.*
+import cj.jukebox.database.Log
+import cj.jukebox.database.Track
 import cj.jukebox.templates.MainTemplate
-
 import cj.jukebox.utils.UserSession
-
 import io.ktor.server.html.*
-import kotlinx.html.*
+import kotlinx.html.FlowContent
+import kotlinx.html.div
+import kotlinx.html.h1
+import kotlinx.html.style
 
 /**
  * Historique des musiques passées sur le jukebox.

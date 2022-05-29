@@ -13,6 +13,7 @@ import java.io.IOError
  */
 class Config(file: String) {
     private val fileRepr: File = File(file)
+
     init {
         if (!fileRepr.exists()) {
             this.reset()
@@ -20,6 +21,7 @@ class Config(file: String) {
             throw IOError(Throwable("Cannot manipulate config file ${file}."))
         }
     }
+
     var data: ConfigData = Json.decodeFromString(fileRepr.readText())
 
     /**

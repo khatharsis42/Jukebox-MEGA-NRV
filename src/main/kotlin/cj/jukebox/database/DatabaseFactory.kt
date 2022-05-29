@@ -13,7 +13,10 @@ import java.sql.Connection
  */
 class DatabaseFactory(path: String) {
     private val database = connect(path)
-    init { createSchema() }
+
+    init {
+        createSchema()
+    }
 
     /**
      * Se connecte à la database SQLite selon le [path] fourni.

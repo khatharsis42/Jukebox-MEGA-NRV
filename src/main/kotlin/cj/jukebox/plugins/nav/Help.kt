@@ -3,9 +3,11 @@ package cj.jukebox.plugins.nav
 import cj.jukebox.config
 import cj.jukebox.templates.MainTemplate
 import cj.jukebox.utils.UserSession
-
 import io.ktor.server.html.*
-import kotlinx.html.*
+import kotlinx.html.FlowContent
+import kotlinx.html.a
+import kotlinx.html.div
+import kotlinx.html.p
 
 /**
  * La page d'aide, qui affiche des informations.

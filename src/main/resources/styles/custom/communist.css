@@ -1,49 +1,41 @@
-body
-{
+body {
     background-color: red;
     background-image: url("https://upload.wikimedia.org/wikipedia/commons/a/a9/Flag_of_the_Soviet_Union.svg");
     color: orange;
 }
 
-a
-{
+a {
     color: yellow;
 }
 
-h1
-{
+h1 {
     text-shadow: -1px 1px 0 red,
-				  1px 1px 0 red,
-				 1px -1px 0 red,
-				-1px -1px 0 red;
+    1px 1px 0 red,
+    1px -1px 0 red,
+    -1px -1px 0 red;
 }
 
-h1:after
-{
-    content:" ☭";
+h1:after {
+    content: " ☭";
 }
 
-h1:before
-{
-    content:" ☭";
+h1:before {
+    content: " ☭";
 }
 
-h1
-{
+h1 {
     color: yellow;
 }
 
-.h3
-{
+.h3 {
     color: yellow;
 }
 
-.nav
-{
+.nav {
     text-shadow: -1px 1px 0 red,
-				  1px 1px 0 red,
-				 1px -1px 0 red,
-				-1px -1px 0 red;
+    1px 1px 0 red,
+    1px -1px 0 red,
+    -1px -1px 0 red;
     border: 5px double yellow;
     background: red;
     /*
@@ -51,8 +43,7 @@ h1
     -webkit-text-fill-color: yellow;*/
 }
 
-.container
-{
+.container {
     border: 3px double yellow;
     background: red;
 }
@@ -70,7 +61,7 @@ h1
     height: 20px;
     display: block;
     margin: 6px;
-	cursor: pointer
+    cursor: pointer
 }
 
 .btn-remove, .btn-add, .btn-back, .btn-more, .btn-up, .btn-down, .btn-refresh {
@@ -78,63 +69,57 @@ h1
     top: 2px;
 }
 
-#search_results .btn-remove, #search_results .track-user, #suggestions .btn-remove{
+#search_results .btn-remove, #search_results .track-user, #suggestions .btn-remove {
     display: none;
 }
 
-code
-{
+code {
     color: yellow;
     font-style: monospace;
 }
-#volume-slider
-{
+
+#volume-slider {
     -webkit-appearance: none;
     background-color: yellow;
     /*outline: 1px solid red;*/
     /*opacity: 100;*/
 }
 
-#volume-slider::-webkit-slider-thumb
-{
+#volume-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     background: red;
 }
-#volume-slider::-moz-range-thumb
-{
+
+#volume-slider::-moz-range-thumb {
     background: red;
     border: none;
     border-radius: 2px;
 }
 
-#inputUser,#inputPassword
-{
+#inputUser, #inputPassword {
     background-color: yellow;
     color: red;
     border: 1px solid grey;
 }
 
-#query
-{
+#query {
     background-color: yellow;
     color: red;
     border: 4px double red;
 }
 
-#query::placeholder
-{
+#query::placeholder {
     color: grey;
 }
 
-.btn-primary
-{
+.btn-primary {
     background-color: yellow;
     color: red;
     border: 1px solid grey;
 }
 
 #search_results li {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 .albumart {
@@ -150,8 +135,7 @@ code
     background-color: red;
 }
 
-.list-group-item
-{
+.list-group-item {
     background-color: red;
     color: orange;
     border: 1px solid yellow;
@@ -159,11 +143,12 @@ code
 }
 
 .track-title {
-	display: block;
+    display: block;
     font-size: x-large;
 }
+
 .track-artist {
-	display: block;
+    display: block;
 }
 
 .track-album {
@@ -179,16 +164,17 @@ code
 }
 
 .btn-remove {
-	cursor:pointer
+    cursor: pointer
 }
+
 .centered {
-	margin: auto
+    margin: auto
 }
 
 iframe#YT {
     width: 100%;
-    height : auto;
-    aspect-ratio : 16 / 9;
+    height: auto;
+    aspect-ratio: 16 / 9;
 }
 
 
@@ -196,42 +182,37 @@ iframe#YT {
     list-style-type: none;
     margin: 10px;
     padding: 0;
-	text-align: center;
-	color: orange;
-	letter-spacing: 10px;
-	margin-top: 13px;
+    text-align: center;
+    color: orange;
+    letter-spacing: 10px;
+    margin-top: 13px;
 }
 
-.track-title
-{
+.track-title {
     color: yellow;
     font-weight: bold;
 }
 
-.track-artist
-{
+.track-artist {
     color: yellow;
     font-style: italic;
 }
 
-.track-user
-{
+.track-user {
     color: orange;
 }
 
 
-.track-source
-{
+.track-source {
     font-family: monospace;
 }
 
-.track-duration
-{
+.track-duration {
 
 }
 
 
-.icon{ /*Les icones de selection de chansons*/
+.icon { /*Les icones de selection de chansons*/
     background-image: none;
     background-color: transparent;
     background-repeat: no-repeat;
@@ -240,7 +221,7 @@ iframe#YT {
     padding-left: 20px;
     width: 20px;
     height: 20px;
-	cursor: pointer;
+    cursor: pointer;
     margin: 6px;
     display: block;
 }

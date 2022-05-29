@@ -18,14 +18,14 @@ class Logout(val user: UserSession) : Template<HTML> {
         body("text-center") {
             div("container") {
                 h1 { text("Attention !") }
-                h2 { text("Se déconnecter désassociera ce PC du compte ${user.name}.")}
+                h2 { text("Se déconnecter désassociera ce PC du compte ${user.name}.") }
                 form {
-                    action="/logout"
-                    method=FormMethod.post
-                    classes=setOf("form-signin")
+                    action = "/logout"
+                    method = FormMethod.post
+                    classes = setOf("form-signin")
                     button {
-                        classes="btn btn-lg btn-primary btn-block".split(" ").toSet()
-                        type=ButtonType.submit
+                        classes = "btn btn-lg btn-primary btn-block".split(" ").toSet()
+                        type = ButtonType.submit
                         text("Oui, allez !")
                     }
                 }

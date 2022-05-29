@@ -1,9 +1,9 @@
 package cj.jukebox.plugins.statistics
 
-import cj.jukebox.database.*
+import cj.jukebox.database.Track
+import cj.jukebox.database.User
 import cj.jukebox.utils.getParam
 import cj.jukebox.utils.getUserSession
-
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.html.*

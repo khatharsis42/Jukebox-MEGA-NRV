@@ -11,9 +11,9 @@
 #playlist-playing, #playlist-queue {
     list-style-type: none;
     padding: 0;
-	text-align: center;
-	color: grey;
-	letter-spacing: 10px;
+    text-align: center;
+    color: grey;
+    letter-spacing: 10px;
     margin: 13px 10px 10px;
 }
 
@@ -27,8 +27,8 @@ body {
     font-weight: bold;
 }
 
-h1, h2, h3, tr, td, p, li{
-    color:rgb(0,0,0);
+h1, h2, h3, tr, td, p, li {
+    color: rgb(0, 0, 0);
 }
 
 .container-fluid {
@@ -46,14 +46,14 @@ h1, h2, h3, tr, td, p, li{
     font-family: "Shrek", serif;
     font-size: 4em;
     font-variant: normal;
-    text-align:center;
+    text-align: center;
 }
 
 .display-4 {
     font-family: "ComicSans", serif;
     float: none !important;
     font-size: 2em;
-    text-align:center;
+    text-align: center;
 }
 
 .nav-link {
@@ -64,8 +64,8 @@ h1, h2, h3, tr, td, p, li{
 
 iframe#YT {
     width: 100%;
-    height : auto;
-    aspect-ratio : 16 / 9;
+    height: auto;
+    aspect-ratio: 16 / 9;
     /* Pour avoir un truc youtube centré un peu quand même */
     margin-top: 15px;
     margin-bottom: 15px;
@@ -74,10 +74,10 @@ iframe#YT {
 a {
     color: white;
     text-shadow: -1px -1px 0 #000, -1px 0px 0 #000, -1px 1px 0 #000, 0px -1px 0 #000, 0px 0px 0 #000, 0px 1px 0 #000, 1px -1px 0 #000, 1px 0px 0 #000, 1px 1px 0 #000;
-    font-size:.9em;
+    font-size: .9em;
 }
 
-.float-right.lead.py-4>a {
+.float-right.lead.py-4 > a {
     text-shadow: -1px -1px 0 #000, -1px 0px 0 #000, -1px 1px 0 #000, -1px 2px 0 #000, 0px -1px 0 #000, 0px 0px 0 #000, 0px 1px 0 #000, 0px 2px 0 #000, 1px -1px 0 #000, 1px 0px 0 #000, 1px 1px 0 #000, 1px 2px 0 #000, 2px -1px 0 #000, 2px 0px 0 #000, 2px 1px 0 #000, 2px 2px 0 #000;
     margin-right: 5px;
 }
@@ -121,7 +121,7 @@ input[type="search"] {
     outline: none;
     background-color: #D5DE2E;
     color: #795A2D;
-    border-color:#523213
+    border-color: #523213
 }
 
 .form-control::placeholder {
@@ -129,11 +129,12 @@ input[type="search"] {
 }
 
 label {
-    color:black;
-    margin-bottom:0px;
+    color: black;
+    margin-bottom: 0px;
 }
+
 select {
-    margin : 1em 0 1em 0;
+    margin: 1em 0 1em 0;
 }
 
 .form-group:focus {
@@ -151,8 +152,8 @@ iframe, .list-group, .container {
 
 .container {
     background-color: none;
-    box-shadow:0 0 0 0;
-    max-width:100%;
+    box-shadow: 0 0 0 0;
+    max-width: 100%;
 }
 
 .statistics .statcol thead {
@@ -178,11 +179,11 @@ iframe, .list-group, .container {
 }
 
 .col-3 {
-    margin:auto;
+    margin: auto;
 }
 
 #jump {
-    font-size:.9em;
+    font-size: .9em;
 }
 
 .albumart {
@@ -198,14 +199,14 @@ iframe, .list-group, .container {
     width: 100%;
     height: auto;
 }
-#pause, #rewind, #advance {
-    width:100%;
-    font-family:"Segoe UI";
-    background-color:#1887b5;
-    color:#dcf5f7;
-    border-color:white;
-}
 
+#pause, #rewind, #advance {
+    width: 100%;
+    font-family: "Segoe UI";
+    background-color: #1887b5;
+    color: #dcf5f7;
+    border-color: white;
+}
 
 
 .track-duration, .track-user, .track-source, .track-url, .track-album, .track-source, .track-title, .track-artist {
@@ -244,7 +245,7 @@ iframe, .list-group, .container {
 
 .icon.btn-more, .icon.btn-back {
     background-image: url('resources/april/information.png');
-    height:30px;
+    height: 30px;
 }
 
 .icon.btn-up {
@@ -266,7 +267,8 @@ iframe, .list-group, .container {
 .icon.btn-refresh {
     background-image: url('resources/april/refresh.gif');
 }
-.icon.btn-top{
+
+.icon.btn-top {
     background-image: url("resources/april/isabelle_default_dancing.gif");
 }
 

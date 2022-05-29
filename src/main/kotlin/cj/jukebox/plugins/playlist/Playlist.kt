@@ -1,6 +1,9 @@
 package cj.jukebox.plugins.playlist
 
-import cj.jukebox.database.*
+import cj.jukebox.database.Log
+import cj.jukebox.database.Logs
+import cj.jukebox.database.Track
+import cj.jukebox.database.User
 import cj.jukebox.utils.UserSession
 
 typealias Playlist = MutableList<Log>

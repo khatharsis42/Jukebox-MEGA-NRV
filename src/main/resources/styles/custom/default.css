@@ -1,6 +1,6 @@
 .statistics {
-    text-align:center;
-    display:flex;
+    text-align: center;
+    display: flex;
     flex-direction: row;
     flex-wrap: wrap;
 }
@@ -11,7 +11,7 @@
 
 .statistics .statcol .statdisplay {
     padding: 5px 5px 30px;
-    text-align:left;
+    text-align: left;
 }
 
 .statistics .statcol thead {
@@ -28,15 +28,15 @@
 }
 
 table {
-    margin:auto;
+    margin: auto;
 }
 
 label {
-    margin-bottom:0px;
+    margin-bottom: 0px;
 }
 
 select {
-    margin : 1em 0 1em 0;
+    margin: 1em 0 1em 0;
 }
 
 .btn-remove, .btn-add, .btn-back, .btn-more, .btn-top, .btn-up, .btn-down, .btn-refresh {
@@ -45,7 +45,7 @@ select {
 }
 
 .yt-btn {
-    margin:auto;
+    margin: auto;
 }
 
 #search_results .btn-remove, #search_results .track-user, #suggestions .btn-remove {
@@ -55,28 +55,29 @@ select {
 #playlist-playing, #playlist-queue {
     list-style-type: none;
     padding: 0;
-	text-align: center;
-	color: grey;
-	letter-spacing: 10px;
+    text-align: center;
+    color: grey;
+    letter-spacing: 10px;
     margin: 13px 10px 10px;
 
 }
 
 .albumart {
     object-fit: cover;
-        display: block;
-        max-width: 280px;
-        max-height: 140px;
-	    width: 100%;
-        height: auto;
+    display: block;
+    max-width: 280px;
+    max-height: 140px;
+    width: 100%;
+    height: auto;
 }
 
 .track-title {
-	display: block;
+    display: block;
     font-size: x-large;
 }
+
 .track-artist {
-	display: block;
+    display: block;
 }
 
 .track-url {
@@ -88,30 +89,30 @@ select {
 }
 
 .centered {
-	margin: auto
+    margin: auto
 }
 
-.track-duration,.track-user,.track-source {
-	color: #aaa;
+.track-duration, .track-user, .track-source {
+    color: #aaa;
 }
 
 
 iframe#YT {
     width: 100%;
-    height : auto;
-    aspect-ratio : 16 / 9;
+    height: auto;
+    aspect-ratio: 16 / 9;
     margin-top: 15px;
     margin-bottom: 15px;
 }
 
-.icon{ /*Les icones de selection de chansons*/
+.icon { /*Les icones de selection de chansons*/
     background: transparent none no-repeat;
     border: none;
     background-size: 20px;
     padding-left: 20px;
     width: 20px;
     height: 20px;
-	cursor: pointer;
+    cursor: pointer;
     margin: 6px;
     display: block;
 }
@@ -121,37 +122,46 @@ iframe#YT {
 }
 
 .col-1 {
-    padding:0;
+    padding: 0;
 }
 
 .icon.btn-back {
     background-image: url("resources/icons/arrow-alt-circle-left-solid.svg");
 }
+
 .icon.btn-more {
     background-image: url("resources/icons/ellipsis-h-solid.svg");
 }
-.icon.btn-up{
+
+.icon.btn-up {
     background-image: url("resources/icons/chevron-up-solid.svg");
 }
-.icon.btn-down{
+
+.icon.btn-down {
     background-image: url("resources/icons/chevron-down-solid.svg");
 }
-.icon.btn-remove{
+
+.icon.btn-remove {
     background-image: url("resources/icons/x.svg");
 }
-.icon.btn-add{
+
+.icon.btn-add {
     background-image: url("resources/icons/plus-square-regular.svg");
 }
+
 .icon.btn-refresh {
     background-image: url("resources/icons/sync-solid.svg");
 }
+
 .icon.btn-stats {
     background-image: url("resources/icons/stats.svg");
 }
-.icon.btn-top{
+
+.icon.btn-top {
     background-image: url("resources/icons/angle-double-up.svg");
     height: 30px;
 }
+
 .icon.btn-volume {
     background-image: url("resources/icons/volume.svg");
 }
