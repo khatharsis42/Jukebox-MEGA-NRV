@@ -57,7 +57,7 @@ fun Playlist.addIfPossible(track: Track, user: User): Boolean =
  * @author Ukabi
  */
 fun Playlist.addIfPossible(trackId: Int, user: User): Boolean =
-    Track.importFromId(trackId).let { (it != null) && addIfPossible(it, user) }
+    Track.importFromId(trackId)?.let { addIfPossible(it, user) } ?: false
 
 /**
  * Vérifie si la [Track] correspondant à la [trackId] fournie peut être jouée, puis l'ajoute à la [Playlist].
@@ -78,22 +78,22 @@ fun Playlist.addIfPossible(track: Track, user: UserSession): Boolean = addIfPoss
 /**
  * Vérifie si la [track] fournie fait partie de la [Playlist], puis la supprime.
  * Efface aussi l'occurrence de [Log] précédemment créée si [delete] est fourni.
+ * @return L'index de la track supprimée, *null* le cas échéant.
  * @author Ukabi
  */
-fun Playlist.removeIfPossible(track: Track, delete: Boolean = true): Boolean =
-    Log
-        .getTrackLogs(track)
-        .firstOrNull { it in this }
-        ?.let { if (delete) it.delete(); it }
-        .let { (it != null) && remove(it) }
+fun Playlist.removeIfPossible(track: Track, delete: Boolean = true): Int? =
+    map { it.trackId }
+        .indexOf(track).takeIf { it >= 0 }
+        .also { index -> index?.let { removeAt(it).apply { if (delete) this.delete() } } }
 
 /**
  * Vérifie si la [Track] correspondant à la [trackId] fournie fait partie de la [Playlist], puis la supprime.
  * Efface aussi l'occurrence de [Log] précédemment créée si [delete] est fourni.
+ * @return L'index de la track supprimée, *null* le cas échéant.
  * @author Ukabi
  */
-fun Playlist.removeIfPossible(trackId: Int, delete: Boolean = true): Boolean =
-    Track.importFromId(trackId).let { (it != null) && removeIfPossible(it, delete) }
+fun Playlist.removeIfPossible(trackId: Int, delete: Boolean = true): Int? =
+    Track.importFromId(trackId)?.let { removeIfPossible(it, delete) }
 
 /**
  * Renvoie la somme des durées (en secondes) de chacune des [Track] de la [Playlist].

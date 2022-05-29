@@ -2,13 +2,13 @@ package cj.jukebox.plugins.search
 
 import cj.jukebox.config
 import cj.jukebox.database.TrackData
+import cj.jukebox.utils.runCommand
 
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 
 import java.io.File
-import java.util.concurrent.TimeUnit
 
 
 /**
@@ -156,14 +156,5 @@ enum class SearchEngine {
         "rm -rf $randomValue".runCommand(tmpDir)
 
         return retour ?: listOf()
-    }
-
-    private fun String.runCommand(workingDir: File) {
-        ProcessBuilder(*split(" ").toTypedArray())
-            .directory(workingDir)
-            .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-            .redirectError(ProcessBuilder.Redirect.INHERIT)
-            .start()
-            .waitFor(60, TimeUnit.MINUTES)
     }
 }

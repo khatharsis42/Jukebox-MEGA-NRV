@@ -1,8 +1,12 @@
 package cj.jukebox.plugins.playlist
 
+import cj.jukebox.player
 import cj.jukebox.playlist
+
+import cj.jukebox.utils.SigName
 import cj.jukebox.utils.getParam
 import cj.jukebox.utils.getUserSession
+import cj.jukebox.utils.sendSignal
 
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -17,18 +21,28 @@ fun Application.playlist() {
                 TODO("waiting for progress in /search before going further")
             }
 
-            post("/add/{id}") {
+            get("/add/{id}") {
                 val session = call.getUserSession()!!
 
                 val trackId = call.getParam("id").toInt()
                 playlist.addIfPossible(trackId, session)
+
+                player.sendSignal(SigName.SIGUSR2)
             }
 
             post("/remove") {
                 val parameters = call.receiveParameters()
 
                 val trackId = parameters.getOrFail("randomid").toInt()
-                playlist.removeIfPossible(trackId)
+                val index = playlist.removeIfPossible(trackId)
+
+                // Différentiation du cas musique en cours de lecture (index = 0) ou en queue (index > 0)
+                index?.let {
+                    if (it == 0)
+                        player.sendSignal(SigName.SIGUSR1)
+                    else
+                        player.sendSignal(SigName.SIGUSR2)
+                }
             }
 
             post("/move-track") {
@@ -40,6 +54,8 @@ fun Application.playlist() {
                     .map { it.trackId.id.value }
                     .indexOf(trackId).takeIf { it >= 0 }
                     ?.let { playlist.move(it, Direction.valueOf(direction)) }
+
+                player.sendSignal(SigName.SIGUSR2)
             }
 
             post("/sync") {

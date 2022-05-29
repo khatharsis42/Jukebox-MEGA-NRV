@@ -39,8 +39,7 @@ def _next(sig_num, stack_frame):
 
 def _update(sig_num, stack_frame):
     """On signal, asking script to ask for a playlist update."""
-    global to_update
-    to_update = True
+    player.playlist_next()
 
 
 def update():
@@ -58,22 +57,21 @@ if __name__ == "__main__":
         raise ValueError("Host name required.")
 
     # Global variables for script
-    to_skip = False
     to_update = True
     url = args[0]
 
     # Registering end and update signals
     signal.signal(signal.SIGINT, _soft_interrupt)  # CTRL+C
-    signal.signal(signal.SIGUSR1, _next)          # Custom signal
-    signal.signal(signal.SIGUSR2, _update)        # Custom signal
+    signal.signal(signal.SIGUSR1, _next)           # Custom signal
+    signal.signal(signal.SIGUSR2, _update)         # Custom signal
 
     while True:
         try:
-            # Waiting for track to end, or skipping
-            # it if skip signal was received
-            if not to_skip:
-                player.wait_for_playback()
-                to_skip = False
+            # DEBUG: printing playlist
+            print(player.playlist_filenames)
+
+            # Waiting for track to end
+            player.wait_for_playback()
 
             # Removing the track that just ended playing
             player.playlist_remove(0)
@@ -83,9 +81,6 @@ if __name__ == "__main__":
             if to_update:
                 update()
                 to_update = False
-
-            # After all checkups, processing to play next track
-            player.playlist_next()
 
             # Sending back the current state of player to server
             requests.post(url, ids)
