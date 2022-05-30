@@ -1,12 +1,16 @@
 package cj.jukebox.plugins.search
 
 import cj.jukebox.database.Track
+import cj.jukebox.database.TrackData
 
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.json.Json
 
 fun Application.search() {
     routing {
@@ -15,18 +19,28 @@ fun Application.search() {
                 val parameters = call.receiveParameters()
 
                 val query = parameters.getOrFail("q").takeIf { it.isNotBlank() } ?: return@post
-                for (a in SearchEngine.values()) {
-                    if (query.matches(a.urlRegex)) {
-                        println("${a.name} -> url")
-                        val test = a.downloadSingle(query)
-                        test.forEach{println(it)}
+                var trackList : List<TrackData> = listOf()
+                for (engine in SearchEngine.values()) {
+                    if (query.matches(engine.urlRegex)) {
+                        println("Matching URL for ${engine.name} : $query")
+                        trackList = engine.downloadSingle(query)
+                        if (trackList.size == 1) {
+                            // TODO Jouer cette unique track
+                        }
+                        // Else
+                        call.respond(Json.encodeToString(ListSerializer(TrackData.serializer()), trackList))
+                        return@post
                     }
-                    if (a.queryRegex!= null && query.matches(a.queryRegex!!)) {
-                        println("${a.name} -> query")
-                        val test = a.downloadMultiple(query)
-                        test.forEach{println(it)}
+                    if (engine.queryRegex!= null && query.matches(engine.queryRegex!!)) {
+                        println("Matching query for ${engine.name} : $query")
+                        trackList = engine.downloadMultiple(query)
+                        call.respond(Json.encodeToString(ListSerializer(TrackData.serializer()), trackList))
+                        return@post
                     }
                 }
+                trackList = SearchEngine.YOUTUBE.downloadMultiple(query)
+                call.respond(Json.encodeToString(ListSerializer(TrackData.serializer()), trackList))
+                return@post
             }
 
             post("/refresh-track") {

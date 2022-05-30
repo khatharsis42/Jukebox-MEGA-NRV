@@ -102,10 +102,10 @@ track_template = `
 <li class="list-group-item track" id="{randomid}">
     <div class="row recto">
         <div class="col-4 centered">
-            <img class="albumart" src="{albumart_url}">
+            <img class="albumart" src="{albumArtUrl}">
         </div>
         <div class="col-7 track-info centered">
-            <span class="track-title">{title}</span>
+            <span class="track-title">{track}</span>
             <span class="track-artist">{artist}</span>
             <span class="track-duration">{duration} s.</span>
             <span class="track-user float-right">Added by {user}</span>

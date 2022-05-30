@@ -4,6 +4,7 @@ import cj.jukebox.database
 import cj.jukebox.plugins.search.SearchEngine
 
 import io.ktor.util.*
+import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -33,6 +34,7 @@ object Tracks : IntIdTable() {
 /**
  * Une data class pour gérer les Tracks sans forcément avoir besoin de les mettre dans la BDD.
  */
+@Serializable
 data class TrackData(
     val url: String,
     val source: String,
@@ -43,7 +45,9 @@ data class TrackData(
     val duration: Int,
     val blacklisted: Boolean,
     val obsolete: Boolean,
-)
+) {
+    val randomid = (0..Int.MAX_VALUE).random()
+}
 
 class Track(id: EntityID<Int>) : IntEntity(id) {
     var url by Tracks.url

@@ -104,14 +104,14 @@ enum class SearchEngine {
      */
     YOUTUBE {
         override fun jsonToTrack(metadata: JsonObject) = TrackData(
-            url = metadata["webpage_url"].toString(),
+            url = metadata["webpage_url"].toString().removeSurrounding("\""),
             source = name,
-            track = (metadata["title"] ?: metadata["track"]).toString(),
-            artist = (metadata["artist"] ?: metadata["uploader"]).toString(),
-            album = (metadata["album"]).toString(),
-            albumArtUrl = metadata["thumbnail"].toString(),
+            track = (metadata["title"] ?: metadata["track"]).toString().removeSurrounding("\""),
+            artist = (metadata["artist"] ?: metadata["uploader"]).toString().removeSurrounding("\""),
+            album = (metadata["album"]).toString().removeSurrounding("\""),
+            albumArtUrl = metadata["thumbnail"].toString().removeSurrounding("\""),
             duration = try {
-                Integer.parseInt(metadata["duration"].toString())
+                Integer.parseInt(metadata["duration"].toString().removeSurrounding("\""))
             } catch (e: Exception) {
                 0
             },
@@ -121,17 +121,17 @@ enum class SearchEngine {
 
         override fun downloadSingle(url: String): List<TrackData> {
             if ("list" in url) return searchYoutubeDL(url, true).map {jsonToTrack(it)}
-            val new_url = "https://www.youtube.com/watch?v=" +
+            val newUrl = "https://www.youtube.com/watch?v=" +
                     if ("youtu.be" in url) {
                         url.substringAfter("youtu.be/").substringBefore("?")
                     } else {
                         url.substringAfter("youtube.com/watch?v=").substringBefore("&")
                     }
-            return searchYoutubeDL(new_url, true).map { jsonToTrack(it) }
+            return searchYoutubeDL(newUrl, true).map { jsonToTrack(it) }
         }
 
         override fun downloadMultiple(request: String) = searchYoutubeDL(
-            "ytsearch5:${request.removePrefix("!yt ").replace(" ", " \\")}"
+            "ytsearch5:\"${request.removePrefix("!yt ")}\""
         ).map { jsonToTrack(it) }
 
         override val youtubeArgs: Map<String, String> = mapOf("yes-playlist" to "")
@@ -203,10 +203,9 @@ enum class SearchEngine {
             .listFiles { _, s -> s.endsWith(".info.json") }
             ?.sortedBy { it.lastModified() }
             ?.map { Json.decodeFromString<JsonObject>(it.readText(Charsets.UTF_8)) }
-            ?.filter { direct_url || it["webpage_url"].toString().removeSurrounding("\"") != request }
 
         workingDir.deleteRecursively()
 
-        return retour ?: listOf()
+        return (if (direct_url) retour else retour?.dropLast(1)) ?: listOf()
     }
 }
