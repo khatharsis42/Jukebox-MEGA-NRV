@@ -1,0 +1,11 @@
+{"APP_NAME":"Jukebox Master NRV MkI",
+  "DEBUG":true,
+  "LISTEN_ADDRESS":"localhost",
+  "LISTEN_PORT":8080,
+  "YT_KEYS":[],
+  "AMIXER_CHANNEL":"Master",
+  "DATABASE_PATH":"src/main/resources/jukebox.sqlite3",
+  "TMP_PATH":"main/resources/temp/",
+  "SECRET_ENCRYPT_KEY":"Put your key here",
+  "SECRET_SIGN_KEY":"Put your key here"
+}
