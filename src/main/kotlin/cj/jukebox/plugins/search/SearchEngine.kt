@@ -7,6 +7,7 @@ import cj.jukebox.utils.runCommand
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.decodeFromJsonElement
 
 import java.io.File
 
@@ -26,14 +27,6 @@ enum class SearchEngine {
      * Correspond à une URL directe vers une musique de Jamendo.
      */
     JAMENDO {
-        override fun downloadSingle(url: String): List<TrackData> {
-            throw NotImplementedError()
-        }
-
-        override fun jsonToTrack(metadata: JsonObject): TrackData {
-            TODO("Not yet implemented")
-        }
-
         override val urlRegex = urlRegexMaker("jamendo\\.com")
     },
 
@@ -41,14 +34,6 @@ enum class SearchEngine {
      * Correspond à une URL directe vers une vidéo de Twitch.
      */
     TWITCH {
-        override fun downloadSingle(url: String): List<TrackData> {
-            throw NotImplementedError()
-        }
-
-        override fun jsonToTrack(metadata: JsonObject): TrackData {
-            TODO("Not yet implemented")
-        }
-
         override val urlRegex = urlRegexMaker("twitch\\.tv")
     },
 
@@ -56,71 +41,34 @@ enum class SearchEngine {
      * Correspond à une URL directe vers une musique Bandcamp.
      */
     BANDCAMP {
-        override fun downloadSingle(url: String): List<TrackData> {
-            throw NotImplementedError()
-        }
-
-        override fun jsonToTrack(metadata: JsonObject): TrackData {
-            TODO("Not yet implemented")
-        }
-
-        override val urlRegex = urlRegexMaker("bandcamp\\.com")
+        override val urlRegex = urlRegexMaker("(.*)?bandcamp\\.com")
     },
 
     /**
      * Correspond à une URL directe vers une musique.
      */
     DIRECT_FILE {
-        override fun downloadSingle(url: String): List<TrackData> {
-            throw NotImplementedError()
-        }
-
-        override fun jsonToTrack(metadata: JsonObject): TrackData {
-            TODO("Not yet implemented")
-        }
-
-        override val urlRegex = Regex("^(https?://)?\\.*\\.(mp3|mp4|ogg|flac|wav|webm)")
-        override val queryRegex = Regex("^!direct .+\$")
+        override val urlRegex = Regex("^(https?://)?.*\\.(mp3|mp4|ogg|flac|wav|webm)")
+//        override val queryRegex = Regex("^!direct .+\$")
     },
 
     /**
      * Correspond à une recherche Soundcloud.
      */
     SOUNDCLOUD {
-        override fun downloadSingle(url: String): List<TrackData> {
-            throw NotImplementedError()
-        }
-
-        override fun jsonToTrack(metadata: JsonObject): TrackData {
-            TODO("Not yet implemented")
-        }
-
         override val urlRegex = urlRegexMaker("soundcloud\\.com")
         override val queryRegex = Regex("^!sc .+\$")
+        override fun downloadMultiple(request: String) = searchYoutubeDL(
+            "ytsearch5:\"${request.removePrefix("!sc ")}\""
+        ).map { jsonToTrack(it) }
     },
 
     /**
      * Correspond à la recherche avec YouTube.
      */
     YOUTUBE {
-        override fun jsonToTrack(metadata: JsonObject) = TrackData(
-            url = metadata["webpage_url"].toString().removeSurrounding("\""),
-            source = name,
-            track = (metadata["title"] ?: metadata["track"]).toString().removeSurrounding("\""),
-            artist = (metadata["artist"] ?: metadata["uploader"]).toString().removeSurrounding("\""),
-            album = (metadata["album"]).toString().removeSurrounding("\""),
-            albumArtUrl = metadata["thumbnail"].toString().removeSurrounding("\""),
-            duration = try {
-                Integer.parseInt(metadata["duration"].toString().removeSurrounding("\""))
-            } catch (e: Exception) {
-                0
-            },
-            false,
-            false
-        )
-
         override fun downloadSingle(url: String): List<TrackData> {
-            if ("list" in url) return searchYoutubeDL(url, true).map {jsonToTrack(it)}
+            if ("list" in url) return searchYoutubeDL(url, true).map { jsonToTrack(it) }
             val newUrl = "https://www.youtube.com/watch?v=" +
                     if ("youtu.be" in url) {
                         url.substringAfter("youtu.be/").substringBefore("?")
@@ -138,17 +86,39 @@ enum class SearchEngine {
         override val urlRegex = urlRegexMaker("youtube\\.com|youtu\\.be")
         override val queryRegex = "^!yt .+\$".toRegex()
     };
+
     /**
      * Permet de télécharger des metadatas depuis une URL. Utilise quasi exclusivement youtube-dl.
      * @param[url] Une URL vers une musique ou une playlist.
      * @return Une [List] de [TrackData], correspondant à l'URL.
      */
-    abstract fun downloadSingle(url: String): List<TrackData>
+    open fun downloadSingle(url: String) = searchYoutubeDL(url, true).map { jsonToTrack(it) }
 
     /**
      * Convertit un objet JSON en une TrackData.
      */
-    abstract fun jsonToTrack(metadata: JsonObject): TrackData
+    open fun jsonToTrack(metadata: JsonObject) = TrackData(
+        url = Json.decodeFromJsonElement(metadata["webpage_url"]!!),
+        source = name,
+        track = (metadata["title"] ?: metadata["track"])?.let { Json.decodeFromJsonElement(it) },
+        artist = (metadata["artist"] ?: metadata["uploader"])?.let { Json.decodeFromJsonElement(it) },
+        album = (metadata["album"])?.let { Json.decodeFromJsonElement(it) },
+        albumArtUrl = metadata["thumbnail"]?.let { Json.decodeFromJsonElement(it) },
+        duration = try {
+            Integer.parseInt(
+                metadata["duration"]
+                    .toString()
+                    .removeSurrounding("\"")
+                    .substringBefore(".")
+            )
+        } catch (e: Exception) {
+            println(e)
+            println(metadata["duration"])
+            0
+        },
+        blacklisted = false,
+        obsolete = false
+    )
 
     /**
      * Permet de télécharger des metadatas depuis une requête textuelle.
@@ -191,8 +161,6 @@ enum class SearchEngine {
                 } else {
                     ""
                 } + request
-        println(wholeRequest)
-
         val randomValue = (0..Int.MAX_VALUE).random()
 
         val workingDir = tmpDir.resolve(randomValue.toString())
@@ -203,9 +171,12 @@ enum class SearchEngine {
             .listFiles { _, s -> s.endsWith(".info.json") }
             ?.sortedBy { it.lastModified() }
             ?.map { Json.decodeFromString<JsonObject>(it.readText(Charsets.UTF_8)) }
+            ?.filter { Json.decodeFromJsonElement<String>(it["_type"]!!) != "playlist" }
 
         workingDir.deleteRecursively()
 
-        return (if (direct_url) retour else retour?.dropLast(1)) ?: listOf()
+        return (if (direct_url) retour
+        else retour?.dropLast(1))
+            ?: listOf()
     }
 }

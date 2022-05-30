@@ -38,6 +38,7 @@ fun Application.search() {
                         return@post
                     }
                 }
+                println("Matching nothing, using generic Youtube search.")
                 trackList = SearchEngine.YOUTUBE.downloadMultiple(query)
                 call.respond(Json.encodeToString(ListSerializer(TrackData.serializer()), trackList))
                 return@post
