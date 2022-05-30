@@ -15,11 +15,17 @@ fun Application.search() {
                 val parameters = call.receiveParameters()
 
                 val query = parameters.getOrFail("q").takeIf { it.isNotBlank() } ?: return@post
-                println(query)
-
                 for (a in SearchEngine.values()) {
-                    if (query.matches(a.urlRegex)) println(a)
-                    a.queryRegex?.let { if (query.matches(it)) println(a) }
+                    if (query.matches(a.urlRegex)) {
+                        println("${a.name} -> url")
+                        val test = a.downloadSingle(query)
+                        test.forEach{println(it)}
+                    }
+                    if (a.queryRegex!= null && query.matches(a.queryRegex!!)) {
+                        println("${a.name} -> query")
+                        val test = a.downloadMultiple(query)
+                        test.forEach{println(it)}
+                    }
                 }
             }
 
