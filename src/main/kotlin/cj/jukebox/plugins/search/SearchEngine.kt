@@ -5,6 +5,7 @@ import cj.jukebox.database.TrackData
 import cj.jukebox.playlist
 import cj.jukebox.utils.Log
 import cj.jukebox.utils.runCommand
+import io.ktor.client.request.*
 
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
@@ -30,55 +31,49 @@ private fun urlRegexMaker(domain: String) = Regex("^(https?://)?((www\\.)?$domai
 /**
  * Enumération de toutes les sources prises en compte.
  * NB: Ce n'est pas forcément très beau, mais ça marche très bien.
+ *
+ * @param[urlRegex] Un regex permettant de reconnaître une URL.
  * @author khatharsis
  */
-enum class SearchEngine {
+enum class SearchEngine(val urlRegex: Regex) {
     /**
      * Correspond à une URL directe vers une musique de Jamendo.
      */
-    JAMENDO {
-        override val urlRegex = urlRegexMaker("jamendo\\.com")
-    },
+    JAMENDO(urlRegexMaker("jamendo\\.com")),
 
     /**
      * Correspond à une URL directe vers une vidéo de Twitch.
      */
-    TWITCH {
-        override val urlRegex = urlRegexMaker("twitch\\.tv")
-    },
+    TWITCH(urlRegexMaker("twitch\\.tv")),
 
     /**
      * Correspond à une URL directe vers une musique Bandcamp.
      */
-    BANDCAMP {
-        override val urlRegex = urlRegexMaker("(.+\\.)?bandcamp\\.com")
-    },
+    BANDCAMP(urlRegexMaker("(.+\\.)?bandcamp\\.com")),
 
     /**
      * Correspond à une URL directe vers une musique.
      */
-    DIRECT_FILE {
-        override val urlRegex = Regex("^(https?://)?.*\\.(mp3|mp4|ogg|flac|wav|webm)")
+    DIRECT_FILE(Regex("^(https?://)?.*\\.(mp3|mp4|ogg|flac|wav|webm)")) {
 //        override val queryRegex = Regex("^!direct .+\$")
     },
 
     /**
      * Correspond à une recherche Soundcloud.
      */
-    SOUNDCLOUD {
+    SOUNDCLOUD(urlRegexMaker("soundcloud\\.com")) {
         override fun downloadMultiple(request: String) =
             searchYoutubeDL("ytsearch5:\"${request.removePrefix("!sc ")}\"").map { jsonToTrack(it) }
 
-        override val urlRegex = urlRegexMaker("soundcloud\\.com")
         override val queryRegex = Regex("^!sc .+\$")
     },
 
     /**
      * Correspond à la recherche avec YouTube.
      */
-    YOUTUBE {
+    YOUTUBE(urlRegexMaker("youtube\\.com|youtu\\.be")) {
         override fun downloadSingle(url: String): List<TrackData> {
-            if ("list" in url) return searchYoutubeDL(url).map { jsonToTrack(it) }
+            if ("list" in url) return searchYoutubeAPI(url, true)
             val newUrl = "https://www.youtube.com/watch?v=" +
                     if ("youtu.be" in url) {
                         url.substringAfter("youtu.be/").substringBefore("?")
@@ -89,7 +84,6 @@ enum class SearchEngine {
         }
 
         override fun downloadMultiple(request: String) = searchYoutubeAPI(request, false)
-//            searchYoutubeDL("ytsearch5:${request.removePrefix("!yt ")}").map { jsonToTrack(it) }
 
         private fun searchYoutubeAPI(query: String, searchPlaylist: Boolean): List<TrackData> {
             Log.DL.info("Searching request using Youtube API")
@@ -162,7 +156,8 @@ enum class SearchEngine {
                     )
                 }
             }
-            return emptyList()
+            // On a plus de clefs et aucune n'a fonctionné
+            return searchYoutubeDL("ytsearch5:${query.removePrefix("!yt ")}").map { jsonToTrack(it) }
         }
 
         private fun getRequest(url: String, params: Map<String, String>): Pair<Boolean, JsonObject> {
@@ -180,7 +175,6 @@ enum class SearchEngine {
         }
 
         override val youtubeArgs: Map<String, String> = mapOf("yes-playlist" to "")
-        override val urlRegex = urlRegexMaker("youtube\\.com|youtu\\.be")
         override val queryRegex = "^!yt .+\$".toRegex()
     };
 
@@ -209,8 +203,8 @@ enum class SearchEngine {
                     .substringBefore(".")
             )
         } catch (e: Exception) {
-            println(e)
-            println(metadata["duration"])
+            Log.DL.error(e)
+            Log.DL.error(metadata["duration"])
             0
         },
         blacklisted = false,
@@ -231,11 +225,6 @@ enum class SearchEngine {
      * Les arguments donnés à youtube-dl.
      */
     protected open val youtubeArgs: Map<String, String> = mapOf()
-
-    /**
-     * Une regex permettant de reconnaître une URL.
-     */
-    abstract val urlRegex: Regex
 
     /**
      * Un regex permettant de reconnaître une query.
