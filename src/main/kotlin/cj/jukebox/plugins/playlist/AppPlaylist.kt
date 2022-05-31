@@ -1,6 +1,7 @@
 package cj.jukebox.plugins.playlist
 
 import cj.jukebox.database.Track
+import cj.jukebox.database.TrackData
 import cj.jukebox.playlist
 import cj.jukebox.utils.getParam
 import cj.jukebox.utils.getUserSession
@@ -15,26 +16,36 @@ fun Application.playlist() {
     routing {
         authenticate("auth-session") {
             post("/add") {
-                TODO("waiting for progress in /search before going further")
+                val parameters = call.receiveParameters()
+                (Track.refresh(parameters["url"]!!) ?: Track.createTrack(
+                    TrackData(
+                        url = parameters["url"]!!,
+                        source = parameters["source"]!!,
+                        track = parameters["track"],
+                        artist = parameters["artist"],
+                        album = parameters["album"],
+                        albumArtUrl = parameters["albumArtUrl"],
+                        duration = Integer.parseInt(parameters["duration"]),
+                        blacklisted = parameters["blacklisted"] == "true",
+                        obsolete = parameters["obsolete"] == "true"
+                    )
+                )).also { playlist.addIfPossible(it, call.getUserSession()!!) }
             }
 
             post("/add/{url}") {
                 val session = call.getUserSession()!!
-
                 val trackUrl = call.getParam("url")
                 Track.getFromUrl(trackUrl)?.also { playlist.addIfPossible(it, session) }
             }
 
             post("/remove") {
                 val parameters = call.receiveParameters()
-
                 val trackId = parameters.getOrFail("randomid").toInt()
                 playlist.removeIfPossible(trackId)
             }
 
             post("/move-track") {
                 val parameters = call.receiveParameters()
-
                 val direction = parameters.getOrFail("action")
                 val trackId = parameters.getOrFail("randomid").toInt()
                 playlist.map { it.trackId.id.value }.indexOf(trackId).takeIf { it >= 0 }
