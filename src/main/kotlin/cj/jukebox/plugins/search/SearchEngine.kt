@@ -2,6 +2,7 @@ package cj.jukebox.plugins.search
 
 import cj.jukebox.config
 import cj.jukebox.database.TrackData
+import cj.jukebox.utils.Log
 import cj.jukebox.utils.runCommand
 
 import kotlinx.serialization.decodeFromString
@@ -156,10 +157,11 @@ enum class SearchEngine {
                     """--$key${if (value.isNotBlank()) " $value" else ""}"""
                 } +
                 listOf(request)
+        Log.DL.info(wholeRequest.reduce {a,b -> "$a $b"})
         val randomValue = (0..Int.MAX_VALUE).random()
         val workingDir = tmpDir.resolve(randomValue.toString())
         workingDir.mkdirs()
-        wholeRequest.runCommand(workingDir)
+        wholeRequest.runCommand(workingDir, logger = Log.DL)
 
         return workingDir
             .listFiles { _, s -> s.endsWith(".info.json") }

@@ -4,6 +4,7 @@ import cj.jukebox.database.Track
 import cj.jukebox.database.TrackData
 import cj.jukebox.playlist
 import cj.jukebox.plugins.playlist.addIfPossible
+import cj.jukebox.utils.Log
 import cj.jukebox.utils.getUserSession
 
 import io.ktor.server.application.*
@@ -27,7 +28,7 @@ fun Application.search() {
                 val trackList: List<TrackData>
                 for (engine in SearchEngine.values()) {
                     if (query.matches(engine.urlRegex)) {
-                        println("Matching URL for ${engine.name} : $query")
+                        Log.GEN.info("Matching URL for ${engine.name} : $query")
 
                         trackList = engine.downloadSingle(query)
                         if (trackList.size == 1) {
@@ -41,7 +42,7 @@ fun Application.search() {
                     }
 
                     if (engine.queryRegex.let { (it != null) && query.matches(it) }) {
-                        println("Matching query for ${engine.name} : $query")
+                        Log.GEN.info("Matching query for ${engine.name} : $query")
 
                         trackList = engine.downloadMultiple(query)
                         call.respond(Json.encodeToString(ListSerializer(TrackData.serializer()), trackList))
@@ -49,7 +50,7 @@ fun Application.search() {
                     }
                 }
 
-                println("Matching nothing, using generic Youtube search.")
+                Log.GEN.info("Matching nothing, using generic Youtube search : $query")
 
                 trackList = SearchEngine.YOUTUBE.downloadMultiple(query)
                 call.respond(Json.encodeToString(ListSerializer(TrackData.serializer()), trackList))
