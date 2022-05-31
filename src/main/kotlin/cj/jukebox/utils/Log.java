@@ -46,19 +46,11 @@ public final class Log {
      */
     public static final Logger TEST = LogManager.getLogger(LOGGER_NAME_TEST);
     /**
-     * name of logger for the testing part (used in JUnit classes).
-     */
-    public static final String LOGGER_NAME_WARN = "warning";
-    /**
-     * logger object for the testing part.
-     */
-    public static final Logger WARN = LogManager.getLogger(LOGGER_NAME_WARN);
-    /**
-     * name of logger for the testing part (used in JUnit classes).
+     * name of logger for the download part.
      */
     public static final String LOGGER_NAME_DOWNLOAD = "download";
     /**
-     * logger object for the testing part.
+     * logger object for the download part.
      */
     public static final Logger DL = LogManager.getLogger(LOGGER_NAME_DOWNLOAD);
     /*
@@ -66,7 +58,6 @@ public final class Log {
      */
     static {
         setLevel(GEN, Level.INFO);
-        setLevel(WARN, Level.WARN);
         setLevel(DEBUG, Level.INFO);
         setLevel(DL, Level.WARN);
         setLevel(TEST, Level.INFO);
