@@ -2,6 +2,9 @@ package cj.jukebox.plugins.search
 
 import cj.jukebox.database.Track
 import cj.jukebox.database.TrackData
+import cj.jukebox.playlist
+import cj.jukebox.plugins.playlist.addIfPossible
+import cj.jukebox.utils.getUserSession
 
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -16,6 +19,7 @@ fun Application.search() {
     routing {
         authenticate("auth-session") {
             post("/search") {
+                val session = call.getUserSession()!!
                 val parameters = call.receiveParameters()
 
                 val query = parameters.getOrFail("q").takeIf { it.isNotBlank() } ?: return@post
@@ -27,7 +31,10 @@ fun Application.search() {
 
                         trackList = engine.downloadSingle(query)
                         if (trackList.size == 1) {
-                            // TODO Jouer cette unique track
+                            trackList.first()
+                                .let { Track.refresh(it.url) ?: Track.createTrack(it) }
+                                .also { playlist.addIfPossible(it, session) }
+                            return@post
                         }
                         call.respond(Json.encodeToString(ListSerializer(TrackData.serializer()), trackList))
                         return@post

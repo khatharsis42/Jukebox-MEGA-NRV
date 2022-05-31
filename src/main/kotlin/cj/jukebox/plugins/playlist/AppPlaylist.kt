@@ -1,10 +1,9 @@
 package cj.jukebox.plugins.playlist
 
-import cj.jukebox.player
+import cj.jukebox.database.Track
 import cj.jukebox.playlist
 import cj.jukebox.utils.getParam
 import cj.jukebox.utils.getUserSession
-import cj.jukebox.utils.sendSignal
 
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -19,14 +18,11 @@ fun Application.playlist() {
                 TODO("waiting for progress in /search before going further")
             }
 
-            // TODO: this is just for tests, but don't forget to make this post after
-            get("/add/{id}") {
+            post("/add/{url}") {
                 val session = call.getUserSession()!!
 
-                val trackId = call.getParam("id").toInt()
-                playlist.addIfPossible(trackId, session)
-
-                player.sendSignal(SigName.SIGUSR2)
+                val trackUrl = call.getParam("url")
+                Track.getFromUrl(trackUrl)?.also { playlist.addIfPossible(it, session) }
             }
 
             post("/remove") {
