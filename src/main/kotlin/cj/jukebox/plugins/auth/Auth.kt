@@ -18,25 +18,6 @@ class Auth(private val correct: Boolean = true) : Template<HTML> {
      * Le header.
      */
     private val header = TemplatePlaceholder<Header>()
-
-    /**
-     * Fonction utilisée pour générer du JavaScript utilisé par les boutons.
-     * Créé une copie des inputs pour les envoyer vers l'URL donnée en paramètre.
-     * @param action L'URL vers laquelle faire la requête POST.
-     */
-    private fun createJS(action: String) =
-        """username = document.getElementById("inputUser").cloneNode();
-           password = document.getElementById("inputPassword").cloneNode();
-           var form = document.createElement("form");
-           form.setAttribute('method', "post");
-           form.appendChild(username);
-           form.appendChild(password);
-           form.setAttribute('action', "$action");
-           form.style.display = "none";
-           document.body.appendChild(form);
-           form.submit();
-           """.trimIndent()
-
     override fun HTML.apply() {
         insert(Header(), header)
         body("text-center") {
@@ -74,7 +55,7 @@ class Auth(private val correct: Boolean = true) : Template<HTML> {
                     type = ButtonType.submit
                     value = "login"
                     id = "login"
-                    onClick = createJS("/login")
+                    onClick = """sendLogins("/login");"""
                     text("Connexion")
                 }
                 p("mt-1 mb-1 text-muted") { text("- ou -") }
@@ -84,10 +65,11 @@ class Auth(private val correct: Boolean = true) : Template<HTML> {
                     type = ButtonType.submit
                     value = "signup"
                     id = "signup"
-                    onClick = createJS("/signup")
+                    onClick = """sendLogins("/signup");"""
                     text("S'enregistrer")
                 }
             }
+            script(ScriptType.textJScript, "/assets/scripts/auth.js") {}
         }
     }
 }
