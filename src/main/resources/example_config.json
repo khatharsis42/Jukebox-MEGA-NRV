@@ -6,7 +6,7 @@
   "YT_KEYS":[],
   "AMIXER_CHANNEL":"Master",
   "DATABASE_PATH":"src/main/resources/jukebox.sqlite3",
-  "TMP_PATH":"main/resources/temp/",
+  "TMP_PATH":"src/main/resources/temp/",
   "SECRET_ENCRYPT_KEY":"Put your key here ([0-9a-fA-F]{32})",
   "SECRET_SIGN_KEY":"Put your key here ([0-9a-fA-F]{28})",
   "SECRET_PASSWORD_ENCRYPT":"Put your key here (.{16})"
