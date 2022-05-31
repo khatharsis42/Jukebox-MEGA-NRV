@@ -2,15 +2,24 @@ package cj.jukebox.plugins.search
 
 import cj.jukebox.config
 import cj.jukebox.database.TrackData
+import cj.jukebox.playlist
 import cj.jukebox.utils.Log
 import cj.jukebox.utils.runCommand
 
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.decodeFromJsonElement
-
+import kotlinx.serialization.json.*
+import java.io.BufferedReader
 import java.io.File
+import java.io.InputStreamReader
+import java.net.Authenticator
+import java.net.HttpURLConnection
+import java.net.URL
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
+import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
 
 
 /**
@@ -79,8 +88,96 @@ enum class SearchEngine {
             return searchYoutubeDL(newUrl).map { jsonToTrack(it) }
         }
 
-        override fun downloadMultiple(request: String) =
-            searchYoutubeDL("ytsearch5:${request.removePrefix("!yt ")}").map { jsonToTrack(it) }
+        override fun downloadMultiple(request: String) = searchYoutubeAPI(request, false)
+//            searchYoutubeDL("ytsearch5:${request.removePrefix("!yt ")}").map { jsonToTrack(it) }
+
+        private fun searchYoutubeAPI(query: String, searchPlaylist: Boolean): List<TrackData> {
+            Log.DL.info("Searching request using Youtube API")
+            for (key in config.data.YT_KEYS) {
+                val (validResponse, response) = if (searchPlaylist) {
+                    getRequest(
+                        "https://www.googleapis.com/youtube/v3/playlistItems",
+                        mapOf(
+                            "key" to key,
+                            "part" to "snippet",
+                            "maxResults" to "50",
+                            "playlistId" to query.substringAfter("list=").substringBefore("&")
+                        )
+                    )
+                } else getRequest(
+                    "https://www.googleapis.com/youtube/v3/search",
+                    mapOf(
+                        "key" to key,
+                        "q" to URLEncoder.encode(query, StandardCharsets.UTF_8.toString()),
+                        "part" to "snippet",
+                        "type" to "video",
+                        "maxResults" to "5"
+                    )
+                )
+                if (!validResponse) {
+                    // On essaye les autres clefs
+                    continue
+                }
+                if (response.isEmpty() || (response["items"] as JsonArray).isEmpty()) {
+                    Log.DL.warn("Nothing found on Youtube for query $query")
+                }
+                val videoIds: List<String> = if (searchPlaylist) {
+                    (response["items"] as JsonArray).map {
+                        Json.decodeFromJsonElement((((it as JsonObject)["id"] as JsonObject)["resourceId"] as JsonObject)["videoId"]!!)
+                    }
+                } else {
+                    (response["items"] as JsonArray).map {
+                        Json.decodeFromJsonElement(((it as JsonObject)["id"] as JsonObject)["videoId"]!!)
+                    }
+                }
+
+                val (secondValidResponse, secondResponse) = getRequest(
+                    "https://www.googleapis.com/youtube/v3/videos",
+                    mapOf(
+                        "part" to "snippet,contentDetails",
+                        "key" to key,
+                        "id" to videoIds.reduce {acc, s -> "$acc,$s"}
+                    )
+                )
+                if (!secondValidResponse) {
+                    // On essaye les autres clefs
+                    continue
+                }
+                return (secondResponse["items"] as JsonArray)
+                    .map { it as JsonObject }
+                    .map {metadata ->
+                        val snippet = metadata["snippet"] as JsonObject
+                        TrackData(
+                        url = "https://www.youtube.com/watch?v=" + Json.decodeFromJsonElement<String>(metadata["id"]!!),
+                        source = name,
+                        track = Json.decodeFromJsonElement(snippet["title"]!!),
+                        artist = Json.decodeFromJsonElement(snippet["channelTitle"]!!),
+                        album = null,
+                        albumArtUrl = Json.decodeFromJsonElement(((snippet["thumbnails"] as JsonObject)["medium"] as JsonObject)["url"]!!),
+                        duration = Duration.parseIsoString(
+                            Json.decodeFromJsonElement((metadata["contentDetails"] as JsonObject)["duration"]!!)
+                        ).toInt(DurationUnit.SECONDS),
+                        blacklisted = false,
+                        obsolete = false
+                    )
+                }
+            }
+            return emptyList()
+        }
+
+        private fun getRequest(url: String, params: Map<String, String>): Pair<Boolean, JsonObject> {
+            val connection = URL(
+                "$url?" +
+                        params
+                            .map { (key, value) -> "$key=$value&" }
+                            .reduce(String::plus))
+                .openConnection() as HttpURLConnection
+            if (connection.responseCode != 200 && connection.responseCode != 403) {
+                throw Exception("Error ${connection.responseCode}: ${connection.responseMessage}")
+            }
+            val responseString = connection.inputStream.bufferedReader().lines().reduce(String::plus)
+            return (connection.responseCode == 200) to Json.decodeFromString(responseString.orElseGet { "{}" })
+        }
 
         override val youtubeArgs: Map<String, String> = mapOf("yes-playlist" to "")
         override val urlRegex = urlRegexMaker("youtube\\.com|youtu\\.be")
@@ -152,12 +249,13 @@ enum class SearchEngine {
      * @param[request] Une [List]<[JsonObject]> correspondant aux métadonnées de la requête.
      */
     protected fun searchYoutubeDL(request: String): List<JsonObject> {
+        Log.DL.info("Searching for request using youtube-dlp")
         val wholeRequest = listOf("yt-dlp", "--id", "--write-info-json", "--skip-download") +
                 youtubeArgs.map { (key, value) ->
                     """--$key${if (value.isNotBlank()) " $value" else ""}"""
                 } +
                 listOf(request)
-        Log.DL.info(wholeRequest.reduce {a,b -> "$a $b"})
+        Log.DL.info(wholeRequest.reduce { a, b -> "$a $b" })
         val randomValue = (0..Int.MAX_VALUE).random()
         val workingDir = tmpDir.resolve(randomValue.toString())
         workingDir.mkdirs()
