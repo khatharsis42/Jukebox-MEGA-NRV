@@ -41,7 +41,7 @@ enum class SearchEngine {
      * Correspond à une URL directe vers une musique Bandcamp.
      */
     BANDCAMP {
-        override val urlRegex = urlRegexMaker("(.*)?bandcamp\\.com")
+        override val urlRegex = urlRegexMaker("(.+\\.)?bandcamp\\.com")
     },
 
     /**
