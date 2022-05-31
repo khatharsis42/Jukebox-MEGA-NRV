@@ -1,5 +1,6 @@
 package cj.jukebox.plugins.statistics
 
+import cj.jukebox.database
 import cj.jukebox.database.Log
 import cj.jukebox.database.User
 import cj.jukebox.templates.MainTemplate
@@ -44,4 +45,6 @@ class UserStatistics(user: UserSession, lookedUpUser: User) :
  * @author Ukabi
  */
 private fun prepareData(user: User, timeDelta: Duration? = null): List<List<Any>> = listOf(listOf("Track", "Count")) +
-        Log.getMostPlayedTracks(user, timeDelta).map { listOf("${it.second.artist} - ${it.second.track}", it.first) }
+        database.dbQuery {
+            Log.getMostPlayedTracks(user, timeDelta).map { listOf(it.second.track.toString(), it.first) }
+        }

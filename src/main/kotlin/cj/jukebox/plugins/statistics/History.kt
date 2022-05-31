@@ -1,5 +1,6 @@
 package cj.jukebox.plugins.statistics
 
+import cj.jukebox.database
 import cj.jukebox.database.Log
 import cj.jukebox.database.Track
 import cj.jukebox.templates.MainTemplate
@@ -43,6 +44,6 @@ class History(user: UserSession, n: Int = 50) : MainTemplate(user, content = obj
  * @author Ukabi
  */
 private fun prepareData(n: Int): List<List<Any>> = listOf(listOf("Name", "Track", "Track ID")) +
-        Log.getLogs(n).map {
-            listOf(it.userId.name, "${it.trackId.artist} - ${it.trackId.track}", Log.getTrackCount(it.trackId))
+        database.dbQuery {
+            Log.getLogs(n).map { listOf(it.userId.name, it.trackId.track.toString(), Log.getTrackCount(it.trackId)) }
         }

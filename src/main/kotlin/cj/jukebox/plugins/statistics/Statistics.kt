@@ -58,10 +58,3 @@ fun Application.statistics() {
         }
     }
 }
-
-fun giveTestArray() = arrayOf(
-    arrayOf("Name 1", "Name 2").toList(),
-    arrayOf("Test1", "1").toList(),
-    arrayOf("Test2", "6").toList(),
-    arrayOf("Test3", "9").toList()
-).toList()

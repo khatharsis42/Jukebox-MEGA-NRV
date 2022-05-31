@@ -1,5 +1,6 @@
 package cj.jukebox.plugins.statistics
 
+import cj.jukebox.database
 import cj.jukebox.database.Log
 import cj.jukebox.database.Track
 import cj.jukebox.database.User
@@ -52,11 +53,15 @@ class GlobalStatistics(user: UserSession) : MainTemplate(user, content = object 
  * @author Ukabi
  */
 private fun prepareUserData(n: Int, timeDelta: Duration? = null): List<List<Any>> = listOf(listOf("User", "Count")) +
-        Log.getMostActiveUsers(timeDelta, n).map { listOf(it.second.name, it.first) }
+        database.dbQuery {
+            Log.getMostActiveUsers(timeDelta, n).map { listOf(it.second.name, it.first) }
+        }
 
 /**
  * Prépare les données nécessaires à l'affichage des statistiques des [Track].
  * @author Ukabi
  */
 private fun prepareTrackData(n: Int, timeDelta: Duration? = null): List<List<Any>> = listOf(listOf("Track", "Count")) +
-        Log.getMostPlayedTracks(timeDelta, n).map { listOf("${it.second.artist} - ${it.second.track}", it.first) }
+        database.dbQuery {
+            Log.getMostPlayedTracks(timeDelta, n).map { listOf(it.second.track.toString(), it.first) }
+        }

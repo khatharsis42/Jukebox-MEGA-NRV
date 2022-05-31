@@ -48,7 +48,7 @@ fun Application.search() {
                 val parameters = call.request.queryParameters
 
                 val url = parameters.getOrFail("url").takeIf { it.isNotBlank() } ?: return@post
-                val track = Track.refresh(url) ?: Track.createTrack(url)
+                Track.refresh(url)
             }
         }
     }

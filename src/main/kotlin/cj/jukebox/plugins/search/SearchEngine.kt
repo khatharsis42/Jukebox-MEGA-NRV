@@ -26,23 +26,17 @@ enum class SearchEngine {
     /**
      * Correspond à une URL directe vers une musique de Jamendo.
      */
-    JAMENDO {
-        override val urlRegex = urlRegexMaker("jamendo\\.com")
-    },
+    JAMENDO { override val urlRegex = urlRegexMaker("jamendo\\.com") },
 
     /**
      * Correspond à une URL directe vers une vidéo de Twitch.
      */
-    TWITCH {
-        override val urlRegex = urlRegexMaker("twitch\\.tv")
-    },
+    TWITCH { override val urlRegex = urlRegexMaker("twitch\\.tv") },
 
     /**
      * Correspond à une URL directe vers une musique Bandcamp.
      */
-    BANDCAMP {
-        override val urlRegex = urlRegexMaker("(.+\\.)?bandcamp\\.com")
-    },
+    BANDCAMP { override val urlRegex = urlRegexMaker("(.+\\.)?bandcamp\\.com") },
 
     /**
      * Correspond à une URL directe vers une musique.
@@ -56,11 +50,11 @@ enum class SearchEngine {
      * Correspond à une recherche Soundcloud.
      */
     SOUNDCLOUD {
+        override fun downloadMultiple(request: String) =
+            searchYoutubeDL("ytsearch5:\"${request.removePrefix("!sc ")}\"").map { jsonToTrack(it) }
+
         override val urlRegex = urlRegexMaker("soundcloud\\.com")
         override val queryRegex = Regex("^!sc .+\$")
-        override fun downloadMultiple(request: String) = searchYoutubeDL(
-            "ytsearch5:\"${request.removePrefix("!sc ")}\""
-        ).map { jsonToTrack(it) }
     },
 
     /**
@@ -78,9 +72,8 @@ enum class SearchEngine {
             return searchYoutubeDL(newUrl, true).map { jsonToTrack(it) }
         }
 
-        override fun downloadMultiple(request: String) = searchYoutubeDL(
-            "ytsearch5:\"${request.removePrefix("!yt ")}\""
-        ).map { jsonToTrack(it) }
+        override fun downloadMultiple(request: String) =
+            searchYoutubeDL("ytsearch5:\"${request.removePrefix("!yt ")}\"").map { jsonToTrack(it) }
 
         override val youtubeArgs: Map<String, String> = mapOf("yes-playlist" to "")
         override val urlRegex = urlRegexMaker("youtube\\.com|youtu\\.be")
@@ -92,12 +85,12 @@ enum class SearchEngine {
      * @param[url] Une URL vers une musique ou une playlist.
      * @return Une [List] de [TrackData], correspondant à l'URL.
      */
-    open fun downloadSingle(url: String) = searchYoutubeDL(url, true).map { jsonToTrack(it) }
+    open fun downloadSingle(url: String): List<TrackData> = searchYoutubeDL(url, true).map { jsonToTrack(it) }
 
     /**
      * Convertit un objet JSON en une TrackData.
      */
-    open fun jsonToTrack(metadata: JsonObject) = TrackData(
+    open fun jsonToTrack(metadata: JsonObject): TrackData = TrackData(
         url = Json.decodeFromJsonElement(metadata["webpage_url"]!!),
         source = name,
         track = (metadata["title"] ?: metadata["track"])?.let { Json.decodeFromJsonElement(it) },
@@ -162,7 +155,6 @@ enum class SearchEngine {
                     ""
                 } + request
         val randomValue = (0..Int.MAX_VALUE).random()
-
         val workingDir = tmpDir.resolve(randomValue.toString())
         workingDir.mkdirs()
 
