@@ -26,17 +26,23 @@ enum class SearchEngine {
     /**
      * Correspond à une URL directe vers une musique de Jamendo.
      */
-    JAMENDO { override val urlRegex = urlRegexMaker("jamendo\\.com") },
+    JAMENDO {
+        override val urlRegex = urlRegexMaker("jamendo\\.com")
+    },
 
     /**
      * Correspond à une URL directe vers une vidéo de Twitch.
      */
-    TWITCH { override val urlRegex = urlRegexMaker("twitch\\.tv") },
+    TWITCH {
+        override val urlRegex = urlRegexMaker("twitch\\.tv")
+    },
 
     /**
      * Correspond à une URL directe vers une musique Bandcamp.
      */
-    BANDCAMP { override val urlRegex = urlRegexMaker("(.+\\.)?bandcamp\\.com") },
+    BANDCAMP {
+        override val urlRegex = urlRegexMaker("(.+\\.)?bandcamp\\.com")
+    },
 
     /**
      * Correspond à une URL directe vers une musique.
@@ -62,16 +68,14 @@ enum class SearchEngine {
      */
     YOUTUBE {
         override fun downloadSingle(url: String): List<TrackData> {
-            val args = url.split("?", "&")
-            val head = args.first()
-                .substringAfter("youtu.be/")     // for short URLs (aka no tail["v"])
-                .substringAfter("youtube.com/")  // only useful for playlist case (.../playlist?list=...)
-            val tail = args.drop(1)
-                .map { arg -> arg.split("=", limit = 2).let { mapOf(it.first() to it.last()) } }
-                .reduce { acc, map -> acc + map }
-
-            val new = "https://www.youtube.com/watch?v=${tail["v"] ?: head}${tail["list"]?.let { "?list=$it" } ?: ""}"
-            return super.downloadSingle(new)
+            if ("list" in url) return searchYoutubeDL(url).map { jsonToTrack(it) }
+            val newUrl = "https://www.youtube.com/watch?v=" +
+                    if ("youtu.be" in url) {
+                        url.substringAfter("youtu.be/").substringBefore("?")
+                    } else {
+                        url.substringAfter("youtube.com/watch?v=").substringBefore("&")
+                    }
+            return searchYoutubeDL(newUrl).map { jsonToTrack(it) }
         }
 
         override fun downloadMultiple(request: String) =
@@ -87,7 +91,7 @@ enum class SearchEngine {
      * @param[url] Une URL vers une musique ou une playlist.
      * @return Une [List] de [TrackData], correspondant à l'URL.
      */
-    open fun downloadSingle(url: String): List<TrackData> = searchYoutubeDL(url, true).map { jsonToTrack(it) }
+    open fun downloadSingle(url: String): List<TrackData> = searchYoutubeDL(url).map { jsonToTrack(it) }
 
     /**
      * Convertit un objet JSON en une TrackData.
@@ -146,14 +150,17 @@ enum class SearchEngine {
      * Exécute une recherche via youtube-dl. Une liste des métadonnées en Json.
      * @param[request] Une [List]<[JsonObject]> correspondant aux métadonnées de la requête.
      */
-    protected fun searchYoutubeDL(request: String, direct_url: Boolean = false): List<JsonObject> {
-        val args = youtubeArgs.takeIf { it.isNotEmpty() }
-            ?.map { (k, v) -> "--$k $v" }
-            ?.reduce { acc, s -> "$acc $s" }
-            ?.let { " $it" }
-            ?: ""
-        val wholeRequest = "yt-dlp --id --write-info-json --skip-download$args $request"
-
+    protected fun searchYoutubeDL(request: String): List<JsonObject> {
+        val wholeRequest = "yt-dlp --id --write-info-json --skip-download " +
+                if (youtubeArgs.isNotEmpty()) {
+                    youtubeArgs.entries
+                        .joinToString("") { (key, value) ->
+                            "--$key ${if (value.isEmpty()) "" else "$value "}"
+                        }
+                } else {
+                    ""
+                } + request
+        println(wholeRequest)
         val randomValue = (0..Int.MAX_VALUE).random()
         val workingDir = tmpDir.resolve(randomValue.toString())
         workingDir.mkdirs()
@@ -164,7 +171,6 @@ enum class SearchEngine {
             ?.sortedBy { it.lastModified() }
             ?.map { Json.decodeFromString<JsonObject>(it.readText(Charsets.UTF_8)) }
             ?.filter { Json.decodeFromJsonElement<String>(it["_type"]!!) != "playlist" }
-            ?.let { if (direct_url) it else it.dropLast(1) }
             .also { workingDir.deleteRecursively() }  // cleaning before return
             ?: listOf()
     }

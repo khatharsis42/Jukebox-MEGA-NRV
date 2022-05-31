@@ -4,7 +4,7 @@ import cj.jukebox.database.Log
 import cj.jukebox.database.Logs
 import cj.jukebox.database.Track
 import cj.jukebox.database.User
-import cj.jukebox.player
+//import cj.jukebox.player
 import cj.jukebox.utils.SigName
 import cj.jukebox.utils.UserSession
 import cj.jukebox.utils.sendSignal
@@ -23,7 +23,7 @@ enum class Direction(val direction: String) {
  */
 private fun Playlist.move(from: Int, to: Int) {
     this[from] = this[to].also { this[to] = this[from] }
-        .also { player.sendSignal(SigName.SIGUSR2) }
+//        .also { player.sendSignal(SigName.SIGUSR2) }
 }
 
 /**
@@ -56,7 +56,7 @@ fun Playlist.move(log: Log, direction: Direction) =
  */
 fun Playlist.addIfPossible(track: Track, user: User): Boolean =
     !track.blacklisted && !track.obsolete && add(Log.createLog(track, user))
-        .also { if (it) player.sendSignal(SigName.SIGUSR2) }
+//        .also { if (it) player.sendSignal(SigName.SIGUSR2) }
 
 /**
  * Vérifie si la [Track] correspondant à la [trackId] fournie peut être jouée, puis l'ajoute à la [Playlist].
@@ -93,7 +93,7 @@ fun Playlist.removeIfPossible(track: Track, delete: Boolean = true): Int? =
     map { it.trackId }
         .indexOf(track).takeIf { it >= 0 }
         .also { index -> index?.let { removeAt(it).apply { if (delete) this.delete() } } }
-        ?.also { player.sendSignal(if (it == 0) SigName.SIGUSR1 else SigName.SIGUSR2) }
+//        ?.also { player.sendSignal(if (it == 0) SigName.SIGUSR1 else SigName.SIGUSR2) }
 
 /**
  * Vérifie si la [Track] correspondant à la [trackId] fournie fait partie de la [Playlist], puis la supprime.
