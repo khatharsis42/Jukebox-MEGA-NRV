@@ -19,29 +19,33 @@ fun Application.search() {
                 val parameters = call.receiveParameters()
 
                 val query = parameters.getOrFail("q").takeIf { it.isNotBlank() } ?: return@post
-                var trackList : List<TrackData> = listOf()
+
+                val trackList: List<TrackData>
                 for (engine in SearchEngine.values()) {
                     if (query.matches(engine.urlRegex)) {
                         println("Matching URL for ${engine.name} : $query")
+
                         trackList = engine.downloadSingle(query)
                         if (trackList.size == 1) {
                             // TODO Jouer cette unique track
                         }
-                        // Else
                         call.respond(Json.encodeToString(ListSerializer(TrackData.serializer()), trackList))
                         return@post
                     }
-                    if (engine.queryRegex!= null && query.matches(engine.queryRegex!!)) {
+
+                    if (engine.queryRegex.let { (it != null) && query.matches(it) }) {
                         println("Matching query for ${engine.name} : $query")
+
                         trackList = engine.downloadMultiple(query)
                         call.respond(Json.encodeToString(ListSerializer(TrackData.serializer()), trackList))
                         return@post
                     }
                 }
+
                 println("Matching nothing, using generic Youtube search.")
+
                 trackList = SearchEngine.YOUTUBE.downloadMultiple(query)
                 call.respond(Json.encodeToString(ListSerializer(TrackData.serializer()), trackList))
-                return@post
             }
 
             post("/refresh-track") {

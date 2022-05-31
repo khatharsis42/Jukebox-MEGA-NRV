@@ -2,8 +2,6 @@ package cj.jukebox.plugins.playlist
 
 import cj.jukebox.player
 import cj.jukebox.playlist
-
-import cj.jukebox.utils.SigName
 import cj.jukebox.utils.getParam
 import cj.jukebox.utils.getUserSession
 import cj.jukebox.utils.sendSignal
@@ -35,15 +33,7 @@ fun Application.playlist() {
                 val parameters = call.receiveParameters()
 
                 val trackId = parameters.getOrFail("randomid").toInt()
-                val index = playlist.removeIfPossible(trackId)
-
-                // Différentiation du cas musique en cours de lecture (index = 0) ou en queue (index > 0)
-                index?.let {
-                    if (it == 0)
-                        player.sendSignal(SigName.SIGUSR1)
-                    else
-                        player.sendSignal(SigName.SIGUSR2)
-                }
+                playlist.removeIfPossible(trackId)
             }
 
             post("/move-track") {
@@ -51,12 +41,8 @@ fun Application.playlist() {
 
                 val direction = parameters.getOrFail("action")
                 val trackId = parameters.getOrFail("randomid").toInt()
-                playlist
-                    .map { it.trackId.id.value }
-                    .indexOf(trackId).takeIf { it >= 0 }
+                playlist.map { it.trackId.id.value }.indexOf(trackId).takeIf { it >= 0 }
                     ?.let { playlist.move(it, Direction.valueOf(direction)) }
-
-                player.sendSignal(SigName.SIGUSR2)
             }
 
             post("/sync") {
