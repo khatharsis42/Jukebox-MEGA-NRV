@@ -6,7 +6,6 @@ import cj.jukebox.playlist
 import cj.jukebox.plugins.playlist.addIfPossible
 import cj.jukebox.utils.Log
 import cj.jukebox.utils.getUserSession
-
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*

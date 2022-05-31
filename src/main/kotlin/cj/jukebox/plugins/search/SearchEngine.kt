@@ -2,23 +2,15 @@ package cj.jukebox.plugins.search
 
 import cj.jukebox.config
 import cj.jukebox.database.TrackData
-import cj.jukebox.playlist
 import cj.jukebox.utils.Log
 import cj.jukebox.utils.runCommand
-import io.ktor.client.request.*
-
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
-import java.io.BufferedReader
 import java.io.File
-import java.io.InputStreamReader
-import java.net.Authenticator
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
-import java.time.format.DateTimeFormatter
-import java.util.*
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 
