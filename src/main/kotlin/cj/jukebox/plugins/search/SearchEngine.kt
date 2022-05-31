@@ -79,7 +79,7 @@ enum class SearchEngine {
         }
 
         override fun downloadMultiple(request: String) =
-            searchYoutubeDL("ytsearch5:\"${request.removePrefix("!yt ")}\"").map { jsonToTrack(it) }
+            searchYoutubeDL("ytsearch5:${request.removePrefix("!yt ")}").map { jsonToTrack(it) }
 
         override val youtubeArgs: Map<String, String> = mapOf("yes-playlist" to "")
         override val urlRegex = urlRegexMaker("youtube\\.com|youtu\\.be")
@@ -151,21 +151,16 @@ enum class SearchEngine {
      * @param[request] Une [List]<[JsonObject]> correspondant aux métadonnées de la requête.
      */
     protected fun searchYoutubeDL(request: String): List<JsonObject> {
-        val wholeRequest = "yt-dlp --id --write-info-json --skip-download " +
-                if (youtubeArgs.isNotEmpty()) {
-                    youtubeArgs.entries
-                        .joinToString("") { (key, value) ->
-                            "--$key ${if (value.isEmpty()) "" else "$value "}"
-                        }
-                } else {
-                    ""
-                } + request
-        println(wholeRequest)
+        val wholeRequest = listOf("yt-dlp", "--id", "--write-info-json", "--skip-download") +
+                youtubeArgs.map { (key, value) ->
+                    """--$key${if (value.isNotBlank()) " $value" else ""}"""
+                } +
+                listOf(request)
         val randomValue = (0..Int.MAX_VALUE).random()
         val workingDir = tmpDir.resolve(randomValue.toString())
         workingDir.mkdirs()
-
         wholeRequest.runCommand(workingDir)
+
         return workingDir
             .listFiles { _, s -> s.endsWith(".info.json") }
             ?.sortedBy { it.lastModified() }
