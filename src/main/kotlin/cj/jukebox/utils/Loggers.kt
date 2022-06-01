@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger
 import org.apache.logging.log4j.core.LoggerContext
 import org.apache.logging.log4j.core.config.LoggerConfig
 
-class Log {
+class Loggers {
     companion object {
         const val ON = true
         /**
