@@ -47,7 +47,7 @@ enum class SearchEngine(val urlRegex: Regex) {
      */
     SOUNDCLOUD("soundcloud\\.com") {
         override fun downloadMultiple(request: String) =
-            searchYoutubeDL("ytsearch5:\"${request.removePrefix("!sc ")}\"").map { jsonToTrack(it) }
+            searchYoutubeDL("scsearch5:\"${request.removePrefix("!sc ")}\"").map { jsonToTrack(it) }
 
         override val queryRegex = Regex("^!sc .+\$")
     },
