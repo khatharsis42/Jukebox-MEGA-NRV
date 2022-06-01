@@ -16,13 +16,7 @@ import kotlin.time.DurationUnit
 
 
 /**
- * Pour créer facilement des regex à partir d'un nom de domaine.
- */
-private fun urlRegexMaker(domain: String) = Regex("^(https?://)?((www\\.)?$domain)/.+$")
-
-/**
  * Enumération de toutes les sources prises en compte.
- * NB: Ce n'est pas forcément très beau, mais ça marche très bien.
  *
  * @param[urlRegex] Un regex permettant de reconnaître une URL.
  * @author khatharsis
@@ -31,29 +25,27 @@ enum class SearchEngine(val urlRegex: Regex) {
     /**
      * Correspond à une URL directe vers une musique de Jamendo.
      */
-    JAMENDO(urlRegexMaker("jamendo\\.com")),
+    JAMENDO("jamendo\\.com"),
 
     /**
      * Correspond à une URL directe vers une vidéo de Twitch.
      */
-    TWITCH(urlRegexMaker("twitch\\.tv")),
+    TWITCH("twitch\\.tv"),
 
     /**
      * Correspond à une URL directe vers une musique Bandcamp.
      */
-    BANDCAMP(urlRegexMaker("(.+\\.)?bandcamp\\.com")),
+    BANDCAMP("(.+\\.)?bandcamp\\.com"),
 
     /**
      * Correspond à une URL directe vers une musique.
      */
-    DIRECT_FILE(Regex("^(https?://)?.*\\.(mp3|mp4|ogg|flac|wav|webm)")) {
-//        override val queryRegex = Regex("^!direct .+\$")
-    },
+    DIRECT_FILE(Regex("^(https?://)?.*\\.(mp3|mp4|ogg|flac|wav|webm)")),
 
     /**
      * Correspond à une recherche Soundcloud.
      */
-    SOUNDCLOUD(urlRegexMaker("soundcloud\\.com")) {
+    SOUNDCLOUD("soundcloud\\.com") {
         override fun downloadMultiple(request: String) =
             searchYoutubeDL("ytsearch5:\"${request.removePrefix("!sc ")}\"").map { jsonToTrack(it) }
 
@@ -63,7 +55,7 @@ enum class SearchEngine(val urlRegex: Regex) {
     /**
      * Correspond à la recherche avec YouTube.
      */
-    YOUTUBE(urlRegexMaker("youtube\\.com|youtu\\.be")) {
+    YOUTUBE("youtube\\.com|youtu\\.be") {
         override fun downloadSingle(url: String): List<TrackData> {
             if ("list" in url) return searchYoutubeAPI(url, true)
             val newUrl = "https://www.youtube.com/watch?v=" +
@@ -171,6 +163,12 @@ enum class SearchEngine(val urlRegex: Regex) {
         override val youtubeArgs: Map<String, String> = mapOf("yes-playlist" to "")
         override val queryRegex = "^!yt .+\$".toRegex()
     };
+
+    /**
+     * Constructeur avec un nom de domaine.
+     * @param[domain] Nom de domaine de l'URL.
+     */
+    constructor(domain: String) : this(Regex("^(https?://)?((www\\.)?$domain)/.+$"))
 
     /**
      * Permet de télécharger des metadatas depuis une URL. Utilise quasi exclusivement youtube-dl.
