@@ -3,8 +3,7 @@ package cj.jukebox.plugins.search
 import cj.jukebox.database.Track
 import cj.jukebox.database.TrackData
 import cj.jukebox.playlist
-import cj.jukebox.plugins.playlist.addIfPossible
-import cj.jukebox.utils.Log
+import cj.jukebox.utils.Loggers
 import cj.jukebox.utils.getUserSession
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -27,13 +26,13 @@ fun Application.search() {
                 val trackList: List<TrackData>
                 for (engine in SearchEngine.values()) {
                     if (query.matches(engine.urlRegex)) {
-                        Log.GEN.info("Matching URL for ${engine.name} : $query")
+                        Loggers.GEN.info("Matching URL for ${engine.name} : $query")
 
                         trackList = engine.downloadSingle(query)
                         if (trackList.size == 1) {
                             trackList.first()
                                 .let { Track.refresh(it.url) ?: Track.createTrack(it) }
-                                .also { playlist.addIfPossible(it, session) }
+                                .also { playlist.addIfPossible(TrackData(it, session.toUser())) }
                             return@post
                         }
                         call.respond(Json.encodeToString(ListSerializer(TrackData.serializer()), trackList))
@@ -41,7 +40,7 @@ fun Application.search() {
                     }
 
                     if (engine.queryRegex.let { (it != null) && query.matches(it) }) {
-                        Log.GEN.info("Matching query for ${engine.name} : $query")
+                        Loggers.GEN.info("Matching query for ${engine.name} : $query")
 
                         trackList = engine.downloadMultiple(query)
                         call.respond(Json.encodeToString(ListSerializer(TrackData.serializer()), trackList))
@@ -49,7 +48,7 @@ fun Application.search() {
                     }
                 }
 
-                Log.GEN.info("Matching nothing, using generic Youtube search : $query")
+                Loggers.GEN.info("Matching nothing, using generic Youtube search : $query")
 
                 trackList = SearchEngine.YOUTUBE.downloadMultiple(query)
                 call.respond(Json.encodeToString(ListSerializer(TrackData.serializer()), trackList))

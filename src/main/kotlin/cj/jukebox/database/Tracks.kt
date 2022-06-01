@@ -2,6 +2,8 @@ package cj.jukebox.database
 
 import cj.jukebox.database
 import cj.jukebox.plugins.search.SearchEngine
+import cj.jukebox.utils.UserSession
+import io.ktor.http.*
 
 import io.ktor.util.*
 import kotlinx.serialization.Serializable
@@ -43,8 +45,35 @@ data class TrackData(
     val duration: Int,
     val blacklisted: Boolean,
     val obsolete: Boolean,
+    val user: String? = null,
+    val randomid: Int = (0..Int.MAX_VALUE).random()
 ) {
-    val randomid = (0..Int.MAX_VALUE).random()
+    constructor(parameters: Parameters, user: UserSession) : this(
+        url = parameters["url"]!!,
+        source = parameters["source"]!!,
+        track = parameters["track"],
+        artist = parameters["artist"],
+        album = parameters["album"],
+        albumArtUrl = parameters["albumArtUrl"],
+        duration = Integer.parseInt(parameters["duration"]),
+        blacklisted = parameters["blacklisted"] == "true",
+        obsolete = parameters["obsolete"] == "true",
+        user = user.name,
+        randomid = Integer.parseInt(parameters["randomid"] ?: (0..Int.MAX_VALUE).random().toString())
+    )
+    // Not the cleanest but it works really well
+    constructor(track : Track, user: User) : this(
+        url = track.url,
+        source = track.source,
+        track = track.track,
+        artist = track.artist,
+        album = track.album,
+        albumArtUrl = track.albumArtUrl,
+        duration = track.duration,
+        blacklisted = track.blacklisted,
+        obsolete = track.obsolete,
+        user = user.name
+    )
 }
 
 /**

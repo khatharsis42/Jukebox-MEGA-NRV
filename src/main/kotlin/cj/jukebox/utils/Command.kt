@@ -20,7 +20,7 @@ fun String.runCommand(
     workingDir: File = File("."),
     toNbr: Long = 60,
     toUnit: TimeUnit = TimeUnit.SECONDS,
-    logger: Logger = Log.DEBUG
+    logger: Logger = Loggers.DEBUG
 ) =
     Regex("\\s").split(this).runCommand(workingDir, toNbr, toUnit, logger)
 
@@ -33,7 +33,7 @@ fun List<String>.runCommand(
     workingDir: File = File("."),
     toNbr: Long = 60,
     toUnit: TimeUnit = TimeUnit.SECONDS,
-    logger: Logger = Log.DEBUG
+    logger: Logger = Loggers.DEBUG
 ): Process? {
     val process = ProcessBuilder(this)
         .directory(workingDir)

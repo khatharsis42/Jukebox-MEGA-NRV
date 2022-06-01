@@ -2,7 +2,7 @@ package cj.jukebox.plugins.search
 
 import cj.jukebox.config
 import cj.jukebox.database.TrackData
-import cj.jukebox.utils.Log
+import cj.jukebox.utils.Loggers
 import cj.jukebox.utils.runCommand
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
@@ -78,7 +78,7 @@ enum class SearchEngine(val urlRegex: Regex) {
         override fun downloadMultiple(request: String) = searchYoutubeAPI(request, false)
 
         private fun searchYoutubeAPI(query: String, searchPlaylist: Boolean): List<TrackData> {
-            Log.DL.info("Searching request using Youtube API")
+            Loggers.DL.info("Searching request using Youtube API")
             for (key in config.data.YT_KEYS) {
                 val (validResponse, response) = if (searchPlaylist) {
                     getRequest(
@@ -105,7 +105,7 @@ enum class SearchEngine(val urlRegex: Regex) {
                     continue
                 }
                 if (response.isEmpty() || (response["items"] as JsonArray).isEmpty()) {
-                    Log.DL.warn("Nothing found on Youtube for query $query")
+                    Loggers.DL.warn("Nothing found on Youtube for query $query")
                 }
                 val videoIds: List<String> = if (searchPlaylist) {
                     (response["items"] as JsonArray).map {
@@ -195,8 +195,8 @@ enum class SearchEngine(val urlRegex: Regex) {
                     .substringBefore(".")
             )
         } catch (e: Exception) {
-            Log.DL.error(e)
-            Log.DL.error(metadata["duration"])
+            Loggers.DL.error(e)
+            Loggers.DL.error(metadata["duration"])
             0
         },
         blacklisted = false,
@@ -230,17 +230,17 @@ enum class SearchEngine(val urlRegex: Regex) {
      * @param[request] Une [List]<[JsonObject]> correspondant aux métadonnées de la requête.
      */
     protected fun searchYoutubeDL(request: String): List<JsonObject> {
-        Log.DL.info("Searching for request using youtube-dlp")
+        Loggers.DL.info("Searching for request using youtube-dlp")
         val wholeRequest = listOf("yt-dlp", "--id", "--write-info-json", "--skip-download") +
                 youtubeArgs.map { (key, value) ->
                     """--$key${if (value.isNotBlank()) " $value" else ""}"""
                 } +
                 listOf(request)
-        Log.DL.info(wholeRequest.reduce { a, b -> "$a $b" })
+        Loggers.DL.info(wholeRequest.reduce { a, b -> "$a $b" })
         val randomValue = (0..Int.MAX_VALUE).random()
         val workingDir = tmpDir.resolve(randomValue.toString())
         workingDir.mkdirs()
-        wholeRequest.runCommand(workingDir, logger = Log.DL)
+        wholeRequest.runCommand(workingDir, logger = Loggers.DL)
 
         return workingDir
             .listFiles { _, s -> s.endsWith(".info.json") }

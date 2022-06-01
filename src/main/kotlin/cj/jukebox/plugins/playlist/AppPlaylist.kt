@@ -17,25 +17,13 @@ fun Application.playlist() {
         authenticate("auth-session") {
             post("/add") {
                 val parameters = call.receiveParameters()
-                (Track.refresh(parameters["url"]!!) ?: Track.createTrack(
-                    TrackData(
-                        url = parameters["url"]!!,
-                        source = parameters["source"]!!,
-                        track = parameters["track"],
-                        artist = parameters["artist"],
-                        album = parameters["album"],
-                        albumArtUrl = parameters["albumArtUrl"],
-                        duration = Integer.parseInt(parameters["duration"]),
-                        blacklisted = parameters["blacklisted"] == "true",
-                        obsolete = parameters["obsolete"] == "true"
-                    )
-                )).also { playlist.addIfPossible(it, call.getUserSession()!!) }
+                playlist.addIfPossible(TrackData(parameters, call.getUserSession()!!))
             }
 
             post("/add/{url}") {
                 val session = call.getUserSession()!!
                 val trackUrl = call.getParam("url")
-                Track.getFromUrl(trackUrl)?.also { playlist.addIfPossible(it, session) }
+                Track.getFromUrl(trackUrl)?.also { playlist.addIfPossible(TrackData(it, session.toUser())) }
             }
 
             post("/remove") {
@@ -47,9 +35,12 @@ fun Application.playlist() {
             post("/move-track") {
                 val parameters = call.receiveParameters()
                 val direction = parameters.getOrFail("action")
-                val trackId = parameters.getOrFail("randomid").toInt()
-                playlist.map { it.trackId.id.value }.indexOf(trackId).takeIf { it >= 0 }
-                    ?.let { playlist.move(it, Direction.valueOf(direction)) }
+                val trackId = Integer.parseInt(parameters.getOrFail("randomid"))
+                playlist
+                    .map { it.randomid }
+                    .indexOf(trackId)
+                    .takeIf { it >= 0 }
+                    ?.also { playlist.move(it, Direction.valueOf(direction)) }
             }
 
             post("/sync") {

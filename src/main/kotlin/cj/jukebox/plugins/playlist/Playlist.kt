@@ -1,16 +1,17 @@
 package cj.jukebox.plugins.playlist
 
+import cj.jukebox.database.TrackData
 import cj.jukebox.database.Log
-import cj.jukebox.database.Logs
-import cj.jukebox.database.Track
-import cj.jukebox.database.User
-//import cj.jukebox.player
-import cj.jukebox.utils.SigName
-import cj.jukebox.utils.UserSession
-import cj.jukebox.utils.sendSignal
+import cj.jukebox.utils.Loggers
 
+//import cj.jukebox.player
+
+/**
+ * Une classe représentant la playlist.
+ * @author Khâtharsis
+ */
 @kotlinx.serialization.Serializable
-class Playlist : MutableList<Log> by mutableListOf() {
+class Playlist : MutableList<TrackData> by mutableListOf() {
     /**
      * Échange les [Track] étant aux emplacements [from] et [to].
      * @author Ukabi
@@ -35,75 +36,34 @@ class Playlist : MutableList<Log> by mutableListOf() {
         }
 
     /**
-     * Retrouve [log] dans la [Playlist], puis l'échange avec l'élément au-dessus ou en dessous,
-     * selon la valeur de [direction]. Le cas échéant, ne fait rien.
-     * Ne procède pas à l'échange si le bord de la [Playlist] est dépassé.
-     * @author Ukabi
-     */
-    fun move(log: Log, direction: Direction) =
-        indexOf(log).takeIf { it >= 0 }?.let { move(it, direction) }
-
-    /**
      * Vérifie si la [track] fournie peut être jouée, puis l'ajoute à la [Playlist].
      * Garde aussi la trace de l'[user] l'ayant requêtée.
      * Créé aussi une nouvelle occurrence dans la table [Logs].
-     * @author Ukabi
+     * @author Khâtharsis Ukabi
      */
-    fun addIfPossible(track: Track, user: User): Boolean =
-        !track.blacklisted && !track.obsolete && add(Log.createLog(track, user))
+    fun addIfPossible(track: TrackData): Boolean =
+        !track.blacklisted && !track.obsolete && add(track)
+            .also { Loggers.GEN.info("Adding a track: $track") }
 //        .also { if (it) player.sendSignal(SigName.SIGUSR2) }
 
     /**
-     * Vérifie si la [Track] correspondant à la [trackId] fournie peut être jouée, puis l'ajoute à la [Playlist].
-     * Garde aussi la trace de l'[user] l'ayant requêtée.
-     * Créé aussi une nouvelle occurrence dans la table [Logs].
-     * @author Ukabi
-     */
-    fun addIfPossible(trackId: Int, user: User): Boolean =
-        Track.getTrack(trackId)?.let { addIfPossible(it, user) } ?: false
-
-    /**
-     * Vérifie si la [Track] correspondant à la [trackId] fournie peut être jouée, puis l'ajoute à la [Playlist].
-     * Garde aussi la trace de l'[user] l'ayant requêtée.
-     * Créé aussi une nouvelle occurrence dans la table [Logs].
-     * @author Ukabi
-     */
-    fun addIfPossible(trackId: Int, user: UserSession): Boolean = addIfPossible(trackId, user.toUser())
-
-    /**
-     * Vérifie si la [track] fournie peut être jouée, puis l'ajoute à la [Playlist].
-     * Garde aussi la trace de l'[user] l'ayant requêtée.
-     * Créé aussi une nouvelle occurrence dans la table [Logs].
-     * @author Ukabi
-     */
-    fun addIfPossible(track: Track, user: UserSession): Boolean = addIfPossible(track, user.toUser())
-
-    /**
      * Vérifie si la [track] fournie fait partie de la [Playlist], puis la supprime.
-     * Efface aussi l'occurrence de [Log] précédemment créée si [delete] est fourni.
      * @return L'index de la track supprimée, *null* le cas échéant.
-     * @author Ukabi
+     * @author Khâtharsis Ukabi
      */
-    fun removeIfPossible(track: Track, delete: Boolean = true): Int? =
-        map { it.trackId }
-            .indexOf(track).takeIf { it >= 0 }
-            .also { index -> index?.let { removeAt(it).apply { if (delete) this.delete() } } }
-//        ?.also { player.sendSignal(if (it == 0) SigName.SIGUSR1 else SigName.SIGUSR2) }
+    fun removeIfPossible(randomid: Int): Int? =
+        map {it.randomid}
+            .indexOf(randomid).takeIf { it >= 0 }
+            ?.also { Loggers.GEN.info("Removing a track: ${get(it)}") }
+            ?.also { removeAt(it) }
 
-    /**
-     * Vérifie si la [Track] correspondant à la [trackId] fournie fait partie de la [Playlist], puis la supprime.
-     * Efface aussi l'occurrence de [Log] précédemment créée si [delete] est fourni.
-     * @return L'index de la track supprimée, *null* le cas échéant.
-     * @author Ukabi
-     */
-    fun removeIfPossible(trackId: Int, delete: Boolean = true): Int? =
-        Track.getTrack(trackId)?.let { removeIfPossible(it, delete) }
+//        ?.also { player.sendSignal(if (it == 0) SigName.SIGUSR1 else SigName.SIGUSR2) }
 
     /**
      * Renvoie la somme des durées (en secondes) de chacune des [Track] de la [Playlist].
      * @author Ukabi
      */
-    fun duration(): Int = mapNotNull { it.trackId.duration }.reduce { acc, i -> acc + i }
+    fun duration(): Int = mapNotNull { it.duration }.reduce { acc, i -> acc + i }
 }
 
 enum class Direction(val direction: String) {
