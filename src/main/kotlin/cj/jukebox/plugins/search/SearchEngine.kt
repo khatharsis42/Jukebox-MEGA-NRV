@@ -122,7 +122,7 @@ enum class SearchEngine(val urlRegex: Regex) {
                     mapOf(
                         "part" to "snippet,contentDetails",
                         "key" to key,
-                        "id" to videoIds.reduce {acc, s -> "$acc,$s"}
+                        "id" to videoIds.reduce { acc, s -> "$acc,$s" }
                     )
                 )
                 if (!secondValidResponse) {
@@ -131,22 +131,22 @@ enum class SearchEngine(val urlRegex: Regex) {
                 }
                 return (secondResponse["items"] as JsonArray)
                     .map { it as JsonObject }
-                    .map {metadata ->
+                    .map { metadata ->
                         val snippet = metadata["snippet"] as JsonObject
                         TrackData(
-                        url = "https://www.youtube.com/watch?v=" + Json.decodeFromJsonElement<String>(metadata["id"]!!),
-                        source = name,
-                        track = Json.decodeFromJsonElement(snippet["title"]!!),
-                        artist = Json.decodeFromJsonElement(snippet["channelTitle"]!!),
-                        album = null,
-                        albumArtUrl = Json.decodeFromJsonElement(((snippet["thumbnails"] as JsonObject)["medium"] as JsonObject)["url"]!!),
-                        duration = Duration.parseIsoString(
-                            Json.decodeFromJsonElement((metadata["contentDetails"] as JsonObject)["duration"]!!)
-                        ).toInt(DurationUnit.SECONDS),
-                        blacklisted = false,
-                        obsolete = false
-                    )
-                }
+                            url = "https://www.youtube.com/watch?v=" + Json.decodeFromJsonElement<String>(metadata["id"]!!),
+                            source = name,
+                            track = Json.decodeFromJsonElement(snippet["title"]!!),
+                            artist = Json.decodeFromJsonElement(snippet["channelTitle"]!!),
+                            album = null,
+                            albumArtUrl = Json.decodeFromJsonElement(((snippet["thumbnails"] as JsonObject)["medium"] as JsonObject)["url"]!!),
+                            duration = Duration.parseIsoString(
+                                Json.decodeFromJsonElement((metadata["contentDetails"] as JsonObject)["duration"]!!)
+                            ).toInt(DurationUnit.SECONDS),
+                            blacklisted = false,
+                            obsolete = false
+                        )
+                    }
             }
             // On a plus de clefs et aucune n'a fonctionné
             return searchYoutubeDL("ytsearch5:${query.removePrefix("!yt ")}").map { jsonToTrack(it) }
@@ -162,8 +162,10 @@ enum class SearchEngine(val urlRegex: Regex) {
             if (connection.responseCode != 200 && connection.responseCode != 403) {
                 throw Exception("Error ${connection.responseCode}: ${connection.responseMessage}")
             }
-            val responseString = connection.inputStream.bufferedReader().lines().reduce(String::plus)
-            return (connection.responseCode == 200) to Json.decodeFromString(responseString.orElseGet { "{}" })
+            val responseString = if (connection.responseCode == 200)
+                connection.inputStream.bufferedReader().lines().reduce(String::plus).get()
+            else "{}"
+            return (connection.responseCode == 200) to Json.decodeFromString(responseString)
         }
 
         override val youtubeArgs: Map<String, String> = mapOf("yes-playlist" to "")
