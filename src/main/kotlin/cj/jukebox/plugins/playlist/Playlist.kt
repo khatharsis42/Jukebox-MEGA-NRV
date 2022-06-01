@@ -42,8 +42,7 @@ class Playlist : MutableList<TrackData> by mutableListOf() {
      * @author Khâtharsis Ukabi
      */
     fun addIfPossible(track: TrackData): Boolean =
-        !track.blacklisted && !track.obsolete && add(track)
-            .also { Loggers.GEN.info("Adding a track: $track") }
+        !track.blacklisted && !track.obsolete && (add(track).also { Loggers.GEN.info("Adding a track: $track") })
 //        .also { if (it) player.sendSignal(SigName.SIGUSR2) }
 
     /**
@@ -63,7 +62,7 @@ class Playlist : MutableList<TrackData> by mutableListOf() {
      * Renvoie la somme des durées (en secondes) de chacune des [Track] de la [Playlist].
      * @author Ukabi
      */
-    fun duration(): Int = mapNotNull { it.duration }.reduce { acc, i -> acc + i }
+    fun duration(): Int = mapNotNull { it.duration }.reduceOrNull() { acc, i -> acc + i } ?: 0
 }
 
 enum class Direction(val direction: String) {

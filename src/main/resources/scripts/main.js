@@ -331,10 +331,11 @@ var pageStatus = true;
 sync = function () {
     if (pageStatus) {
         $.get("/sync", function (data) {
+            data = JSON.parse(data)
             $('#volume-slider').val(data.volume);
+            updates_playlist(data);
             if (yt !== 0) {
-                if (yt.ready) updates_playlist(data);
-                if (yt.hasTrack) syncVideo(data.time);
+                if (yt.ready && yt.hasTrack) syncVideo(data.time);
             }
             s = document.getElementById("playlist-length");
             if (s !== null) s.innerHTML = "Time Left:" + data.playlist_length;

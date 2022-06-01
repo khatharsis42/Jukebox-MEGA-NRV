@@ -17,7 +17,7 @@ import java.io.File
 
 val config = Config("src/main/resources/config.json")
 val database = DatabaseFactory(config.data.DATABASE_PATH)
-val playlist = mutableListOf<Log>()
+val playlist = Playlist()
 
 private val playerPath = File("src/main/python")
 val player = "python player.py http://${config.data.LISTEN_ADDRESS}/sync"
