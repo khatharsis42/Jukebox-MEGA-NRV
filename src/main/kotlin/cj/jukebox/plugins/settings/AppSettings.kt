@@ -1,6 +1,5 @@
 package cj.jukebox.plugins.settings
 
-import cj.jukebox.database.User
 import cj.jukebox.utils.getUserSession
 
 import io.ktor.server.application.*
@@ -26,9 +25,9 @@ fun Application.settings() {
                     val parameters = call.receiveParameters()
                     val style = parameters["style"]
 
-                    val userSession = call.getUserSession()!!
-                    userSession.theme = style
-                    User.findUser(userSession.id)?.setTheme(style)
+                    val session = call.getUserSession()!!
+                    session.theme = style
+                    session.toUser().setTheme(style)
 
                     call.respondRedirect("/settings")
                 }

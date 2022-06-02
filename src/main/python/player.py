@@ -27,11 +27,6 @@ class SyncData(NamedTuple):
     ids: List[int]
 
 
-def _soft_interrupt(sig_num, stack_frame):
-    """On signal, asking script to make player end it's current process."""
-    player.stop()
-
-
 def _next(sig_num, stack_frame):
     """On signal, asking script to skip current song."""
     global to_skip
@@ -71,7 +66,6 @@ if __name__ == "__main__":
     url = args[0]
 
     # Registering end and update signals
-    signal.signal(signal.SIGINT, _soft_interrupt)  # CTRL+C
     signal.signal(signal.SIGUSR1, _next)           # Custom signal
     signal.signal(signal.SIGUSR2, _update)         # Custom signal
 

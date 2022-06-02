@@ -67,7 +67,5 @@ class User(id: EntityID<Int>) : IntEntity(id) {
 /**
  * Raccourci pour filtrer [Users] selon le [pass] fourni.
  */
-private fun Op<Boolean>.passFilter(pass: String?): Op<Boolean> {
-    val encryptedPass = pass?.encrypt()
-    return if (encryptedPass != null) this.and(Users.pass eq encryptedPass) else this
-}
+private fun Op<Boolean>.passFilter(pass: String?): Op<Boolean> =
+    pass?.encrypt()?.let { and(Users.pass eq it) } ?: this

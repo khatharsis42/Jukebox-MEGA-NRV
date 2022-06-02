@@ -210,16 +210,16 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
  * Raccourci pour filtrer [Logs] aux [timeDelta] dernières secondes.
  */
 private fun Op<Boolean>.timeFilter(timeDelta: Duration?): Op<Boolean> =
-    let { if (timeDelta != null) it.and(Logs.time greater (getNow() - timeDelta)) else it }
+    timeDelta?.let { and(Logs.time greater (getNow() - it)) } ?: this
 
 /**
  * Raccourci pour filtrer [Logs] aux [timeDelta] dernières secondes.
  */
 private fun FieldSet.timeFilter(timeDelta: Duration?): Query =
-    let { if (timeDelta != null) it.select(Logs.time greater (getNow() - timeDelta)) else it.selectAll() }
+    timeDelta?.let { select(Logs.time greater (getNow() - it)) } ?: selectAll()
 
 /**
  * Raccourci pour filtrer [Logs] aux [timeDelta] dernières secondes.
  */
 private fun Log.Companion.timeFilter(timeDelta: Duration?): SizedIterable<Log> =
-    let { if (timeDelta != null) it.find { Logs.time greater (getNow() - timeDelta) } else it.all() }
+    timeDelta?.let { find { Logs.time greater (getNow() - it) } } ?: all()

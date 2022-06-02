@@ -19,7 +19,7 @@ data class UserSession(val id: Int, val name: String, var theme: String?) : Prin
     /**
      * Convertit la [UserSession] en l'occurrence de la table [Users] correspondante.
      */
-    fun toUser(): User = User.findUser(id)!! // can assert because [User] exists if [UserSession] exists too
+    fun toUser(): User = User.findUser(id)!!  // can assert because [User] exists if [UserSession] exists too
 }
 
 /**
@@ -40,7 +40,7 @@ fun ApplicationCall.clearUserSession() = sessions.clear<UserSession>()
  * Raccourci pour accéder au paramètre [name] d'un formulaire.
  * @author Ukabi
  */
-fun ApplicationCall.getParam(name: String) = parameters.getOrFail(name)
+fun ApplicationCall.getParam(name: String): String = parameters.getOrFail(name)
 
 /**
  * Raccourci pour créer une [UserSession] étant données les informations de l'utilisateur·ice.

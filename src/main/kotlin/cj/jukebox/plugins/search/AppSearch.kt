@@ -32,7 +32,7 @@ fun Application.search() {
                         if (trackList.size == 1) {
                             trackList.first()
                                 .let { Track.refresh(it.url) ?: Track.createTrack(it) }
-                                .also { playlist.addIfPossible(TrackData(it, session.toUser())) }
+                                .also { playlist.addIfPossible(TrackData(it, session)) }
                             return@post
                         }
                         call.respond(Json.encodeToString(ListSerializer(TrackData.serializer()), trackList))

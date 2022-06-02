@@ -42,6 +42,7 @@ fun Application.auth() {
                 User.findUser(credentials.name)?.let { return@validate null }
 
                 val user = User.createUser(credentials.name, credentials.password)
+
                 sessions.setUserSession(user.id, user.name, user.theme)
                 UserIdPrincipal(credentials.name)
             }

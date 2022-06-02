@@ -43,7 +43,7 @@ class History(user: UserSession, n: Int = 50) : MainTemplate(user, content = obj
  * @param[n] le nombre de [Track] à afficher.
  * @author Ukabi
  */
-private fun prepareData(n: Int): List<List<Any>> = listOf(listOf("Name", "Track", "Track ID")) +
+private fun prepareData(n: Int): List<List<Any>> = listOf(listOf("Name", "Track", "Track Count")) +
         database.dbQuery {
             Log.getLogs(n).map { listOf(it.userId.name, it.trackId.track.toString(), Log.getTrackCount(it.trackId)) }
         }

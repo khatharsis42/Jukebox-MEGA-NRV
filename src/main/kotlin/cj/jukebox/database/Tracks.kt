@@ -12,15 +12,15 @@ import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 
-const val urlReg =
-    """https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"""
+//const val urlReg = """^(https?://)?((www\\.)?).+/.+$"""
 
 object Tracks : IntIdTable() {
     val url = varchar("url", 200)
+
     val source_ = varchar("source", 20)
-    val track = varchar("track", 50).nullable()
-    val artist = varchar("artist", 50).nullable()
-    val album = varchar("album", 50).nullable()
+    val track = varchar("track", 200).nullable()
+    val artist = varchar("artist", 200).nullable()
+    val album = varchar("album", 200).nullable()
     val albumArtUrl = varchar("albumArtUrl", 200).nullable()
     val duration = integer("duration")
 
@@ -45,8 +45,9 @@ data class TrackData(
     val duration: Int,
     val blacklisted: Boolean,
     val obsolete: Boolean,
-    val user: String? = null,
-    val randomid: Int = (0..Int.MAX_VALUE).random()
+
+    val user: String? = null,                         // for playlist management
+    val randomid: Int = (0..Int.MAX_VALUE).random(),  // for playlist management
 ) {
     constructor(parameters: Parameters, user: UserSession) : this(
         url = parameters["url"]!!,
@@ -97,45 +98,44 @@ class Track(id: EntityID<Int>) : IntEntity(id) {
      * @author Ukabi
      */
     fun refresh() {
-        val trackSource = source.toUpperCasePreservingASCIIRules()
-        val sourceEngine = if (trackSource in SearchEngine.values().map { it.name }) {
-            SearchEngine.valueOf(trackSource)
-        } else {
-            SearchEngine.values().first { url.matches(it.urlRegex) }
-        }
+        val sourceEngine = source
+            .toUpperCasePreservingASCIIRules()
+            .takeIf { trackSource -> trackSource in SearchEngine.values().map { it.name } }
+            ?.let { SearchEngine.valueOf(it) }
+            ?: SearchEngine.values().first { url.matches(it.urlRegex) }
 
-        val metadatas = sourceEngine.downloadSingle(url).first()
+        val metadata = sourceEngine.downloadSingle(url).first()
         database.dbQuery {
-            source = metadatas.source
-            track = metadatas.track
-            artist = metadatas.artist
-            album = metadatas.album
-            albumArtUrl = metadatas.albumArtUrl
-            duration = metadatas.duration
-            blacklisted = metadatas.blacklisted
-            obsolete = metadatas.obsolete
+            source = metadata.source
+            track = metadata.track
+            artist = metadata.artist
+            album = metadata.album
+            albumArtUrl = metadata.albumArtUrl
+            duration = metadata.duration
+            blacklisted = metadata.blacklisted
+            obsolete = metadata.obsolete
         }
     }
 
     companion object : IntEntityClass<Track>(Tracks) {
         /**
          * Créé une nouvelle occurrence dans la table [Tracks].
-         * @param[metadatas] Les métadonnées à enregistrer.
+         * @param[metadata] Les métadonnées à enregistrer.
          * @return La [Track] fraichement créée.
          * @author Ukabi
          */
-        fun createTrack(metadatas: TrackData): Track =
+        fun createTrack(metadata: TrackData): Track =
             database.dbQuery {
                 Track.new {
-                    url = metadatas.url
-                    source = metadatas.source
-                    track = metadatas.track
-                    artist = metadatas.artist
-                    album = metadatas.album
-                    albumArtUrl = metadatas.albumArtUrl
-                    duration = metadatas.duration
-                    blacklisted = metadatas.blacklisted
-                    obsolete = metadatas.obsolete
+                    url = metadata.url
+                    source = metadata.source
+                    track = metadata.track
+                    artist = metadata.artist
+                    album = metadata.album
+                    albumArtUrl = metadata.albumArtUrl
+                    duration = metadata.duration
+                    blacklisted = metadata.blacklisted
+                    obsolete = metadata.obsolete
                 }
             }
 

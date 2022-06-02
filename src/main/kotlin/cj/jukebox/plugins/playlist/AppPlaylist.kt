@@ -3,7 +3,6 @@ package cj.jukebox.plugins.playlist
 import cj.jukebox.database.Track
 import cj.jukebox.database.TrackData
 import cj.jukebox.playlist
-import cj.jukebox.utils.Loggers
 import cj.jukebox.utils.getParam
 import cj.jukebox.utils.getUserSession
 
@@ -24,32 +23,45 @@ fun Application.playlist() {
         authenticate("auth-session") {
             post("/add") {
                 val parameters = call.receiveParameters()
-                if (playlist.addIfPossible(TrackData(parameters, call.getUserSession()!!)))
+                val session = call.getUserSession()!!
+
+                val added = playlist.addIfPossible(TrackData(parameters, session))
+
+                if (added)
                     call.respond("ok")
-                else call.respond("nok")
+                else
+                    call.respond("nok")
             }
 
             post("/add/{url}") {
                 val session = call.getUserSession()!!
-                val trackUrl = call.getParam("url")
-                Track.getFromUrl(trackUrl)?.also { playlist.addIfPossible(TrackData(it, session.toUser())) }
+
+                val added = call.getParam("url")
+                    .let { Track.getFromUrl(it) }
+                    ?.let { playlist.addIfPossible(TrackData(it, session)) }
+                    ?.takeIf { it }  // effectively added if track exists (1st let) AND track added (2nd let)
+
+                added?.also { call.respond("ok") } ?: call.respond("nok")
             }
 
             post("/remove") {
                 val parameters = call.receiveParameters()
-                val trackId = parameters.getOrFail("randomid").toInt()
-                playlist.removeIfPossible(trackId)
+
+                val removed = parameters.getOrFail("randomid").toInt()
+                    .let { playlist.removeIfPossible(it) }
+
+                removed?.also { call.respond("ok") } ?: call.respond("nok")
             }
 
             post("/move-track") {
                 val parameters = call.receiveParameters()
+
                 val direction = parameters.getOrFail("action")
-                val trackId = Integer.parseInt(parameters.getOrFail("randomid"))
-                playlist
-                    .map { it.randomid }
-                    .indexOf(trackId)
-                    .takeIf { it >= 0 }
-                    ?.also { playlist.move(it, Direction.valueOf(direction)) }
+                val trackId = parameters.getOrFail("randomid").toInt()
+                val trackIndex = playlist.map { it.randomid }.indexOf(trackId).takeIf { it >= 0 }
+                val moved = trackIndex?.let { playlist.move(it, Direction.valueOf(direction)) }
+
+                moved?.also { call.respond("ok") } ?: call.respond("nok")
             }
 
             get("/sync") {
