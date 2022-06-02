@@ -13,9 +13,6 @@ import java.net.URLEncoder
 
 import java.io.File
 import java.nio.charset.StandardCharsets
-import kotlin.time.Duration
-import kotlin.time.DurationUnit
-
 
 /**
  * Enumération de toutes les sources prises en compte.
@@ -148,23 +145,9 @@ enum class SearchEngine(val urlRegex: Regex) {
 
                 return (secondResponse["items"] as JsonArray)
                     .map { it as JsonObject }
-                    .map { metadata ->
-                        val snippet = metadata["snippet"] as JsonObject
-                        TrackData(
-                            url = "https://www.youtube.com/watch?v=" + Json.decodeFromJsonElement<String>(metadata["id"]!!),
-                            source = name,
-                            track = Json.decodeFromJsonElement(snippet["title"]!!),
-                            artist = Json.decodeFromJsonElement(snippet["channelTitle"]!!),
-                            album = null,
-                            albumArtUrl = Json.decodeFromJsonElement(((snippet["thumbnails"] as JsonObject)["medium"] as JsonObject)["url"]!!),
-                            duration = Duration.parseIsoString(
-                                Json.decodeFromJsonElement((metadata["contentDetails"] as JsonObject)["duration"]!!)
-                            ).toInt(DurationUnit.SECONDS),
-                            blacklisted = false,
-                            obsolete = false
-                        )
-                    }
+                    .map { TrackData.createFromYTApi(it, name) }
             }
+
             // On a plus de clefs et aucune n'a fonctionné
             return searchYoutubeDL("ytsearch5:${query.removePrefix("!yt ")}").map { super.jsonToTrack(it) }
         }
@@ -189,28 +172,7 @@ enum class SearchEngine(val urlRegex: Regex) {
     /**
      * Convertit un objet JSON en une TrackData.
      */
-    open fun jsonToTrack(metadata: JsonObject): TrackData = TrackData(
-        url = Json.decodeFromJsonElement(metadata["webpage_url"]!!),
-        source = name,
-        track = (metadata["title"] ?: metadata["track"])?.let { Json.decodeFromJsonElement(it) },
-        artist = (metadata["artist"] ?: metadata["uploader"])?.let { Json.decodeFromJsonElement(it) },
-        album = (metadata["album"])?.let { Json.decodeFromJsonElement(it) },
-        albumArtUrl = metadata["thumbnail"]?.let { Json.decodeFromJsonElement(it) },
-        duration = try {
-            Integer.parseInt(
-                metadata["duration"]
-                    .toString()
-                    .removeSurrounding("\"")
-                    .substringBefore(".")
-            )
-        } catch (e: Exception) {
-            Loggers.DL.error(e)
-            Loggers.DL.error(metadata["duration"])
-            0
-        },
-        blacklisted = false,
-        obsolete = false
-    )
+    protected fun jsonToTrack(metadata: JsonObject): TrackData = TrackData.createFromYoutubeDL(metadata, name)
 
     /**
      * Permet de télécharger des metadatas depuis une requête textuelle.
