@@ -81,4 +81,4 @@ class PlaylistSerializer : KSerializer<Playlist> by ListSerializer(TrackData.ser
  * Renvoie une [List] de [n] des précédents [Log] dont la [Track] peut être jouée.
  * @author Ukabi
  */
-fun suggest(n: Int = 5): List<Log> = Log.getRandom(n)
+fun suggest(n: Int = 5): List<TrackData> = Log.getRandom(n).map { it.toTrackData() }

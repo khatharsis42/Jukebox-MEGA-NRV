@@ -69,7 +69,7 @@ fun Application.playlist() {
                     Json.encodeToString(
                         JsonObject(
                             mapOf(
-                                "playlist" to Json.encodeToJsonElement(ListSerializer(TrackData.serializer()), playlist),
+                                "playlist" to Json.encodeToJsonElement(Playlist.serializer(), playlist),
                                 "volume" to Json.encodeToJsonElement(1),
                                 "time" to Json.encodeToJsonElement(1),
                                 "playlistLength" to Json.encodeToJsonElement(playlist.duration())
@@ -80,7 +80,7 @@ fun Application.playlist() {
             }
 
             get("/suggest") {
-                TODO("front end stuff for @Khatharsis")
+                call.respond(Json.encodeToString(ListSerializer(TrackData.serializer()), suggest()))
             }
         }
     }

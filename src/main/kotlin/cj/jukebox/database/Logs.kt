@@ -28,6 +28,8 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
     var user by User referencedOn Logs.userId
     var time by Logs.time
 
+    fun toTrackData(): TrackData = TrackData(track, user.name)
+
     companion object : IntEntityClass<Log>(Logs) {
         /**
          * Créé une nouvelle occurrence dans la table [Logs].
