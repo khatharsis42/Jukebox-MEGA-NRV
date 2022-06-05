@@ -50,7 +50,9 @@ class Playlist : MutableList<TrackData> by mutableListOf() {
      * @author Ukabi
      */
     fun addIfPossible(track: TrackData): Boolean =
-        !track.blacklisted && !track.obsolete && (add(track).also { Loggers.GEN.info("Adding a track: $track") })
+        !track.blacklisted && !track.obsolete && (add(track)
+            .also { Loggers.GEN.info("Adding a track: $track") }
+            .also { Log.createLog(track) })
 //            .also { if (it) player.sendSignal(SigName.SIGUSR2) }
 
     /**

@@ -42,6 +42,17 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
             }
 
         /**
+         * Créé une nouvelle occurrence dans la table [Logs] et dans la table [Tracks] si besoin.
+         */
+        fun createLog(trackData: TrackData) =
+            createLog(
+                (Track.refresh(trackData.url) ?: Track.createTrack(trackData)),
+                User.findUser(trackData.user!!)!!
+            // trackData.user cannot be null at this point.
+            )
+
+
+        /**
          * Récupère les [n] derniers [Log].
          */
         fun getLogs(n: Int): List<Log> =
