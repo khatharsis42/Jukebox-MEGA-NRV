@@ -24,8 +24,8 @@ object Logs : IntIdTable() {
  * @author Ukabi
  */
 class Log(id: EntityID<Int>) : IntEntity(id) {
-    var trackId by Track referencedOn Logs.trackId
-    var userId by User referencedOn Logs.userId
+    var track by Track referencedOn Logs.trackId
+    var user by User referencedOn Logs.userId
     var time by Logs.time
 
     companion object : IntEntityClass<Log>(Logs) {
@@ -35,8 +35,8 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
         fun createLog(track: Track, user: User, timestamp: Instant? = null) =
             database.dbQuery {
                 Log.new {
-                    trackId = track
-                    userId = user
+                    this.track = track
+                    this.user = user
                     time = timestamp ?: getNow()
                 }
             }
