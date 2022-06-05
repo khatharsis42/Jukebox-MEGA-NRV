@@ -6,8 +6,9 @@ import cj.jukebox.database.Track
 import cj.jukebox.database.TrackData
 import cj.jukebox.database.User
 import cj.jukebox.utils.Loggers
-
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
 
 enum class Direction(val direction: String) {
     TOP("top"),
@@ -20,7 +21,7 @@ enum class Direction(val direction: String) {
  * @author Khâtharsis
  * @author Ukabi
  */
-@Serializable
+@Serializable(with = PlaylistSerializer::class)
 class Playlist : MutableList<TrackData> by mutableListOf() {
     /**
      * Échange les [TrackData] étant aux emplacements [from] et [to].
@@ -73,6 +74,8 @@ class Playlist : MutableList<TrackData> by mutableListOf() {
      */
     fun duration(): Int = mapNotNull { it.duration }.reduceOrNull { acc, i -> acc + i } ?: 0
 }
+
+class PlaylistSerializer : KSerializer<Playlist> by ListSerializer(TrackData.serializer()) as KSerializer<Playlist>
 
 /**
  * Renvoie une [List] de [n] des précédents [Log] dont la [Track] peut être jouée.
