@@ -3,7 +3,7 @@ package cj.jukebox.utils
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.apache.logging.log4j.Logger
-import org.slf4j.event.Level
+import org.apache.logging.log4j.Level
 import java.io.File
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -20,7 +20,7 @@ fun List<String>.runCommand(
     workingDir: File = File("."),
     toNbr: Long = 60,
     toUnit: TimeUnit = TimeUnit.SECONDS,
-    logger: Logger = Loggers.DEBUG,
+    logger: Logger = Loggers.DEBUG
 ): Process {
     val process = ProcessBuilder(this)
         .directory(workingDir)
@@ -45,13 +45,7 @@ fun Logger.readFromStream(inputStream: InputStream, level: Level) {
     var s = ""
     while (c >= 0) {
         if (Char(c) == '\n') {
-            when (level) {
-                Level.DEBUG -> debug(s)
-                Level.ERROR -> error(s)
-                Level.INFO -> info(s)
-                Level.TRACE -> trace(s)
-                Level.WARN -> warn(s)
-            }
+            this.log(level, s)
             s = ""
         } else s += Char(c)
         c = reader.read()
