@@ -447,10 +447,13 @@ $('#jump').keyup(function (e) {
  */
 function suggest() {
     $.get("/suggest", function (data) {
+        data = JSON.parse(data)
         $('#suggestions').html("");
         for (let i = 0; i < data.length; i++) {
-            let t = data[i];
-            $('#suggestions').append(generate_track_html_suggest(t));
+            let track = data[i];
+            console.log("Track Suggested:");
+            console.log(track);
+            $('#suggestions').append(generate_track_html_suggest(track));
         }
     });
 }

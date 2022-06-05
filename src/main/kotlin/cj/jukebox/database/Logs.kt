@@ -1,6 +1,7 @@
 package cj.jukebox.database
 
 import cj.jukebox.database
+import cj.jukebox.utils.Loggers
 import cj.jukebox.utils.getNow
 
 import org.jetbrains.exposed.dao.IntEntity
@@ -28,7 +29,10 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
     var user by User referencedOn Logs.userId
     var time by Logs.time
 
-    fun toTrackData(): TrackData = TrackData(track, user.name)
+    /**
+     * Fait une requête dans la DB pour créer un objet TrackData à partir de ce Log.
+     */
+    fun toTrackData(): TrackData = database.dbQuery { (TrackData(track, user.name)) }
 
     companion object : IntEntityClass<Log>(Logs) {
         /**
@@ -50,7 +54,7 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
             createLog(
                 (Track.refresh(trackData.url) ?: Track.createTrack(trackData)),
                 User.findUser(trackData.user!!)!!
-            // trackData.user cannot be null at this point.
+                // trackData.user cannot be null at this point.
             )
 
 
@@ -213,8 +217,14 @@ class Log(id: EntityID<Int>) : IntEntity(id) {
                     .select { (Tracks.blacklisted eq false).and(Tracks.obsolete eq false) }
                     .orderBy(Random())
                     .limit(n)
-                    .distinctBy { Tracks.id }
                     .map { Log.wrapRow(it) }
+                    .also {
+                        Loggers.DEBUG.info("Recommending $n (${it.size}) logs : " +
+                                it.joinToString(separator = ", ") { log -> "[${log.id.value}; ${log.track.id}]" }
+                        )
+            }
+                //TODO: Le distinctBy {Tracks.id} ne fonctionne pas et ne renvoie une liste que de taille 1
+                //      Il faudrait trouver un autre moyen @Ukabi
             }
     }
 }
