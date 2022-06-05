@@ -1,5 +1,6 @@
 package cj.jukebox.utils
 
+import cj.jukebox.config
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -17,7 +18,7 @@ class Loggers {
         /**
          * logger object for the general part.
          */
-        final val GEN = LogManager.getLogger(LOGGER_NAME_GEN)
+        val GEN = LogManager.getLogger(LOGGER_NAME_GEN)
 
         /**
          * name of logger for the debug.
@@ -27,7 +28,7 @@ class Loggers {
         /**
          * logger object for the debug.
          */
-        final val DEBUG = LogManager.getLogger(LOGGER_NAME_DEBUG)
+        val DEBUG = LogManager.getLogger(LOGGER_NAME_DEBUG)
 
         /**
          * name of logger for the testing part (used in JUnit classes).
@@ -37,7 +38,7 @@ class Loggers {
         /**
          * logger object for the testing part.
          */
-        final val TEST = LogManager.getLogger(LOGGER_NAME_TEST)
+        val TEST = LogManager.getLogger(LOGGER_NAME_TEST)
 
         /**
          * name of logger for the download part.
@@ -47,16 +48,16 @@ class Loggers {
         /**
          * logger object for the download part.
          */
-        final val DL = LogManager.getLogger(LOGGER_NAME_DOWNLOAD)
+        val DL = LogManager.getLogger(LOGGER_NAME_DOWNLOAD)
 
         /**
          * static configuration, which can be changed by command line options.
          */
         init {
-            setLevel(GEN, Level.INFO);
-            setLevel(DEBUG, Level.INFO);
-            setLevel(DL, Level.WARN);
-            setLevel(TEST, Level.INFO);
+            setLevel(GEN, Level.INFO)
+            setLevel(DEBUG, if (config.data.DEBUG) Level.INFO else Level.WARN)
+            setLevel(DL, Level.WARN)
+            setLevel(TEST, Level.INFO)
         }
 
         /**
