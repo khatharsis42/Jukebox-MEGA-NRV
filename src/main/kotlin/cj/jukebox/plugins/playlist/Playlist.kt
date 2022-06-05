@@ -53,6 +53,7 @@ class Playlist : MutableList<TrackData> by mutableListOf() {
         !track.blacklisted && !track.obsolete && (add(track)
             .also { Loggers.GEN.info("Adding a track: $track") }
             .also { Log.createLog(track) })
+    //TODO: Remove that in the future.
 //            .also { if (it) player.sendSignal(SigName.SIGUSR2) }
 
     /**
