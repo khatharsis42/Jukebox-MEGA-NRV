@@ -45,13 +45,13 @@ function generate_track_html(t) {
     track_html.find(".btn-more").click(toggle_recto_verso);
     track_html.find(".btn-back").click(toggle_recto_verso);
     track_html.find(".btn-top").click(function () {
-        $.post("/move-track", {"action": "top", "randomid": t["randomid"]});
+        $.post("/move-track", {"action": "TOP", "randomid": t["randomid"]});
     });
     track_html.find(".btn-up").click(function () {
-        $.post("/move-track", {"action": "up", "randomid": t["randomid"]});
+        $.post("/move-track", {"action": "UP", "randomid": t["randomid"]});
     });
     track_html.find(".btn-down").click(function () {
-        $.post("/move-track", {"action": "down", "randomid": t["randomid"]});
+        $.post("/move-track", {"action": "DOWN", "randomid": t["randomid"]});
     });
 
     track_html.find(".btn-refresh").click(function () {

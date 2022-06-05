@@ -10,11 +10,7 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 
-enum class Direction(val direction: String) {
-    TOP("top"),
-    UP("up"),
-    DOWN("down")
-}
+enum class Direction { TOP, UP, DOWN }
 
 /**
  * Une classe représentant la playlist.
@@ -35,15 +31,17 @@ class Playlist : MutableList<TrackData> by mutableListOf() {
     /**
      * Échange l'élément [from] de la [Playlist] avec l'élément au-dessus ou en dessous,
      * selon la valeur de [direction].
-     * Ne procède pas à l'échange si le bord de la [Playlist] est dépassé.
+     * Ne procède pas à l'échange si le bord de la [Playlist] est dépassé ou si on essaye de bouger la track à 0.
      * @author Ukabi
      */
     fun move(from: Int, direction: Direction) =
-        when (direction) {
-            Direction.TOP -> add(0, removeAt(from))
-            Direction.UP -> (from - 1).takeIf { it >= 0 }?.let { move(from, it) }
-            Direction.DOWN -> (from + 1).takeIf { it < size }?.let { move(from, it) }
-        }
+        if (from != 0) {
+            when (direction) {
+                Direction.TOP -> add(1, removeAt(from))
+                Direction.UP -> (from - 1).takeIf { it >= 1 }?.let { move(from, it) }
+                Direction.DOWN -> (from + 1).takeIf { it < size }?.let { move(from, it) }
+            }
+        } else Unit
 
     /**
      * Vérifie si la [track] fournie peut être jouée, puis l'ajoute à la [Playlist].
