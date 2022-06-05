@@ -149,7 +149,6 @@ enum class SearchEngine(val urlRegex: Regex) {
             }
 
             // On a plus de clefs et aucune n'a fonctionné
-            // TODO: @Khâtharsis returns empty list, to investigate (not my fault btw, did the same before changes)
             return searchYoutubeDL("${if (searchPlaylist) "" else "ytsearch5:"}${query.removePrefix("!yt ")}").map { super.jsonToTrack(it) }
         }
 
